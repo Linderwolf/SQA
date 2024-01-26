@@ -2,5 +2,4 @@ Welcome! :
 Please enter your username:
 Username accepted! How may we help you today? :
 Creating new user.. Please input their username:
-Username accepted! What type of user are they? (full/buy/sell/admin):
-User full12345 successfully created! Permissions: buy, sell
+Error! Username is longer than 25 characters, please try again:
