@@ -11,3 +11,47 @@ addcredit
 
 Writing to daily transaction file...
 You have been logged out.
+
+Reading current user accounts file...
+Please Enter your Username to Login: 
+Welcome, BuyStandard!
+Reading of Available Games File...
+Please enter a transaction:
+
+logout
+buy
+addcredit
+
+Writing to daily transaction file...
+You have been logged out.
+
+Reading current user accounts file...
+Please Enter your Username to Login: 
+Welcome, SellStandard!
+Reading of Available Games File...
+Please enter a transaction:
+
+logout
+sell
+addcredit
+
+Writing to daily transaction file...
+You have been logged out.
+
+Reading current user accounts file...
+Please Enter your Username to Login: 
+Welcome, Admin!
+Reading of Available Games File...
+Please enter a transaction:
+
+logout
+create
+delete
+sell
+buy
+refund
+addcredit
+
+Writing to daily transaction file...
+You have been logged out.
+
