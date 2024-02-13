@@ -1,0 +1,24 @@
+Reading current user accounts file...
+Please Enter your Username to Login: 
+Welcome, Admin!
+Reading of Available Games File...
+Please enter a transaction:
+
+logout
+create
+delete
+sell
+buy
+refund
+addcredit
+
+"login" is not an available transaction.
+Please enter a Valid Transaction:
+
+logout
+create
+delete
+sell
+buy
+refund
+addcredit
