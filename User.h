@@ -22,10 +22,4 @@ class User
 			type = userType;
 			credit = userCredit;
 		}
-
-		void ClearUser() {
-			name = "";
-			type = "";
-			credit = 0.0;
-		}
 };

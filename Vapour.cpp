@@ -125,8 +125,14 @@ float getUserBalance(string username) {
 void logout()
 {
 
+    cout << "Writing to Daily Transaction File...\n";
+
     // TO-DO::
     // Write to Daily Transaction File
+
+    cout << "Thank you for using Vapour. \nGoodbye.";
+
+    return;
 
 };
 
@@ -184,7 +190,7 @@ void inputLogic(string transaction, User currentUser) {
     else {
         cout << "Error! Please input a valid command: ";
         cin >> transaction;
-        inputLogic(transaction);
+        inputLogic(transaction, currentUser);
     }
     cout << "Input another transaction: ";
     cin >> transaction;
