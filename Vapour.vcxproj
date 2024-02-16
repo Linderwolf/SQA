@@ -138,10 +138,11 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="CurrentUserAccounts.txt" />
-    <Text Include="DailyTransactions.csv" />
+    <Text Include="DailyTransactions.txt" />
+    <Text Include="GameCollection.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="AvailableGames.csv" />
+    <None Include="AvailableGames.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

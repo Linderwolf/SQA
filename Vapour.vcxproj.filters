@@ -34,15 +34,18 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="DailyTransactions.csv">
+    <Text Include="DailyTransactions.txt">
       <Filter>Log Files</Filter>
     </Text>
     <Text Include="CurrentUserAccounts.txt">
       <Filter>Log Files</Filter>
     </Text>
+    <Text Include="GameCollection.txt">
+      <Filter>Log Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AvailableGames.csv">
+    <None Include="AvailableGames.txt">
       <Filter>Log Files</Filter>
     </None>
   </ItemGroup>
