@@ -56,6 +56,7 @@ bool isValidUser(string user) {
 //    dailyTransactionFile.close();
 //}
 
+// getUserType()
 // returns the type of user as a string
 // AA, FS, SS, BS
 string getUserType(string username) {
@@ -129,10 +130,11 @@ void inputLogic(string transaction) {       // TO-DO:: This will loop infinitely
     // 
     // 
     // Add trimming
+
     for (int i = 0; i < transaction.length(); i++)  // tolower() sets input to lowercase
         transaction[i] = tolower(transaction[i]);
 
-    while (isLoggedIn) {
+    if (isLoggedIn) {
 
         // Log each transaction
 
@@ -148,7 +150,9 @@ void inputLogic(string transaction) {       // TO-DO:: This will loop infinitely
         if (transaction == "logout") { logout(); }
         else {
             cout << "Error! Please input a valid command: ";
+            cin >> transaction;
         }
+        //inputLogic(transaction);
     }
 };
 
@@ -175,7 +179,7 @@ int main(){
 
     //cout << currentUser.name + " " + currentUser.type + " " + to_string(currentUser.credit);
 
-    cout << "Welcome " + currentUser.name + ", how may we help you?\n";
+    cout << "Welcome " + currentUser.name + "! As a " + /*currentUser.getUserTypeVerbose()*/ + " you can:\n";
     cin >> userInput;
 
     inputLogic(userInput);

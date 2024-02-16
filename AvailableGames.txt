@@ -1,0 +1,3 @@
+Stardew Valley             sellstandard    000025
+Tetris Effect              sellstandard    000000
+END
