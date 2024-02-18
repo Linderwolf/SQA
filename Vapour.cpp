@@ -13,15 +13,9 @@
 using namespace std;
 
 // Classes
-#include "Transaction.h"
 #include "Game.h"
 #include "User.h"
-
-// Global Variables
-User currentUser;   // A User object, representing the user currently logged into the system
-
-//stores the transactions performed by a user while logged in
-vector<Transaction> dailyTransactions;
+#include "Transaction.h"
 
 /// <summary>
 /// Compares an input string against the list of all Users.
@@ -50,14 +44,6 @@ bool isValidUser(string user) {
     return false;
 };
 
-//void dailyTransactionWrite(vector<Transaction> transactions) {
-//    ofstream dailyTransactionFile("DailyTransactions.txt");
-//    for (int i = 0; i < transactions.size(); i++) {
-//        dailyTransactionFile << transactions[i].toString() << "\n";
-//    }
-//    dailyTransactionFile.close();
-//}
-
 ///<summary>
 /// Given a valid username string, gets their type from the accounts file
 ///</summary>
@@ -78,7 +64,7 @@ string getUserType(string username) {
             }
             // cout << storedUsername << "\n";
             if (storedUsername == username) {
-                string userType = accounts.substr(15, 2);
+                string userType = accounts.substr(16, 2);
                 accountsFile.close();
                 return userType;
             }
@@ -119,82 +105,153 @@ float getUserBalance(string username) {
     else { return -1.0; };
 };
 
-// Logout Transaction
-// If the user is logged in, ends their session.
-// Writes their transaction history to the Daily Transaction File
-void logout()
+#pragma region "Transaction Functions"
+
+/// <summary>
+/// Ends a User's session and logs them out.
+/// Writes their transaction history to the Daily Transaction File.
+/// </summary>
+/// <param name="transactions">A reference to the vector of transactions performed by the User</param>
+/// <param name="currentUser">A reference to the User object representing logged in User</param>
+void logout(vector<Transaction>& transactions, User& currentUser)
 {
+    Transaction logoutTransaction("endofsession", currentUser);   // Create a new logout Transaction
+    transactions.push_back(logoutTransaction);     // Add the logout Transaction to the vector
 
     cout << "Writing to Daily Transaction File...\n";
 
-    // TO-DO::
-    // Write to Daily Transaction File
+    // Write to the DailyTransactions file
+    ofstream dailyTransactionFile("DailyTransactions.txt");
+    for (int i = 0; i < transactions.size(); i++) {
+        dailyTransactionFile << transactions[i].ToString(transactions[i]) << "\n";
+    }
+    dailyTransactionFile << "END";
+    dailyTransactionFile.close();
 
     cout << "Thank you for using Vapour. \nGoodbye.";
 
     return;
-
 };
 
 // Transaction Stubs to implement
-void addCredit(string userType) {};
-void createUser() {};   
-void deleteUser() {};   // Matthew
-void listUsers() {};    
-void buyGame() {};
-void sellGame() {}; 
-void refundGame() {};
-void listGames() {};    
+// Likely need to pass the user/game as a parameter
 
 /// <summary>
-/// Calls a Transaction function corresponding to a valid string input. Provides an error message for invalid input.
-///     -   This function is recursively called until a "Logout()" transaction is processed.
+/// 
+/// </summary>
+/// <param name="currentUser">A reference to the User object representing logged in User</param>
+/// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
+Transaction createUser(User& currentUser) // Transaction code: 1
+{
+    Transaction createUserTransaction("create", currentUser);
+    return createUserTransaction;
+};   
+/// <summary>
+/// 
+/// </summary>
+/// <param name="currentUser">A reference to the User object representing logged in User</param>
+/// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
+Transaction deleteUser(User& currentUser)  // Transaction code: 2
+{
+    Transaction deleteUserTransaction("delete", currentUser);
+    return deleteUserTransaction;
+};
+/// <summary>
+/// 
+/// </summary>
+/// <param name="currentUser">A reference to the User object representing logged in User</param>
+/// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
+Transaction buyGame(User& currentUser) // Transaction code: 3
+{
+    // Need to pass a game to our transaction V
+    Transaction buyGameTransaction("buy", currentUser);
+    return buyGameTransaction;
+};
+/// <summary>
+/// 
+/// </summary>
+/// <param name="currentUser">A reference to the User object representing logged in User</param>
+/// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
+Transaction sellGame(User& currentUser) // Transaction code: 4
+{
+    // Need to pass a game to our transaction V
+    Transaction sellGameTransaction("sell", currentUser);
+    return sellGameTransaction;
+}; 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="currentUser">A reference to the User object representing logged in User</param>
+/// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
+Transaction refundGame(User& currentUser) // Transaction code: 5
+{
+    Transaction refundGameTransaction("refund", currentUser);
+    return refundGameTransaction;
+};
+/// <summary>
+/// 
+/// </summary>
+/// <param name="currentUser">A reference to the User object representing logged in User</param>
+/// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
+Transaction addCredit(User& currentUser) // Transaction code: 6
+{
+    Transaction addCreditTransaction("addcredit", currentUser);
+    return addCreditTransaction;
+};
+void listUsers() {};
+void listGames() {};    
+#pragma endregion "Transaction Functions"
+
+/// <summary>
+/// Calls a Transaction function corresponding to a valid string input.
+/// Builds a vector of Transactions for writing to the DailyTransactions.txt file. 
+/// This function is recursively called until a "Logout()" transaction is processed.
 /// </summary>
 /// <param name="transaction">: A string input of the transaction a user would like to perform</param>
-/// <param name="currentUser">: A User object representing the logged in User</param>
-void inputLogic(string transaction, User currentUser) {     
+/// <param name="currentUser">: A reference to the User object representing the logged-in User</param>
+/// <param name="dailyTransactions">: Reference vector to list transactions the logged-in User has performed.</param>
+void inputLogic(string transactionName, User& currentUser, vector<Transaction>& dailyTransactions) {
+    string messageString = "";
 
+    // Iterate over the input character array to change each to lowercase.
+    for (int i = 0; i < transactionName.length(); i++)
+        transactionName[i] = tolower(transactionName[i]);   // tolower() sets input to lowercase
+
+    // Valid user types: AA FS, BS, SS (admin, fullstandard, buystandard, sellstandard)
+    
+    if (transactionName == "list") { listGames(); } // All users can list games
     // TO-DO::
-    // Add trimming
-    //
-    // Iterate over the character array to change each to lowercase.
-    for (int i = 0; i < transaction.length(); i++)
-        transaction[i] = tolower(transaction[i]);   // tolower() sets input to lowercase
-
-    // TO-DO::
-    // Log each transaction
-    //
-    //  AA FS, BS, SS Valid user Types
-
-    if (transaction == "list")       { listGames(); }  // all
-
-    // All users, except sellstandard can "buy"
-    else if (transaction == "buy" && currentUser.type != "SS") { buyGame(); }
-
-    // TO-DO::
-    // Clarify requirements. Does it make sense for sellstandard accounts, 
-    //                       which cannot make purchases to add credit?
-    else if (transaction == "addcredit") { addCredit(currentUser.type); }
+    // Clarify requirements. Does addcredit() make sense for sellstandard accounts, 
+    //                       which cannot make purchases to add credit?...
+    else if (transactionName == "addcredit")
+        { dailyTransactions.push_back(addCredit(currentUser)); }
+    else if (transactionName == "logout")
+        { logout(dailyTransactions, currentUser); }
 
     // Priveleged Transactions for Admin only
-    else if (transaction == "create" && currentUser.type == "AA") { createUser(); }
-    else if (transaction == "delete" && currentUser.type == "AA") { deleteUser(); }
-    else if (transaction == "list_users" && currentUser.type == "AA") { listUsers(); }
+    else if (transactionName == "create" && currentUser.type == "AA")
+        { dailyTransactions.push_back(createUser(currentUser)); }
+    else if (transactionName == "delete" && currentUser.type == "AA")
+        { dailyTransactions.push_back(deleteUser(currentUser)); }
+    else if (transactionName == "list_users" && currentUser.type == "AA")
+        { listUsers(); }
 
     // All users, except buystandard can refund and sell
-    else if (transaction == "refund" && currentUser.type != "BS") { refundGame(); }
-    else if (transaction == "sell" && currentUser.type != "BS") { sellGame(); }
-        
-    // All users can logout
-    else if (transaction == "logout") { logout(); }
-    else {
-        cout << "Error! Please input a valid command: ";
-        cin >> transaction;
-        inputLogic(transaction, currentUser);
-    }
-    cout << "Input another transaction: ";
-    cin >> transaction;
-    inputLogic(transaction, currentUser);
+    else if (transactionName == "refund" && currentUser.type != "BS")
+        { dailyTransactions.push_back(refundGame(currentUser)); }
+    else if (transactionName == "sell" && currentUser.type != "BS")
+        { dailyTransactions.push_back(sellGame(currentUser)); }
+    
+    // All users, except sellstandard can "buy"
+    else if (transactionName == "buy" && currentUser.type != "SS")
+        { dailyTransactions.push_back(buyGame(currentUser)); }
+    
+    else { messageString = "Error: "; }
+
+    messageString += "Input another transaction: ";
+    cout << messageString;
+    cin >> transactionName;
+    inputLogic(transactionName, currentUser, dailyTransactions);   // Recur until Logout()
 };
 
 int main(){
@@ -202,6 +259,7 @@ int main(){
     //Implement the useless "login" transaction that's listed in the requirements
 
     string userInput;   // Holds the text a user will input while logging into the system.
+    vector<Transaction> dailyTransactions;  // Stores the transactions performed by a user while logged in
 
     // Prompt for username to log in.
     cout << "Welcome to Vapour!\nPlease enter your Username: ";
@@ -221,5 +279,7 @@ int main(){
     cin >> userInput;
 
     // The user can now enter transaction codes and complete transactions
-    inputLogic(userInput, currentUser);
+    inputLogic(userInput, currentUser, dailyTransactions);
+
+    return 0;
 }

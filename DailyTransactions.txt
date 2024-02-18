@@ -1,86 +1,11 @@
-Daily Transaction File 
-At the end of each session, when the logout transaction is processed, a daily transaction file for the day is written, listing every transaction made in	 the session.
-Contains variable-length text lines of the form:
-
-XX_UUUUUUUUUUUUUUU_TT_CCCCCCCCC
-
-
-Where:	
-XX 	
-is a two-digit transaction code: 01-create, 02-delete, 06-add credit, 00-end of session
- 		UUUUUUUUUUUUUUU	
-is the username (buyer if two users in the transaction)
-		TT			
-is the user type (AA=admin, FS=full-standard, BS=buy-standard, 
-SS=sell-standard)
-		CCCCCCCCC			
-is the available credit
- 		_			
-is a space
-
-
-XX_UUUUUUUUUUUUUUU_SSSSSSSSSSSSSSS_CCCCCCCCC
-
-
-Where:	
-XX 	
-is a two-digit transaction code: 05-refund
- 		UUUUUUUUUUUUUUU	
-is the buyer’s username
-		SSSSSSSSSSSSSSS	
-is the seller’s username
-		CCCCCCCCC			
-is the refund credit
- 		_			
-is a space
-
-
-XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSS_PPPPPP
-
-
-where:	
- XX 	
-is a two-digit transaction code: 03-sell.
-IIIIIIIIIIIIIIIIIII	
-is the game name
-		SSSSSSSSSSSSSS	
-is the seller’s username
-
-		PPPPPP			
-is the price
- 		_			
-is a space
-
-
-
-
-XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSSSS_UUUUUUUUUUUUUU_PPPPPP
-
-
-where:	
- XX 	
-is a two-digit transaction code: 04-buy.
-IIIIIIIIIIIIIIIIIII	
-is the game name
-
-		SSSSSSSSSSSSSSS	
-is the seller’s username
-		UUUUUUUUUUUUUUU	
-is the buyer's username
-		PPPPPP			
-is the game’s price
- 		_			
-is a space
-
-
-	
-Constraints:
-alphabetic fields are left justified, filled with spaces 
-(e.g. Jane_Doe____________ for account holder Jane Doe)
-unused numeric fields are filled with zeros 
-(e.g., 0000)
-In a numeric field that is used to represent a monetary value, “.00” is appended to the end of the value 
-(e.g. 00110.00 for 110)
-unused alphabetic fields are filled with spaces (blanks) 
-(e.g., ________________________ )
-the sequence of transactions ends with an end of session (00) transaction code
+04                                     admin 0.000000
+03                                     0.000000
+01 AA 1000.000000
+01 AA 1000.000000
+02 AA 1000.000000
+06 AA 1000.000000
+03                                     0.000000
+03                                     0.000000
+03                                     0.000000
+00 AA 1000.000000
+END

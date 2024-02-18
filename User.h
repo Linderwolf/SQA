@@ -7,16 +7,18 @@ class User
 {
 	public:
 
-		string name;
-		string type;
-		float credit;
+		string name;	// The username of a User
+		string type;	// The type of account, which determines permissions
+		float credit;	// The User's account balance
 
+		// Default Constructor
 		User() {
 			name = "";
 			type = "";
 			credit = 0.0;
 		}
 
+		// Parameterized Constructor
 		User(string userName, string userType, float userCredit) {
 			name = userName;
 			type = userType;
