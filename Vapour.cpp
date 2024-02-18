@@ -205,7 +205,8 @@ Transaction addCredit(User& currentUser) // Transaction code: 6
 void listUsers() {
     ifstream accountsFile("CurrentUserAccounts.txt");
     string accounts;
-    cout << "|Username      |Type  |Balance\n";
+    cout << "\nUsername    | Type | Balance\n";
+    cout << "============================\n";
     while (getline (accountsFile, accounts)) {
             cout << accounts << "\n";
     }
@@ -217,7 +218,8 @@ void listUsers() {
 void listGames() {
     ifstream gamesFile("AvailableGames.txt");
     string games;
-    cout << "Username     | Type |  Price\n";
+    cout << "\nGame Name                | Seller         | Price\n";
+    cout << "=================================================\n";
     while (getline (gamesFile, games)) {
             cout << games << "\n";
     }
@@ -255,7 +257,7 @@ void inputLogic(string transactionName, User& currentUser, vector<Transaction>& 
         { dailyTransactions.push_back(createUser(currentUser)); }
     else if (transactionName == "delete" && currentUser.type == "AA")
         { dailyTransactions.push_back(deleteUser(currentUser)); }
-    else if (transactionName == "list_users" && currentUser.type == "AA")
+    else if (transactionName == "listusers" && currentUser.type == "AA")
         { listUsers(); }
 
     // All users, except buystandard can refund and sell
@@ -268,7 +270,7 @@ void inputLogic(string transactionName, User& currentUser, vector<Transaction>& 
     else if (transactionName == "buy" && currentUser.type != "SS")
         { dailyTransactions.push_back(buyGame(currentUser)); }
     
-    else { messageString = "Error: "; }
+    else { messageString = transactionName + " is not a valid transaction.\n"; }
 
     messageString += "Input another transaction: ";
     cout << messageString;
@@ -284,7 +286,7 @@ int main(){
     vector<Transaction> dailyTransactions;  // Stores the transactions performed by a user while logged in
 
     // Prompt for username to log in.
-    cout << "Welcome to Vapour!\nPlease enter your Username: ";
+    cout << "Welcome to Vapour!\nPlease enter your Username to log in: ";
     cin >> userInput;
 
     // Wait for valid input before proceding
