@@ -9,6 +9,8 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <iomanip>
+#include <sstream>
 
 using namespace std;
 
@@ -105,6 +107,146 @@ float getUserBalance(string username) {
     else { return -1.0; };
 };
 
+/// <summary>
+/// Gets the seller of the game if the game is found in AVailableGames.txt.
+/// </summary>
+/// <param name="gameName">The name of the game that the current user is trying to buy</param>
+/// <returns>string containing the sellers name if the game exists. If not, an empty string.</returns>
+string getSellerForGame(string gameName)
+{
+    ifstream gamesFile("AvailableGames.txt");
+    string games;
+
+    while (getline(gamesFile, games)) {
+
+        string storedGame = games.substr(0, 26);
+        string storedSeller = games.substr(27, 15);
+
+        // Trim spaces from storedGame and storedSeller
+        storedGame.erase(storedGame.find_last_not_of(" ") + 1);
+        storedSeller.erase(storedSeller.find_last_not_of(" ") + 1);
+
+        if (storedGame == gameName) {
+            gamesFile.close();
+            return storedSeller; // Return the seller associated with the game
+        }
+    }
+
+    gamesFile.close();
+    return ""; // Return an empty string if the game is not found
+}
+
+
+/// <summary>
+/// Checks if the game is in the AvailableGames.txt.
+/// </summary>
+/// <param name="gameName">The name of the game that the current user is trying to buy</param>
+/// <returns>boolean value indicating whether the game is available to buy.</returns>
+bool isValidGame(string gameName)
+{
+    return !getSellerForGame(gameName).empty();
+}
+
+/// <summary>
+/// Gets the price of the game the user wants to buy.
+/// </summary>
+/// <param name="gameName">The name of the game that the current user is trying to buy</param>
+/// <returns>string containing the game's price.</returns>
+string getGamePrice(const string gameName)
+{
+    ifstream gamesFile("AvailableGames.txt");
+    string gameInfo;
+
+    while (getline(gamesFile, gameInfo))
+    {
+        string storedGame = gameInfo.substr(0, 26);
+        string storedPrice = gameInfo.substr(42, 7);
+        storedGame.erase(storedGame.find_last_not_of(" ") + 1);
+
+        if (storedGame == gameName)
+        {
+            gamesFile.close();
+            storedPrice.erase(1, min(storedPrice.find_first_not_of('0') + 1, storedPrice.size() - 1));
+            return storedPrice;
+        }
+    }
+
+    gamesFile.close();
+    return "0.00";
+}
+
+/// <summary>
+/// Update the GameCollection.txt file to remove the game from the buyer.
+/// </summary>
+/// <param name="buyer">The current user who now owns the game.</param>
+/// <param name="gameName">The name of the game that the current user is trying to buy.</param>
+void removeGame(string buyer, string gameName)
+{
+    ifstream inputFile("GameCollection.txt");
+    ofstream tempFile("tempGameCollection.txt");
+
+    string line, storedGame, storedOwner;
+    while (getline(inputFile, line))
+    {
+        storedGame = line.substr(0, 26);
+        storedGame.erase(storedGame.find_last_not_of(" ") + 1);
+        if (storedGame != "END") {
+            storedOwner = line.substr(27, 15);
+            storedOwner.erase(storedOwner.find_last_not_of(" ") + 1);
+        }
+        
+        if (storedGame != gameName || storedOwner != buyer) {
+            tempFile << line << endl;
+        }
+    }
+
+    inputFile.close();
+    tempFile.close();
+    // Rename temp file to the original file
+    remove("GameCollection.txt");
+    rename("tempGameCollection.txt", "GameCollection.txt");
+}
+
+/**
+ * Update the CurrentUserAccounts.txt file to reflect the transfer of credits
+ *
+ * @param username The username of the account whose balance needs to be updated.
+ * @param newBalance The new credit balance of the account.
+ */
+/// <summary>
+/// Update the CurrentUserAccounts.txt file to reflect the transfer of credits.
+/// </summary>
+/// <param name="username">TThe username of the account whose balance needs to be updated.</param>
+/// <param name="newBalance">The new credit balance of the account.</param>
+void updateUserBalance(string username, float newBalance)
+{
+    ifstream inputFile("CurrentUserAccounts.txt");
+    ofstream tempFile("temp.txt");
+
+    string line;
+    while (getline(inputFile, line))
+    {
+        string storedUsername = line.substr(0, 15);
+        string userType = line.substr(16, 2);
+        storedUsername.erase(storedUsername.find_last_not_of(" ") + 1);
+        if (storedUsername == username)
+        {
+            tempFile << setw(16) << left << username << setw(3) << left << userType;
+            tempFile << fixed << setprecision(2) << setfill('0') << setw(9) << right << newBalance << endl;
+        }
+        else
+        {
+            tempFile << line << endl;
+        }
+    }
+
+    inputFile.close();
+    tempFile.close();
+
+    remove("CurrentUserAccounts.txt");
+    rename("temp.txt", "CurrentUserAccounts.txt");
+}
+
 #pragma region "Transaction Functions"
 
 /// <summary>
@@ -157,12 +299,30 @@ Transaction deleteUser(User& currentUser)  // Transaction code: 2
     return deleteUserTransaction;
 };
 /// <summary>
-/// 
+/// Handles buy transaction.
 /// </summary>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
 Transaction buyGame(User& currentUser) // Transaction code: 3
 {
+    string gameName, seller, log;
+    cout << "Please enter the name of the game you would like to buy: ";
+    cin.clear();
+    std::cin.ignore(100,'\n');
+    std::getline(std::cin, gameName);
+    cout << "Please enter the seller of " + gameName + ": ";
+    cin >> seller;
+
+    string storedSeller = getSellerForGame(gameName);
+
+    // Log to Game Collection file and daily transaction file
+    string paddedGameName = gameName.substr(0, 20) + string(20 - gameName.length(), ' ');
+    string paddedStoredSeller = storedSeller.substr(0, 15) + string(15 - storedSeller.length(), ' ');
+    string paddedBuyerName = currentUser.name.substr(0, 15) + string(15 - currentUser.name.length(), ' ');
+    string paddedPrice = getGamePrice(gameName);
+
+    cout << "Purchase successful! Transferring the credit value of " + gameName + " from you to the seller, " + seller + ". You can now find " + gameName + " in your collection!" << endl;
+   
     // Need to pass a game to our transaction V
     Transaction buyGameTransaction("buy", currentUser);
     return buyGameTransaction;
@@ -185,6 +345,32 @@ Transaction sellGame(User& currentUser) // Transaction code: 4
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
 Transaction refundGame(User& currentUser) // Transaction code: 5
 {
+    string buyer, seller, game, amount, log;
+    ostringstream oss;
+    cout << "Please enter the buyer's username (the recipient of the refund): ";
+    cin >> buyer;
+    cout << "Please enter the seller's username: ";
+    cin >> seller;
+    cout << "Please enter the name of the game you would like to return: ";
+    cin.ignore(1000, '\n');
+    getline(cin, game);
+    cout << "game is: " + game << endl;
+
+    // Remove game from GameCollection.txt
+    removeGame(buyer, game);
+
+    cout << "Please enter the amount of credit to transfer to the buyer account: ";
+    cin >> amount;
+
+    // Update CurrentUserAccounts.txt
+    float buyerBalance = getUserBalance(buyer) + stof(amount);
+    float sellerBalance = getUserBalance(seller) - stof(amount);
+    updateUserBalance(buyer, buyerBalance);
+    updateUserBalance(seller, sellerBalance);
+
+    //cout << "buyer balance: " + to_string(buyerBalance) << endl;
+    //cout << "seller balance: " + to_string(sellerBalance) << endl;
+
     Transaction refundGameTransaction("refund", currentUser);
     return refundGameTransaction;
 };
@@ -195,6 +381,25 @@ Transaction refundGame(User& currentUser) // Transaction code: 5
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
 Transaction addCredit(User& currentUser) // Transaction code: 6
 {
+    string username, amount, userType, log;
+    ostringstream oss;
+    if (currentUser.type == "AA")
+    {
+        cout << "Which user would you like to add credit to?";
+        cin >> username;
+        cout << "How much credit would you like to add to " + username + "'s account?";
+        cin >> amount;
+        userType = currentUser.type;
+    }
+    else
+    {
+        username = currentUser.name;
+        cout << "How much credit would you like to add to your account?" << endl;
+        cin >> amount;
+        userType = getUserType(username);
+    }
+    float userBalance = getUserBalance(username) + stof(amount);
+    updateUserBalance(username, userBalance);
     Transaction addCreditTransaction("addcredit", currentUser);
     return addCreditTransaction;
 };
