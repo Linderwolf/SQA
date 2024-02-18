@@ -7,27 +7,34 @@ class Transaction
 {
 	public:
 	#pragma region "parameters"
+
 		// Mandatory Parameters
 		int code;			// A numeric identifier code for a type of transaction.
 		string name;		// The name of a type of transaction
 		User user;			// The user performing the transaction	 (includes username, type and credit)
 
 		// Optional Parameters
-		Game game;			// The game being purchased/sold/created (includes gamename, price, and seller's name)
-		string buyerName;	// The name of the user who purchased the game (if not the acting 'user' User object)
+		Game relevantGame;	// The game being purchased/sold/created (includes gamename, price, and seller's name)
+		User otherUser;		// The name of any other user relevant to the transaction, who is not the transacting User.
+							// e.g. A User who purchased a game, that the transacting User is refunding.
 
 	#pragma endregion "parameters"
+
 	#pragma region "constructors"
+
 		/// <summary>
 		/// Parameterized Constructor of a Transaction Object, given a Transaction Code
 		/// </summary>
 		/// <param name="transactionCode"> : A numeric identifier code for a type of transaction.</param>
 		/// <param name="actingUser"> : The User performing the transaction</param>
-		/// <param name="game"> : The relevant Game, if applicable</param>
-		Transaction(int transactionCode, User actingUser, Game game = Game()) {
+		/// <param name="optionalGame"> : The relevant Game, if applicable</param>
+		/// <param name="optionalUser"> : A relevant non-acting User, if applicable</param>
+		Transaction(int transactionCode, User actingUser, Game optionalGame = Game(), User optionalUser = User()) {
 			code = transactionCode;
 			name = getTransactionName(transactionCode);
 			user = actingUser;
+			relevantGame = optionalGame;
+			otherUser = optionalUser;
 		}
 
 		/// <summary>
@@ -35,15 +42,20 @@ class Transaction
 		/// </summary>
 		/// <param name="transactionName"> : The name for a type of transaction.</param>
 		/// <param name="actingUser"> : The User performing the transaction</param>
-		/// <param name="game"> : The relevant Game, if applicable</param>
-		Transaction(string transactionName, User actingUser, Game game = Game()) {
+		/// <param name="optionalGame"> : The relevant Game, if applicable</param>
+		/// <param name="optionalUser"> : A relevant non-acting User, if applicable</param>
+		Transaction(string transactionName, User actingUser, Game optionalGame = Game(), User optionalUser = User()) {
 			code = getTransactionCode(transactionName);
 			name = transactionName;
 			user = actingUser;
+			relevantGame = optionalGame;
+			otherUser = optionalUser;
 		}
+
 	#pragma endregion "constructors"
 
 	#pragma region "methods"
+
 		/// <summary>
 		/// Returns the name of a transaction, given a transaction code
 		/// </summary>
@@ -95,9 +107,9 @@ class Transaction
 			transactionCreditString = to_string(transaction.user.credit);
 
 			// Process the Game's Price
-			if (transaction.game.gameName != "                   ")
+			if (transaction.relevantGame.gameName != "                   ")
 			{
-				transactionUnitPriceString = to_string(transaction.game.unitPrice);
+				transactionUnitPriceString = to_string(transaction.relevantGame.unitPrice);
 			}
 			else { transactionUnitPriceString = "Error. Game Object was defaulted..."; }
 
@@ -123,8 +135,8 @@ class Transaction
 			{
 				//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSS_PPPPPP
 				// Game Name, Seller's Name, Price
-				formattedString += transaction.game.gameName + " " +
-					transaction.game.sellerName + " " + to_string(transaction.game.unitPrice);
+				formattedString += transaction.relevantGame.gameName + " " +
+					transaction.relevantGame.sellerName + " " + to_string(transaction.relevantGame.unitPrice);
 			}
 			else if (transaction.code == 04)	// Buy Transaction
 			{
@@ -134,8 +146,8 @@ class Transaction
 				// I game name, S seller's username, U buyer's username, P game's price
 				//
 				//		This assumes the current user to be the buyer.
-				formattedString += transaction.game.gameName + " " + transaction.game.sellerName + " "
-					+ transaction.user.name + " " + to_string(transaction.game.unitPrice);
+				formattedString += transaction.relevantGame.gameName + " " + transaction.relevantGame.sellerName + 
+					" " + transaction.user.name + " " + to_string(transaction.relevantGame.unitPrice);
 			}
 			else if (transaction.code == 5)	// refund transaction
 			{
@@ -154,7 +166,7 @@ class Transaction
 				*/
 
 				formattedString += transaction.user.name + " " +
-					transaction.game.sellerName + " " + to_string(transaction.game.unitPrice);
+					transaction.relevantGame.sellerName + " " + to_string(transaction.relevantGame.unitPrice);
 			}
 			/*
 			*	Requires additional formatting
@@ -173,6 +185,7 @@ class Transaction
 			else { formattedString += transaction.name + " Must not have transaction code logic implemented in the Transaction class."; }
 			return formattedString;
 		}
+
 	#pragma endregion "methods"
 
 private:
