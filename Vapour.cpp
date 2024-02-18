@@ -198,8 +198,30 @@ Transaction addCredit(User& currentUser) // Transaction code: 6
     Transaction addCreditTransaction("addcredit", currentUser);
     return addCreditTransaction;
 };
-void listUsers() {};
-void listGames() {};    
+
+/// <summary>
+/// Prints the list of users and their information in the system
+/// </summary>
+void listUsers() {
+    ifstream accountsFile("CurrentUserAccounts.txt");
+    string accounts;
+    cout << "|Username      |Type  |Balance\n";
+    while (getline (accountsFile, accounts)) {
+            cout << accounts << "\n";
+    }
+};
+
+/// <summary>
+/// Prints the list of games and their information in the system
+/// </summary>
+void listGames() {
+    ifstream gamesFile("AvailableGames.txt");
+    string games;
+    cout << "Username     | Type |  Price\n";
+    while (getline (gamesFile, games)) {
+            cout << games << "\n";
+    }
+};    
 #pragma endregion "Transaction Functions"
 
 /// <summary>
