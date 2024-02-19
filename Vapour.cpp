@@ -285,6 +285,26 @@ void logout(vector<Transaction>& transactions, User& currentUser)
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
 Transaction createUser(User& currentUser) // Transaction code: 1
 {
+    string newUsername;
+    string newUserType;
+    string whitespace;
+    int whitespaceLength;
+
+    cout << "Creating new user.. Please input their username: \n";
+    cin >> newUsername;
+    cout << "Username accepted! What type of user are they? (AA,FS,SS,BS): \n";
+    cin >> newUserType;
+    whitespaceLength = 15 - newUsername.length();
+    for (int i=0; i<whitespaceLength; i++){
+        whitespace += " ";
+    }
+    ofstream accountsFile;
+    accountsFile.open("CurrentUserAccounts.txt");
+    accountsFile << "\n" + newUsername + whitespace + newUserType + " 000000000";
+    accountsFile << "\nEND";
+    accountsFile.close();
+    
+    cout << "User successfully created! Permissions: buy, sell \n";
     Transaction createUserTransaction("create", currentUser);
     return createUserTransaction;
 };   
