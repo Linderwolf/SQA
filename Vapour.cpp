@@ -15,8 +15,8 @@
 using namespace std;
 
 // Classes
-#include "Game.h"
 #include "User.h"
+#include "Game.h"
 #include "Transaction.h"
 
 /// <summary>
@@ -108,7 +108,7 @@ float getUserBalance(string username) {
 };
 
 /// <summary>
-/// Gets the seller of the game if the game is found in AVailableGames.txt.
+/// Gets the seller of the game if the game is found in AvailableGames.txt.
 /// </summary>
 /// <param name="gameName">The name of the game that the current user is trying to buy</param>
 /// <returns>string containing the sellers name if the game exists. If not, an empty string.</returns>
@@ -262,21 +262,21 @@ void logout(vector<Transaction>& transactions, User& currentUser)
 
     cout << "Writing to Daily Transaction File...\n";
 
+    // TO-DO::
+    // Make sure the END line from previous write is deleted
     // Write to the DailyTransactions file
-    ofstream dailyTransactionFile("DailyTransactions.txt");
+    ofstream dailyTransactionFile;
+    dailyTransactionFile.open("DailyTransactions.txt", ios::app);
     for (int i = 0; i < transactions.size(); i++) {
-        dailyTransactionFile << transactions[i].ToString(transactions[i]) << "\n";
+        dailyTransactionFile << transactions[i].toString(transactions[i]) << "\n";
     }
-    dailyTransactionFile << "END";
+    dailyTransactionFile << "END\n";
     dailyTransactionFile.close();
 
     cout << "Thank you for using Vapour. \nGoodbye.";
 
-    return;
+    exit(0);
 };
-
-// Transaction Stubs to implement
-// Likely need to pass the user/game as a parameter
 
 /// <summary>
 /// 
@@ -295,6 +295,41 @@ Transaction createUser(User& currentUser) // Transaction code: 1
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
 Transaction deleteUser(User& currentUser)  // Transaction code: 2
 {
+    bool isValidInput = false;
+    string userInput;
+    cout << "Please enter the name of the user you want to delete: ";
+    while (!isValidInput) {
+        cin >> userInput;
+        if (currentUser.name == userInput) {
+            cout << "Error! You can't delete the current user.";
+        }
+        else if (!isValidUser(userInput)) {
+            cout << "Error! " + userInput + " is not a valid username.";
+        }
+        else {
+            isValidInput = true;
+        }
+        if (!isValidInput) {
+            cout << "Please enter the name of a valid user to delete:";
+        }
+    }
+
+    string line;
+    ifstream usersFile;
+    usersFile.open("CurrentUserAccounts.txt");
+    ofstream temp("temp.txt");
+    while (getline(usersFile, line))
+    {
+        if (line.substr(0, userInput.length()) != userInput) {
+            temp << line << endl;
+        }
+    }
+    remove("CurrentUserAccounts.txt");
+    rename("temp.txt", "CurrentUserAccounts.txt");
+
+    usersFile.close();
+    temp.close();
+
     Transaction deleteUserTransaction("delete", currentUser);
     return deleteUserTransaction;
 };
@@ -334,10 +369,29 @@ Transaction buyGame(User& currentUser) // Transaction code: 3
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
 Transaction sellGame(User& currentUser) // Transaction code: 4
 {
+    string gameName;    // Temporary string to store the name of the game
+    float gamePrice;    // Better as an int, then parse and validate input.
+    // If they don't enter a decimal, we append 00 before storing
+    cout << "Creating new listing. Enter the game's title: ";
+    cin >> gameName;
+    cout << "Enter the game's price: ";
+    //TO-DO:: Input Validation
+    cin >> gamePrice;
+
+    Game gameToSell(currentUser, gameName, gamePrice);
+
+    ofstream availableGamesFile;
+    availableGamesFile.open("AvailableGames.txt", ios::app);
+
+    // TO-DO:: The below will not delete the "END" from the last file write
+    availableGamesFile << "\n" + gameToSell.toString(); // Should do a replace(sellGame.toString(sellGame), "END");
+    availableGamesFile << "\nEND";
+    availableGamesFile.close();
+
     // Need to pass a game to our transaction V
-    Transaction sellGameTransaction("sell", currentUser);
+    Transaction sellGameTransaction("sell", currentUser, gameToSell);
     return sellGameTransaction;
-}; 
+};
 /// <summary>
 /// 
 /// </summary>
@@ -447,34 +501,50 @@ void inputLogic(string transactionName, User& currentUser, vector<Transaction>& 
         transactionName[i] = tolower(transactionName[i]);   // tolower() sets input to lowercase
 
     // Valid user types: AA FS, BS, SS (admin, fullstandard, buystandard, sellstandard)
-    
+
     if (transactionName == "list") { listGames(); } // All users can list games
     // TO-DO::
     // Clarify requirements. Does addcredit() make sense for sellstandard accounts, 
     //                       which cannot make purchases to add credit?...
     else if (transactionName == "addcredit")
-        { dailyTransactions.push_back(addCredit(currentUser)); }
+    {
+        dailyTransactions.push_back(addCredit(currentUser));
+    }
     else if (transactionName == "logout")
-        { logout(dailyTransactions, currentUser); }
+    {
+        logout(dailyTransactions, currentUser);
+    }
 
     // Priveleged Transactions for Admin only
     else if (transactionName == "create" && currentUser.type == "AA")
-        { dailyTransactions.push_back(createUser(currentUser)); }
+    {
+        dailyTransactions.push_back(createUser(currentUser));
+    }
     else if (transactionName == "delete" && currentUser.type == "AA")
-        { dailyTransactions.push_back(deleteUser(currentUser)); }
+    {
+        dailyTransactions.push_back(deleteUser(currentUser));
+    }
     else if (transactionName == "listusers" && currentUser.type == "AA")
-        { listUsers(); }
+    {
+        listUsers();
+    }
 
     // All users, except buystandard can refund and sell
     else if (transactionName == "refund" && currentUser.type != "BS")
-        { dailyTransactions.push_back(refundGame(currentUser)); }
+    {
+        dailyTransactions.push_back(refundGame(currentUser));
+    }
     else if (transactionName == "sell" && currentUser.type != "BS")
-        { dailyTransactions.push_back(sellGame(currentUser)); }
-    
+    {
+        dailyTransactions.push_back(sellGame(currentUser));
+    }
+
     // All users, except sellstandard can "buy"
     else if (transactionName == "buy" && currentUser.type != "SS")
-        { dailyTransactions.push_back(buyGame(currentUser)); }
-    
+    {
+        dailyTransactions.push_back(buyGame(currentUser));
+    }
+
     else { messageString = transactionName + " is not a valid transaction.\n"; }
 
     messageString += "Input another transaction: ";

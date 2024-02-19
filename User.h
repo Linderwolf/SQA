@@ -13,7 +13,7 @@ class User
 
 		// Default Constructor
 		User() {
-			name = "";
+			name = "               ";
 			type = "";
 			credit = 0.0;
 		}

@@ -1,0 +1,4 @@
+admin           AA 001000.00
+fullstandard    FS 001000.00
+buystandard     BS   1000.00
+END                         

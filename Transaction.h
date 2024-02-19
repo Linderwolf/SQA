@@ -7,7 +7,6 @@ class Transaction
 {
 	public:
 	#pragma region "parameters"
-
 		// Mandatory Parameters
 		int code;			// A numeric identifier code for a type of transaction.
 		string name;		// The name of a type of transaction
@@ -92,7 +91,7 @@ class Transaction
 		/// Returns a line to add to the DailyTransactions report, depending on the Transaction performed
 		/// </summary>
 		/// <returns>A string formatted to match the DailyTransaction report schema</returns>
-		string ToString(Transaction transaction) {
+		string toString(Transaction transaction) {
 			//TO-DO:: Double-check that the transaction codes have leading 0s
 			
 			string formattedString;				//	The final string to return
@@ -107,9 +106,9 @@ class Transaction
 			transactionCreditString = to_string(transaction.user.credit);
 
 			// Process the Game's Price
-			if (transaction.relevantGame.gameName != "                   ")
+			if (transaction.relevantGame.name != "                   ")
 			{
-				transactionUnitPriceString = to_string(transaction.relevantGame.unitPrice);
+				transactionUnitPriceString = to_string(transaction.relevantGame.price);
 			}
 			else { transactionUnitPriceString = "Error. Game Object was defaulted..."; }
 
@@ -135,8 +134,8 @@ class Transaction
 			{
 				//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSS_PPPPPP
 				// Game Name, Seller's Name, Price
-				formattedString += transaction.relevantGame.gameName + " " +
-					transaction.relevantGame.sellerName + " " + to_string(transaction.relevantGame.unitPrice);
+				formattedString += transaction.relevantGame.name + " " +
+					transaction.relevantGame.seller.name + " " + to_string(transaction.relevantGame.price);
 			}
 			else if (transaction.code == 04)	// Buy Transaction
 			{
@@ -146,8 +145,8 @@ class Transaction
 				// I game name, S seller's username, U buyer's username, P game's price
 				//
 				//		This assumes the current user to be the buyer.
-				formattedString += transaction.relevantGame.gameName + " " + transaction.relevantGame.sellerName + 
-					" " + transaction.user.name + " " + to_string(transaction.relevantGame.unitPrice);
+				formattedString += transaction.relevantGame.name + " " + transaction.relevantGame.seller.name + 
+					" " + transaction.user.name + " " + to_string(transaction.relevantGame.price);
 			}
 			else if (transaction.code == 5)	// refund transaction
 			{
@@ -166,7 +165,7 @@ class Transaction
 				*/
 
 				formattedString += transaction.user.name + " " +
-					transaction.relevantGame.sellerName + " " + to_string(transaction.relevantGame.unitPrice);
+					transaction.relevantGame.seller.name + " " + to_string(transaction.relevantGame.price);
 			}
 			/*
 			*	Requires additional formatting
