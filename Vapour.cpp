@@ -11,6 +11,7 @@
 #include <vector>
 #include <iomanip>
 #include <sstream>
+#include <regex>
 
 using namespace std;
 
@@ -430,12 +431,36 @@ Transaction sellGame(User& currentUser) // Transaction code: 4
 {
     string gameName;    // Temporary string to store the name of the game
     float gamePrice;    // Better as an int, then parse and validate input.
+    string priceString;
+    string priceString_whole;
+    string priceString_decimals;
+    bool nameBool;
+    bool priceBool = true;
     // If they don't enter a decimal, we append 00 before storing
     cout << "Creating new listing. Enter the game's title: ";
     cin >> gameName;
     cout << "Enter the game's price: ";
+    while(priceBool){
+        cin >> priceString;
+        // check if input has letters
+        string::size_type pos = priceString.find('.');
+        if(regex_match(priceString,regex(R"((?:^|\s)([+-]?[[:digit:]]+(?:\.[[:digit:]]+)?)(?=$|\s))"))){
+            if (pos != string::npos){
+                priceString_whole = priceString.substr(0,pos);
+                priceString_decimals = priceString.substr(priceString_whole.length(),10);
+            }
+            else{
+                priceString_whole = priceString;
+            }
+            gamePrice = 0.0 + stof(priceString_whole) + stof(priceString_decimals);
+            priceBool = false;
+        }
+        else{ cout << "Error! Input must be a number. (e.g. 10, 10.00, 1.0) \n"; }
+        // check if input is greater than 999.99
+        // check if input has more than 2 decimal points
+    }
     //TO-DO:: Input Validation
-    cin >> gamePrice;
+    // cin >> gamePrice;
 
     Game gameToSell(currentUser, gameName, gamePrice);
 
