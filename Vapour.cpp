@@ -286,25 +286,64 @@ void logout(vector<Transaction>& transactions, User& currentUser)
 Transaction createUser(User& currentUser) // Transaction code: 1
 {
     string newUsername;
+    bool nameBool = true;
     string newUserType;
+    bool typeBool = true;
     string whitespace;
     int whitespaceLength;
 
     cout << "Creating new user.. Please input their username: \n";
-    cin >> newUsername;
-    cout << "Username accepted! What type of user are they? (AA,FS,SS,BS): \n";
-    cin >> newUserType;
-    whitespaceLength = 15 - newUsername.length();
-    for (int i=0; i<whitespaceLength; i++){
-        whitespace += " ";
+    // Username input check
+    while(nameBool){
+        cin >> newUsername;
+        if(isValidUser(newUsername)){ cout << "Error! User already exists, please try again:\n"; }
+        else if (newUsername.length() > 25){ cout << "Error! Username is longer than 15 characters, please enter a shorter name:\n"; }
+        else { nameBool = false;}
     }
-    ofstream accountsFile;
-    accountsFile.open("CurrentUserAccounts.txt");
-    accountsFile << "\n" + newUsername + whitespace + newUserType + " 000000000";
-    accountsFile << "\nEND";
-    accountsFile.close();
     
-    cout << "User successfully created! Permissions: buy, sell \n";
+    // Usertype input check
+    cout << "Username accepted! What type of user are they? (AA,FS,SS,BS): \n";
+    while(typeBool){
+        cin >> newUserType;
+        cout << newUserType << "\n";
+
+        for(int j=0;j<2;j++){
+            newUserType[j] = toupper(newUserType[j]);
+        };
+        
+        if(newUserType == "AA"){ typeBool = false; }
+        else if(newUserType == "FS"){ typeBool = false; }
+        else if(newUserType == "SS"){ typeBool = false; }
+        else if(newUserType == "BS"){ typeBool = false; }
+        else if(newUserType.length() > 2){ cout << "Error! Type can only be AA, FS, SS, BS. Please try again: \n"; }
+        else{ cout << "Error! Type does not exit. Acceptable types are AA,FS,SS,BS. Please try again: \n"; }
+    }
+
+    // whitespace padding for account name
+    for (int i=0; i<(16 - newUsername.length()); i++){
+        whitespace += ' ';
+    }
+
+    // read from accounts and throw into text;
+    string account;
+    ofstream textFile;
+    textFile.open("temp.txt");
+    ifstream accountsFile;
+    accountsFile.open("CurrentUserAccounts.txt");
+    while(getline(accountsFile,account)){
+        if(account != "END"){
+        textFile << account << "\n";
+        }
+    }
+    
+    // add new account to text;
+    textFile << newUsername + whitespace + newUserType + " 000000000";
+    textFile << "\nEND";
+    remove("CurrentUserAccounts.txt");
+    rename("temp.txt","CurrentUserAccounts.txt");
+    textFile.close();
+    accountsFile.close();
+    cout << "User full12345 successfully created! Permissions: buy, sell \n";
     Transaction createUserTransaction("create", currentUser);
     return createUserTransaction;
 };   
