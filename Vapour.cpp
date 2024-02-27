@@ -121,10 +121,14 @@ string getSellerForGame(string gameName)
     while (getline(gamesFile, games)) {
 
         string storedGame = games.substr(0, 26);
-        string storedSeller = games.substr(27, 15);
-
-        // Trim spaces from storedGame and storedSeller
+        // Trim spaces from storedGame
         storedGame.erase(storedGame.find_last_not_of(" ") + 1);
+        if (storedGame == "END") {
+            gamesFile.close();
+            return "";
+        }
+        string storedSeller = games.substr(27, 15);
+        // Trim spaces from storedSeller
         storedSeller.erase(storedSeller.find_last_not_of(" ") + 1);
 
         if (storedGame == gameName) {
@@ -134,6 +138,7 @@ string getSellerForGame(string gameName)
     }
 
     gamesFile.close();
+    cout << "Returning empty string" << endl;
     return ""; // Return an empty string if the game is not found
 }
 
@@ -146,6 +151,41 @@ string getSellerForGame(string gameName)
 bool isValidGame(string gameName)
 {
     return !getSellerForGame(gameName).empty();
+}
+
+/// <summary>
+/// Checks if the game is currently in the current user's game collection.
+/// </summary>
+/// <param name="gameName">The name of the game that the current user is trying to buy</param>
+/// <returns>boolean value indicating whether the game is already in the user's collection.</returns>
+bool isInCollection(string gameName, User currentUser)
+{
+    ifstream gameCollectionFile("GameCollection.txt");
+    string gameCollection;
+
+    bool alreadyInCollection = false;
+
+    while (getline(gameCollectionFile, gameCollection))
+    {
+        string storedGame = gameCollection.substr(0, 26);
+        storedGame.erase(storedGame.find_last_not_of(" ") + 1);
+
+        if (storedGame == "END") {
+            gameCollectionFile.close();
+            return alreadyInCollection;
+        }
+
+        string storedUser = gameCollection.substr(27, 15);
+        storedUser.erase(storedUser.find_last_not_of(" ") + 1);
+
+        if (storedGame == gameName && storedUser == currentUser.name) {
+            alreadyInCollection = true;
+            break;
+        }
+    }
+
+    gameCollectionFile.close();
+    return alreadyInCollection;
 }
 
 /// <summary>
@@ -177,14 +217,56 @@ string getGamePrice(const string gameName)
 }
 
 /// <summary>
-/// Update the GameCollection.txt file to remove the game from the buyer.
+/// Update the GameCollection.txt file to include the newly bought game.
 /// </summary>
 /// <param name="buyer">The current user who now owns the game.</param>
 /// <param name="gameName">The name of the game that the current user is trying to buy.</param>
-void removeGame(string buyer, string gameName)
+void logGameCollection(string gameName, string buyer)
+{
+
+    // Read existing content of GameCollection.txt
+    ifstream readFile("GameCollection.txt");
+    ofstream writeFile("temp.txt");
+
+    if (!readFile.is_open() || !writeFile.is_open())
+    {
+        cout << "Error: Unable to open files for reading or writing." << endl;
+        return;
+    }
+
+    string line;
+    while (getline(readFile, line))
+    {
+        if (line == "END")
+        {
+            writeFile << setw(26) << left << gameName << " " << setw(15) << left << buyer << " " << endl;
+        }
+        writeFile << line << endl;
+    }
+
+    readFile.close();
+    writeFile.close();
+
+    // Replace the original file with the modified content
+    remove("GameCollection.txt");
+    rename("temp.txt", "GameCollection.txt");
+}
+
+/// <summary>
+/// Update the GameCollection.txt file to remove the game from the buyer.
+/// </summary>
+/// <param name="owner">The user who owns the game.</param>
+/// <param name="gameName">The name of the game that is being removed.</param>
+void removeGame(string owner, string gameName)
 {
     ifstream inputFile("GameCollection.txt");
     ofstream tempFile("tempGameCollection.txt");
+
+    if (!inputFile.is_open() || !tempFile.is_open())
+    {
+        cout << "Error: Unable to open files for reading or writing." << endl;
+        return;
+    }
 
     string line, storedGame, storedOwner;
     while (getline(inputFile, line))
@@ -195,8 +277,9 @@ void removeGame(string buyer, string gameName)
             storedOwner = line.substr(27, 15);
             storedOwner.erase(storedOwner.find_last_not_of(" ") + 1);
         }
-        
-        if (storedGame != gameName || storedOwner != buyer) {
+
+        if (storedGame != gameName || storedOwner != owner)
+        {
             tempFile << line << endl;
         }
     }
@@ -393,6 +476,7 @@ Transaction deleteUser(User& currentUser)  // Transaction code: 2
     Transaction deleteUserTransaction("delete", currentUser);
     return deleteUserTransaction;
 };
+
 /// <summary>
 /// Handles buy transaction.
 /// </summary>
@@ -401,21 +485,65 @@ Transaction deleteUser(User& currentUser)  // Transaction code: 2
 Transaction buyGame(User& currentUser) // Transaction code: 3
 {
     string gameName, seller, log;
-    cout << "Please enter the name of the game you would like to buy: ";
-    cin.clear();
-    std::cin.ignore(100,'\n');
-    std::getline(std::cin, gameName);
-    cout << "Please enter the seller of " + gameName + ": ";
-    cin >> seller;
+    bool validGame = true;
+    bool validSeller = false;
 
-    string storedSeller = getSellerForGame(gameName);
+    do {
+        if (validGame == true) {
+            cout << "Please enter the name of the game you would like to buy: ";
+        }        
+        cin.clear();
+        std::cin.ignore(100, '\n');
+        std::getline(std::cin, gameName);
 
-    // Log to Game Collection file and daily transaction file
-    string paddedGameName = gameName.substr(0, 20) + string(20 - gameName.length(), ' ');
-    string paddedStoredSeller = storedSeller.substr(0, 15) + string(15 - storedSeller.length(), ' ');
-    string paddedBuyerName = currentUser.name.substr(0, 15) + string(15 - currentUser.name.length(), ' ');
-    string paddedPrice = getGamePrice(gameName);
+        // Check if gameName is in GameCollection.txt
+        validGame = isValidGame(gameName);
+        if (!validGame) {
+            cout << gameName + " is not available. Please enter another game to purchase: ";
+        }
+        else {
+            validGame = true;
+        }
 
+        // Check if the current user has the game in their collection
+        bool alreadyInCollection = isInCollection(gameName, currentUser);
+        if (alreadyInCollection) {
+            validGame = false;
+            cout << "Error: " + gameName + " is already in your collection. Please choose another game to purchase:";
+        }
+
+        // Check if the current user has sufficient funds to buy the game
+        float gamePrice = stof(getGamePrice(gameName));
+        if (gamePrice > getUserBalance(currentUser.name)) {
+            validGame = false;
+            cout << "Error: Do not have sufficient credit to buy " << gameName << ". Please choose another game to purchase: ";
+        }
+
+        // Check if current user is the seller of the game
+        if (getSellerForGame(gameName) == currentUser.name) {
+            validGame = false;
+            cout << "Error: Cannot buy your own game.  Please choose another game to purchase: ";
+        }
+
+    } while (!validGame);
+
+    while (!validSeller) {
+        cout << "Please enter the seller of " + gameName + ": ";
+        cin >> seller;
+
+        string storedSeller = getSellerForGame(gameName);
+
+        // Check if the correct seller is input
+        if (storedSeller == seller) {
+            validSeller = true;
+        }
+        else {
+            cout << "Invalid seller. ";
+        }
+    }
+
+    // Add purchase to GameCollection.txt
+    logGameCollection(gameName, currentUser.name);
     cout << "Purchase successful! Transferring the credit value of " + gameName + " from you to the seller, " + seller + ". You can now find " + gameName + " in your collection!" << endl;
    
     // Need to pass a game to our transaction V

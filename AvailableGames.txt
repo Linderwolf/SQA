@@ -1,5 +1,5 @@
 Stardew Valley             sellstandard    000025
-Tetris Effect              fullstandard    000000
-Valheim fullstandard 29.990000
-Terraria fullstandard 19.990000
+Tetris Effect              fullstandard    020.00
+Valheim                    fullstandard    029.99
+Terraria                   fullstandard    019.99
 END
