@@ -5,6 +5,11 @@
  @date February 2024
 */
 
+// TO-DO::
+// 
+// Refactor: Organize functions into separate .cpp files
+//
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -310,7 +315,7 @@ void updateUserBalance(string username, float newBalance)
     string line;
     while (getline(inputFile, line))
     {
-        string storedUsername = line.substr(0, 15);
+        string storedUsername = line.substr(0, 15); // probably
         string userType = line.substr(16, 2);
         storedUsername.erase(storedUsername.find_last_not_of(" ") + 1);
         if (storedUsername == username)
@@ -353,7 +358,15 @@ void logout(vector<Transaction>& transactions, User& currentUser)
     dailyTransactionFile.open("DailyTransactions.txt", ios::app);
     for (int i = 0; i < transactions.size(); i++) {
         dailyTransactionFile << transactions[i].toString(transactions[i]) << "\n";
+        
+        if (transactions[i].name == "sell")
+        {
+            // TO-DO::
+            //
+            // Write the game object to AvailableGames under the proper formatting.
+        }
     }
+
     dailyTransactionFile << "END\n";
     dailyTransactionFile.close();
 
@@ -566,9 +579,25 @@ Transaction sellGame(User& currentUser) // Transaction code: 4
     bool priceBool = true;
     // If they don't enter a decimal, we append 00 before storing
     cout << "Creating new listing. Enter the game's title: ";
+    // TO-DO:: Input validation
+    // Game name max of 25 characters
+    // Check AvailableGames file -> Must be a unique Name
+    //
+    // No further transactions can be accepted on the new game until the next session
+    // 
+    //  One option: Tag game as not for sale: at end of availablegamesfile
+    //              -> check for that tag in the buygame() function
+    //              -> Logging out removes all tags from the availablegamesfile
+    // 
+    // 
+    //
     cin >> gameName;
     cout << "Enter the game's price: ";
     while(priceBool){
+        // TO-DO:: Input validation
+        // while loop -> iterate until valid
+        // Price Max: $999.99, Min: 0.
+        // formatting
         cin >> priceString;
         // check if input has letters
         string::size_type pos = priceString.find('.');
@@ -592,6 +621,10 @@ Transaction sellGame(User& currentUser) // Transaction code: 4
 
     Game gameToSell(currentUser, gameName, gamePrice);
 
+    /*
+    *   The below must be moved to logout()
+    * 
+    * 
     ofstream availableGamesFile;
     availableGamesFile.open("AvailableGames.txt", ios::app);
 
@@ -599,7 +632,7 @@ Transaction sellGame(User& currentUser) // Transaction code: 4
     availableGamesFile << "\n" + gameToSell.toString(); // Should do a replace(sellGame.toString(sellGame), "END");
     availableGamesFile << "\nEND";
     availableGamesFile.close();
-
+    */
     // Need to pass a game to our transaction V
     Transaction sellGameTransaction("sell", currentUser, gameToSell);
     return sellGameTransaction;
@@ -648,7 +681,7 @@ Transaction refundGame(User& currentUser) // Transaction code: 5
 Transaction addCredit(User& currentUser) // Transaction code: 6
 {
     string username, amount, userType, log;
-    ostringstream oss;
+    //ostringstream oss;
     if (currentUser.type == "AA")
     {
         cout << "Which user would you like to add credit to?";
@@ -773,7 +806,7 @@ int main(){
     vector<Transaction> dailyTransactions;  // Stores the transactions performed by a user while logged in
 
     // Prompt for username to log in.
-    cout << "Welcome to Vapour!\nPlease enter your Username to log in: ";
+    cout << "Welcome to Vapour!\nPlease enter your Username to log in : ";
     cin >> userInput;
 
     // Wait for valid input before proceding
@@ -782,11 +815,14 @@ int main(){
         cin >> userInput;
     }
 
+    // TO-DO:: Read AvailableGames File
+
     // Create a User object with the provided, valid input, and corresponding user data.
     User currentUser = User(userInput, getUserType(userInput), getUserBalance(userInput));
 
     // The user is now logged in. Prompt to enter a transaction.
     cout << "Welcome " + currentUser.name + "! Please enter a transaction: ";
+
     cin >> userInput;
 
     // The user can now enter transaction codes and complete transactions

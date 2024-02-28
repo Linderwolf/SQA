@@ -1,15 +1,5 @@
-04 Doom admin admin 9.000000
-00 AA 1000.000000
+00 A  0.000000
 END
-04 Morrowind sellstandard sellstandard 25.000000
-00 SS 0.000000
-END02 AA 1000.000000
-00 AA 1000.000000
-END
-03                                     0.000000
-04 Valheim fullstandard fullstandard 29.990000
-00 FS 1000.000000
-END
-04 Terraria fullstandard fullstandard 19.990000
-00 FS 1000.000000
+06 S  0.000000
+00 S  0.000000
 END
