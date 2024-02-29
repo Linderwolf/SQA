@@ -1,4 +1,4 @@
-/**   
+/**
  @file Vapour.cpp
  @brief Vapour: A video game distribution service and storefront - Software Quality Assurance Console Application
  @authors Peter Wolfgang Linder, Matthew , Ajaane , Russel
@@ -6,7 +6,7 @@
 */
 
 // TO-DO::
-// 
+//
 // Refactor: Organize functions into separate .cpp files
 //
 
@@ -29,49 +29,59 @@ using namespace std;
 /// Compares an input string against the list of all Users.
 /// </summary>
 /// <returns>A boolean value: whether the user input is contained in the system (true), or not (false)</returns>
-bool isValidUser(string user) {
+bool isValidUser(string user)
+{
     ifstream accountsFile("CurrentUserAccounts.txt");
     string accounts;
 
-    while (getline(accountsFile, accounts)) {
+    while (getline(accountsFile, accounts))
+    {
         string rawUser = accounts.substr(0, 15);
         string storedUsername;
-        for (int i = 0; i < rawUser.length(); i++) {
-            if (rawUser[i] != ' ') {
+        for (int i = 0; i < rawUser.length(); i++)
+        {
+            if (rawUser[i] != ' ')
+            {
                 storedUsername += rawUser[i];
             }
         }
 
-        if (storedUsername == user) 
+        if (storedUsername == user)
         {
             accountsFile.close();
-            return true; 
+            return true;
         }
     }
     accountsFile.close();
     return false;
 };
 
-///<summary>
+///< summary>
 /// Given a valid username string, gets their type from the accounts file
 ///</summary>
-///<returns>The 2-letter code for the type of user: AA, FS, SS, BS for admin, fullstandard, sellstandard, and buystandard, respectively</returns>
-///<param name="username">: the username of the User whose type is desired.</param>
-string getUserType(string username) {
-    if (isValidUser(username)) {
+///< returns>The 2-letter code for the type of user: AA, FS, SS, BS for admin, fullstandard, sellstandard, and buystandard, respectively</returns>
+///< param name="username">: the username of the User whose type is desired.</param>
+string getUserType(string username)
+{
+    if (isValidUser(username))
+    {
         ifstream accountsFile("CurrentUserAccounts.txt");
         string accounts;
 
-        while (getline(accountsFile, accounts)) {
+        while (getline(accountsFile, accounts))
+        {
             string rawUser = accounts.substr(0, 15);
             string storedUsername;
-            for (int i = 0; i < rawUser.length(); i++) {
-                if (rawUser[i] != ' ') {
+            for (int i = 0; i < rawUser.length(); i++)
+            {
+                if (rawUser[i] != ' ')
+                {
                     storedUsername += rawUser[i];
                 }
             }
             // cout << storedUsername << "\n";
-            if (storedUsername == username) {
+            if (storedUsername == username)
+            {
                 string userType = accounts.substr(16, 2);
                 accountsFile.close();
                 return userType;
@@ -79,29 +89,38 @@ string getUserType(string username) {
         }
         return "invalid user";
     }
-    else { return "invalid user"; };
+    else
+    {
+        return "invalid user";
+    };
 };
 
-///<summary>
+///< summary>
 /// Given a valid username string, gets the user's account balance from the accounts file
 ///</summary>
-///<returns>The user's balance as a float.
-///Returns a value of -1.0 if the provided username string is not valid.</returns>
-float getUserBalance(string username) {
-    if (isValidUser(username)) {
+///< returns>The user's balance as a float.
+/// Returns a value of -1.0 if the provided username string is not valid.</returns>
+float getUserBalance(string username)
+{
+    if (isValidUser(username))
+    {
         ifstream accountsFile("CurrentUserAccounts.txt");
         string accounts;
 
-        while (getline(accountsFile, accounts)) {
+        while (getline(accountsFile, accounts))
+        {
             string rawUser = accounts.substr(0, 15);
             string storedUsername;
-            for (int i = 0; i < rawUser.length(); i++) {
-                if (rawUser[i] != ' ') {
+            for (int i = 0; i < rawUser.length(); i++)
+            {
+                if (rawUser[i] != ' ')
+                {
                     storedUsername += rawUser[i];
                 }
             }
             // cout << storedUsername << "\n";
-            if (storedUsername == username) {
+            if (storedUsername == username)
+            {
                 string rawBalance = accounts.substr(18, 9);
                 float userBalance = stof(rawBalance);
                 accountsFile.close();
@@ -110,7 +129,10 @@ float getUserBalance(string username) {
         }
         return -1.0;
     }
-    else { return -1.0; };
+    else
+    {
+        return -1.0;
+    };
 };
 
 /// <summary>
@@ -123,12 +145,14 @@ string getSellerForGame(string gameName)
     ifstream gamesFile("AvailableGames.txt");
     string games;
 
-    while (getline(gamesFile, games)) {
+    while (getline(gamesFile, games))
+    {
 
         string storedGame = games.substr(0, 26);
         // Trim spaces from storedGame
         storedGame.erase(storedGame.find_last_not_of(" ") + 1);
-        if (storedGame == "END") {
+        if (storedGame == "END")
+        {
             gamesFile.close();
             return "";
         }
@@ -136,7 +160,8 @@ string getSellerForGame(string gameName)
         // Trim spaces from storedSeller
         storedSeller.erase(storedSeller.find_last_not_of(" ") + 1);
 
-        if (storedGame == gameName) {
+        if (storedGame == gameName)
+        {
             gamesFile.close();
             return storedSeller; // Return the seller associated with the game
         }
@@ -146,7 +171,6 @@ string getSellerForGame(string gameName)
     cout << "Returning empty string" << endl;
     return ""; // Return an empty string if the game is not found
 }
-
 
 /// <summary>
 /// Checks if the game is in the AvailableGames.txt.
@@ -175,7 +199,8 @@ bool isInCollection(string gameName, User currentUser)
         string storedGame = gameCollection.substr(0, 26);
         storedGame.erase(storedGame.find_last_not_of(" ") + 1);
 
-        if (storedGame == "END") {
+        if (storedGame == "END")
+        {
             gameCollectionFile.close();
             return alreadyInCollection;
         }
@@ -183,7 +208,8 @@ bool isInCollection(string gameName, User currentUser)
         string storedUser = gameCollection.substr(27, 15);
         storedUser.erase(storedUser.find_last_not_of(" ") + 1);
 
-        if (storedGame == gameName && storedUser == currentUser.name) {
+        if (storedGame == gameName && storedUser == currentUser.name)
+        {
             alreadyInCollection = true;
             break;
         }
@@ -278,7 +304,8 @@ void removeGame(string owner, string gameName)
     {
         storedGame = line.substr(0, 26);
         storedGame.erase(storedGame.find_last_not_of(" ") + 1);
-        if (storedGame != "END") {
+        if (storedGame != "END")
+        {
             storedOwner = line.substr(27, 15);
             storedOwner.erase(storedOwner.find_last_not_of(" ") + 1);
         }
@@ -296,35 +323,33 @@ void removeGame(string owner, string gameName)
     rename("tempGameCollection.txt", "GameCollection.txt");
 }
 
-/**
- * Update the CurrentUserAccounts.txt file to reflect the transfer of credits
- *
- * @param username The username of the account whose balance needs to be updated.
- * @param newBalance The new credit balance of the account.
- */
+
 /// <summary>
 /// Update the CurrentUserAccounts.txt file to reflect the transfer of credits.
 /// </summary>
 /// <param name="username">TThe username of the account whose balance needs to be updated.</param>
 /// <param name="newBalance">The new credit balance of the account.</param>
-void updateUserBalance(string username, float newBalance)
+void updateUserBalance(string username, double newBalance)
 {
     ifstream inputFile("CurrentUserAccounts.txt");
     ofstream tempFile("temp.txt");
-
     string line;
+    string userType;
     while (getline(inputFile, line))
     {
-        string storedUsername = line.substr(0, 15); // probably
-        string userType = line.substr(16, 2);
+        string storedUsername = line.substr(0, 15);       
         storedUsername.erase(storedUsername.find_last_not_of(" ") + 1);
-        if (storedUsername == username)
-        {
+
+        if (storedUsername != "END")  {
+            userType = line.substr(16, 2);
+        }
+
+        
+        if (storedUsername == username) {
             tempFile << setw(16) << left << username << setw(3) << left << userType;
             tempFile << fixed << setprecision(2) << setfill('0') << setw(9) << right << newBalance << endl;
         }
-        else
-        {
+        else {
             tempFile << line << endl;
         }
     }
@@ -336,6 +361,37 @@ void updateUserBalance(string username, float newBalance)
     rename("temp.txt", "CurrentUserAccounts.txt");
 }
 
+/// <summary>
+/// Update the CurrentUserAccounts.txt file to reflect the transfer of credits.
+/// </summary>
+/// <returns>Boolean value indicating whether the user wants to proceed with the transaction.</returns>
+bool shouldProceed()
+{
+    string proceed;
+    bool proceedFlag;
+    while (true)
+    {
+        cin >> proceed;
+
+        transform(proceed.begin(), proceed.end(), proceed.begin(), ::tolower);
+        if ((proceed == "y") || (proceed == "yes"))
+        {
+            proceedFlag = true;
+            break;
+        }
+        else if ((proceed == "n") || (proceed == "no"))
+        {
+            proceedFlag = false;
+            break;
+        }
+        else
+        {
+            cout << "Please enter either yes to proceed with the transaction or no to cancel the transaction: ";
+        }
+    }
+    return proceedFlag;
+}
+
 #pragma region "Transaction Functions"
 
 /// <summary>
@@ -344,10 +400,10 @@ void updateUserBalance(string username, float newBalance)
 /// </summary>
 /// <param name="transactions">A reference to the vector of transactions performed by the User</param>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
-void logout(vector<Transaction>& transactions, User& currentUser)
+void logout(vector<Transaction> &transactions, User &currentUser)
 {
-    Transaction logoutTransaction("endofsession", currentUser);   // Create a new logout Transaction
-    transactions.push_back(logoutTransaction);     // Add the logout Transaction to the vector
+    Transaction logoutTransaction("endofsession", currentUser); // Create a new logout Transaction
+    transactions.push_back(logoutTransaction);                  // Add the logout Transaction to the vector
 
     cout << "Writing to Daily Transaction File...\n";
 
@@ -356,9 +412,10 @@ void logout(vector<Transaction>& transactions, User& currentUser)
     // Write to the DailyTransactions file
     ofstream dailyTransactionFile;
     dailyTransactionFile.open("DailyTransactions.txt", ios::app);
-    for (int i = 0; i < transactions.size(); i++) {
+    for (int i = 0; i < transactions.size(); i++)
+    {
         dailyTransactionFile << transactions[i].toString(transactions[i]) << "\n";
-        
+
         if (transactions[i].name == "sell")
         {
             // TO-DO::
@@ -366,7 +423,6 @@ void logout(vector<Transaction>& transactions, User& currentUser)
             // Write the game object to AvailableGames under the proper formatting.
         }
     }
-
     dailyTransactionFile << "END\n";
     dailyTransactionFile.close();
 
@@ -376,11 +432,11 @@ void logout(vector<Transaction>& transactions, User& currentUser)
 };
 
 /// <summary>
-/// 
+///
 /// </summary>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
-Transaction createUser(User& currentUser) // Transaction code: 1
+Transaction createUser(User &currentUser) // Transaction code: 1
 {
     string newUsername;
     bool nameBool = true;
@@ -391,33 +447,64 @@ Transaction createUser(User& currentUser) // Transaction code: 1
 
     cout << "Creating new user.. Please input their username: \n";
     // Username input check
-    while(nameBool){
+    while (nameBool)
+    {
         cin >> newUsername;
-        if(isValidUser(newUsername)){ cout << "Error! User already exists, please try again:\n"; }
-        else if (newUsername.length() > 25){ cout << "Error! Username is longer than 15 characters, please enter a shorter name:\n"; }
-        else { nameBool = false;}
+        if (isValidUser(newUsername))
+        {
+            cout << "Error! User already exists, please try again:\n";
+        }
+        else if (newUsername.length() > 25)
+        {
+            cout << "Error! Username is longer than 15 characters, please enter a shorter name:\n";
+        }
+        else
+        {
+            nameBool = false;
+        }
     }
-    
+
     // Usertype input check
     cout << "Username accepted! What type of user are they? (AA,FS,SS,BS): \n";
-    while(typeBool){
+    while (typeBool)
+    {
         cin >> newUserType;
         cout << newUserType << "\n";
 
-        for(int j=0;j<2;j++){
+        for (int j = 0; j < 2; j++)
+        {
             newUserType[j] = toupper(newUserType[j]);
         };
-        
-        if(newUserType == "AA"){ typeBool = false; }
-        else if(newUserType == "FS"){ typeBool = false; }
-        else if(newUserType == "SS"){ typeBool = false; }
-        else if(newUserType == "BS"){ typeBool = false; }
-        else if(newUserType.length() > 2){ cout << "Error! Type can only be AA, FS, SS, BS. Please try again: \n"; }
-        else{ cout << "Error! Type does not exit. Acceptable types are AA,FS,SS,BS. Please try again: \n"; }
+
+        if (newUserType == "AA")
+        {
+            typeBool = false;
+        }
+        else if (newUserType == "FS")
+        {
+            typeBool = false;
+        }
+        else if (newUserType == "SS")
+        {
+            typeBool = false;
+        }
+        else if (newUserType == "BS")
+        {
+            typeBool = false;
+        }
+        else if (newUserType.length() > 2)
+        {
+            cout << "Error! Type can only be AA, FS, SS, BS. Please try again: \n";
+        }
+        else
+        {
+            cout << "Error! Type does not exit. Acceptable types are AA,FS,SS,BS. Please try again: \n";
+        }
     }
 
     // whitespace padding for account name
-    for (int i=0; i<(16 - newUsername.length()); i++){
+    for (int i = 0; i < (16 - newUsername.length()); i++)
+    {
         whitespace += ' ';
     }
 
@@ -427,45 +514,52 @@ Transaction createUser(User& currentUser) // Transaction code: 1
     textFile.open("temp.txt");
     ifstream accountsFile;
     accountsFile.open("CurrentUserAccounts.txt");
-    while(getline(accountsFile,account)){
-        if(account != "END"){
-        textFile << account << "\n";
+    while (getline(accountsFile, account))
+    {
+        if (account != "END")
+        {
+            textFile << account << "\n";
         }
     }
-    
+
     // add new account to text;
     textFile << newUsername + whitespace + newUserType + " 000000000";
     textFile << "\nEND";
     remove("CurrentUserAccounts.txt");
-    rename("temp.txt","CurrentUserAccounts.txt");
+    rename("temp.txt", "CurrentUserAccounts.txt");
     textFile.close();
     accountsFile.close();
     cout << "User full12345 successfully created! Permissions: buy, sell \n";
     Transaction createUserTransaction("create", currentUser);
     return createUserTransaction;
-};   
+};
 /// <summary>
-/// 
+///
 /// </summary>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
-Transaction deleteUser(User& currentUser)  // Transaction code: 2
+Transaction deleteUser(User &currentUser) // Transaction code: 2
 {
     bool isValidInput = false;
     string userInput;
     cout << "Please enter the name of the user you want to delete: ";
-    while (!isValidInput) {
+    while (!isValidInput)
+    {
         cin >> userInput;
-        if (currentUser.name == userInput) {
+        if (currentUser.name == userInput)
+        {
             cout << "Error! You can't delete the current user.";
         }
-        else if (!isValidUser(userInput)) {
+        else if (!isValidUser(userInput))
+        {
             cout << "Error! " + userInput + " is not a valid username.";
         }
-        else {
+        else
+        {
             isValidInput = true;
         }
-        if (!isValidInput) {
+        if (!isValidInput)
+        {
             cout << "Please enter the name of a valid user to delete:";
         }
     }
@@ -476,7 +570,8 @@ Transaction deleteUser(User& currentUser)  // Transaction code: 2
     ofstream temp("temp.txt");
     while (getline(usersFile, line))
     {
-        if (line.substr(0, userInput.length()) != userInput) {
+        if (line.substr(0, userInput.length()) != userInput)
+        {
             temp << line << endl;
         }
     }
@@ -495,62 +590,72 @@ Transaction deleteUser(User& currentUser)  // Transaction code: 2
 /// </summary>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
-Transaction buyGame(User& currentUser) // Transaction code: 3
+Transaction buyGame(User &currentUser) // Transaction code: 3
 {
     string gameName, seller, log;
     bool validGame = true;
     bool validSeller = false;
 
-    do {
-        if (validGame == true) {
+    do
+    {
+        if (validGame == true)
+        {
             cout << "Please enter the name of the game you would like to buy: ";
-        }        
+        }
         cin.clear();
         std::cin.ignore(100, '\n');
         std::getline(std::cin, gameName);
 
         // Check if gameName is in GameCollection.txt
         validGame = isValidGame(gameName);
-        if (!validGame) {
+        if (!validGame)
+        {
             cout << gameName + " is not available. Please enter another game to purchase: ";
         }
-        else {
+        else
+        {
             validGame = true;
         }
 
         // Check if the current user has the game in their collection
         bool alreadyInCollection = isInCollection(gameName, currentUser);
-        if (alreadyInCollection) {
+        if (alreadyInCollection)
+        {
             validGame = false;
             cout << "Error: " + gameName + " is already in your collection. Please choose another game to purchase:";
         }
 
         // Check if the current user has sufficient funds to buy the game
         float gamePrice = stof(getGamePrice(gameName));
-        if (gamePrice > getUserBalance(currentUser.name)) {
+        if (gamePrice > getUserBalance(currentUser.name))
+        {
             validGame = false;
             cout << "Error: Do not have sufficient credit to buy " << gameName << ". Please choose another game to purchase: ";
         }
 
         // Check if current user is the seller of the game
-        if (getSellerForGame(gameName) == currentUser.name) {
+        if (getSellerForGame(gameName) == currentUser.name)
+        {
             validGame = false;
             cout << "Error: Cannot buy your own game.  Please choose another game to purchase: ";
         }
 
     } while (!validGame);
 
-    while (!validSeller) {
+    while (!validSeller)
+    {
         cout << "Please enter the seller of " + gameName + ": ";
         cin >> seller;
 
         string storedSeller = getSellerForGame(gameName);
 
         // Check if the correct seller is input
-        if (storedSeller == seller) {
+        if (storedSeller == seller)
+        {
             validSeller = true;
         }
-        else {
+        else
+        {
             cout << "Invalid seller. ";
         }
     }
@@ -558,20 +663,20 @@ Transaction buyGame(User& currentUser) // Transaction code: 3
     // Add purchase to GameCollection.txt
     logGameCollection(gameName, currentUser.name);
     cout << "Purchase successful! Transferring the credit value of " + gameName + " from you to the seller, " + seller + ". You can now find " + gameName + " in your collection!" << endl;
-   
+
     // Need to pass a game to our transaction V
     Transaction buyGameTransaction("buy", currentUser);
     return buyGameTransaction;
 };
 /// <summary>
-/// 
+///
 /// </summary>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
-Transaction sellGame(User& currentUser) // Transaction code: 4
+Transaction sellGame(User &currentUser) // Transaction code: 4
 {
-    string gameName;    // Temporary string to store the name of the game
-    float gamePrice;    // Better as an int, then parse and validate input.
+    string gameName; // Temporary string to store the name of the game
+    float gamePrice; // Better as an int, then parse and validate input.
     string priceString;
     string priceString_whole;
     string priceString_decimals;
@@ -584,16 +689,17 @@ Transaction sellGame(User& currentUser) // Transaction code: 4
     // Check AvailableGames file -> Must be a unique Name
     //
     // No further transactions can be accepted on the new game until the next session
-    // 
+    //
     //  One option: Tag game as not for sale: at end of availablegamesfile
     //              -> check for that tag in the buygame() function
     //              -> Logging out removes all tags from the availablegamesfile
-    // 
-    // 
+    //
+    //
     //
     cin >> gameName;
     cout << "Enter the game's price: ";
-    while(priceBool){
+    while (priceBool)
+    {
         // TO-DO:: Input validation
         // while loop -> iterate until valid
         // Price Max: $999.99, Min: 0.
@@ -601,23 +707,29 @@ Transaction sellGame(User& currentUser) // Transaction code: 4
         cin >> priceString;
         // check if input has letters
         string::size_type pos = priceString.find('.');
-        if(regex_match(priceString,regex(R"((?:^|\s)([+-]?[[:digit:]]+(?:\.[[:digit:]]+)?)(?=$|\s))"))){
-            if (pos != string::npos){
-                priceString_whole = priceString.substr(0,pos);
-                priceString_decimals = priceString.substr(priceString_whole.length(),10);
+        if (regex_match(priceString, regex(R"((?:^|\s)([+-]?[[:digit:]]+(?:\.[[:digit:]]+)?)(?=$|\s))")))
+        {
+            if (pos != string::npos)
+            {
+                priceString_whole = priceString.substr(0, pos);
+                priceString_decimals = priceString.substr(priceString_whole.length(), 10);
             }
-            else{
+            else
+            {
                 priceString_whole = priceString;
             }
             gamePrice = 0.0 + stof(priceString_whole) + stof(priceString_decimals);
             priceBool = false;
         }
-        else{ cout << "Error! Input must be a number. (e.g. 10, 10.00, 1.0) \n"; }
+        else
+        {
+            cout << "Error! Input must be a number. (e.g. 10, 10.00, 1.0) \n";
+        }
         // check if input is greater than 999.99
         // check if input has more than 2 decimal points
     }
-    //TO-DO:: Input Validation
-    // cin >> gamePrice;
+    // TO-DO:: Input Validation
+    //  cin >> gamePrice;
 
     Game gameToSell(currentUser, gameName, gamePrice);
 
@@ -633,58 +745,170 @@ Transaction sellGame(User& currentUser) // Transaction code: 4
     availableGamesFile << "\nEND";
     availableGamesFile.close();
     */
+
     // Need to pass a game to our transaction V
     Transaction sellGameTransaction("sell", currentUser, gameToSell);
     return sellGameTransaction;
 };
 /// <summary>
-/// 
+///
 /// </summary>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
-Transaction refundGame(User& currentUser) // Transaction code: 5
+Transaction refundGame(User &currentUser) // Transaction code: 5
 {
-    string buyer, seller, game, amount, log;
-    ostringstream oss;
-    cout << "Please enter the buyer's username (the recipient of the refund): ";
-    cin >> buyer;
-    cout << "Please enter the seller's username: ";
-    cin >> seller;
-    cout << "Please enter the name of the game you would like to return: ";
-    cin.ignore(1000, '\n');
-    getline(cin, game);
-    cout << "game is: " + game << endl;
+    bool validBuyer = true;
+    bool validSeller = true, validGame = true, validAmount = true, proceedFlag = true;
+    string buyer, seller, game, amount, log, proceed;
+    do
+    {
+        if (validBuyer == true)
+        {
+            cout << "Please enter the buyer's username (the recipient of the refund): ";
+        }
 
-    // Remove game from GameCollection.txt
-    removeGame(buyer, game);
+        cin >> buyer;
+        // Checks if buyer is in CurrentAccounts.txt
+        validBuyer = isValidUser(buyer);
+        if (!validBuyer)
+        {
+            cout << "Error: " << buyer << " not found. Please enter a valid user: ";
+        }
+    } while (!validBuyer);
 
-    cout << "Please enter the amount of credit to transfer to the buyer account: ";
-    cin >> amount;
+    User buyerUser = User(buyer, getUserType(buyer), getUserBalance(buyer));
 
-    // Update CurrentUserAccounts.txt
-    float buyerBalance = getUserBalance(buyer) + stof(amount);
-    float sellerBalance = getUserBalance(seller) - stof(amount);
-    updateUserBalance(buyer, buyerBalance);
-    updateUserBalance(seller, sellerBalance);
+    do
+    {
+        if (validSeller)
+        {
+            cout << "Please enter the seller's username: ";
+        }
+        cin >> seller;
+        validSeller = isValidUser(seller);
+        if (!validSeller)
+        {
+            cout << "Error: " << seller << " not found. Please enter a valid user: ";
+        }
+    } while (!validSeller);
 
-    //cout << "buyer balance: " + to_string(buyerBalance) << endl;
-    //cout << "seller balance: " + to_string(sellerBalance) << endl;
+    // WHERE TO BRING USER IF NOT VALID GAME? KEEP ASKING FOR GAME NAME OR GO BACK TO ASKING FOR BUYER NAME???
+    do
+    {
+        if (validGame)
+        {
+            cout << "Please enter the name of the game you would like to return: ";
+        }
+        cin.ignore(1000, '\n');
+        getline(cin, game);
+
+        validGame = isValidGame(game);
+        // Buyer doesn’t have the specified game in their game collection
+        bool inCollection = isInCollection(game, buyerUser);
+        if (!inCollection)
+        {
+            validGame = false;
+            cout << "Error: " << buyer << " does not have " << game << " in their game collection. ";
+        }
+        // Buyer did not buy game from the seller account specified
+        string storedSeller = getSellerForGame(game);
+        if ((storedSeller != seller) || !inCollection)
+        {
+            validGame = false;
+            cout << "Error: " << buyer << " did not buy " << game << "from" << seller + ". ";
+        }
+
+        // Game is not a part of AvailableGames.txt
+        if (!validGame)
+        {
+            cout << "Please enter a valid game to refund:";
+        }
+    } while (!validGame);
+
+    do
+    {
+        if (validAmount)
+        {
+            cout << "Please enter the amount of credit to transfer to the buyer account: ";
+        }
+        cin >> amount;
+
+        // Read AvailableGames.txt to find the amount that the game was originally bought for
+        // Need to also check DailyTransaction.txt? What if it was bought on sale???
+        string price = getGamePrice(game);
+
+        // Compare the storedAmount value with amount input by user. If not equivalent, display error message
+        if (stod(price) != stod(amount))
+        {
+            cout << "Error: Credit value inconsistent with the value the game was bought for. Please enter the credit value of the game: ";
+            validAmount = false;
+        }
+        else
+        {
+            validAmount = true;
+        }
+
+    } while (!validAmount);
+    // Check buyer's credit balance. If max or will surpass max after refund, warn user
+    float userBalance = getUserBalance(buyer);
+    if (userBalance >= 999999.99)
+    {
+        cout << "Warning: " << buyer << " has the maximum amount of credits possible (999, 999) and cannot add more to their balance. Do you still want a refund (y/N)? ";
+        proceedFlag = shouldProceed();
+    }
+    else if (userBalance + stof(amount) > 999999.99)
+    {
+        cout << "Warning: If refund is added, " << buyer << " will exceed the maximum amount of credits possible (999, 999). Cannot add more to their balance after max is reached. Do you still want a refund (y/N)? ";
+        proceedFlag = shouldProceed();
+    }
+
+    if (proceedFlag == true)
+    {
+        // Check if seller has the sufficient funds to refund the buyer
+        float sellerBalance = getUserBalance(seller);
+        if ((sellerBalance < stod(amount)))
+        {
+            cout << "Error: Seller does not have the neccessary amount of available credits to fully refund the purchase." << endl;
+            cout << "Terminating refund transaction." << endl;
+        }
+        else
+        {
+            // Remove game from GameCollection.txt
+            removeGame(buyer, game);
+
+            // Update CurrentUserAccounts.txt
+            double buyerBalance = getUserBalance(buyer) + stod(amount);
+            // Ensure does not exceed maximum of 999 999
+            if (buyerBalance > 999999.99)
+            {
+                buyerBalance = 999999.99;
+            }
+            double sellerBalance = getUserBalance(seller) - stod(amount);
+            updateUserBalance(buyer, buyerBalance);
+            updateUserBalance(seller, sellerBalance);
+        }
+    }
+    else
+    {
+        // Wording - is terminating the right word?
+        cout << "Terminating refund transaction." << endl;
+    }
 
     Transaction refundGameTransaction("refund", currentUser);
     return refundGameTransaction;
 };
 /// <summary>
-/// 
+///
 /// </summary>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
-Transaction addCredit(User& currentUser) // Transaction code: 6
+Transaction addCredit(User &currentUser) // Transaction code: 6
 {
     string username, amount, userType, log;
     //ostringstream oss;
     if (currentUser.type == "AA")
     {
-        cout << "Which user would you like to add credit to?";
+        cout << "Which user would you like to add credit to? ";
         cin >> username;
         cout << "How much credit would you like to add to " + username + "'s account?";
         cin >> amount;
@@ -697,7 +921,7 @@ Transaction addCredit(User& currentUser) // Transaction code: 6
         cin >> amount;
         userType = getUserType(username);
     }
-    float userBalance = getUserBalance(username) + stof(amount);
+    double userBalance = getUserBalance(username) + stod(amount);
     updateUserBalance(username, userBalance);
     Transaction addCreditTransaction("addcredit", currentUser);
     return addCreditTransaction;
@@ -706,50 +930,58 @@ Transaction addCredit(User& currentUser) // Transaction code: 6
 /// <summary>
 /// Prints the list of users and their information in the system
 /// </summary>
-void listUsers() {
+void listUsers()
+{
     ifstream accountsFile("CurrentUserAccounts.txt");
     string accounts;
     cout << "\nUsername    | Type | Balance\n";
     cout << "============================\n";
-    while (getline (accountsFile, accounts)) {
-            cout << accounts << "\n";
+    while (getline(accountsFile, accounts))
+    {
+        cout << accounts << "\n";
     }
 };
 
 /// <summary>
 /// Prints the list of games and their information in the system
 /// </summary>
-void listGames() {
+void listGames()
+{
     ifstream gamesFile("AvailableGames.txt");
     string games;
     cout << "\nGame Name                | Seller         | Price\n";
     cout << "=================================================\n";
-    while (getline (gamesFile, games)) {
-            cout << games << "\n";
+    while (getline(gamesFile, games))
+    {
+        cout << games << "\n";
     }
-};    
+};
 #pragma endregion "Transaction Functions"
 
 /// <summary>
 /// Calls a Transaction function corresponding to a valid string input.
-/// Builds a vector of Transactions for writing to the DailyTransactions.txt file. 
+/// Builds a vector of Transactions for writing to the DailyTransactions.txt file.
 /// This function is recursively called until a "Logout()" transaction is processed.
 /// </summary>
 /// <param name="transaction">: A string input of the transaction a user would like to perform</param>
 /// <param name="currentUser">: A reference to the User object representing the logged-in User</param>
 /// <param name="dailyTransactions">: Reference vector to list transactions the logged-in User has performed.</param>
-void inputLogic(string transactionName, User& currentUser, vector<Transaction>& dailyTransactions) {
+void inputLogic(string transactionName, User &currentUser, vector<Transaction> &dailyTransactions)
+{
     string messageString = "";
 
     // Iterate over the input character array to change each to lowercase.
     for (int i = 0; i < transactionName.length(); i++)
-        transactionName[i] = tolower(transactionName[i]);   // tolower() sets input to lowercase
+        transactionName[i] = tolower(transactionName[i]); // tolower() sets input to lowercase
 
     // Valid user types: AA FS, BS, SS (admin, fullstandard, buystandard, sellstandard)
 
-    if (transactionName == "list") { listGames(); } // All users can list games
+    if (transactionName == "list")
+    {
+        listGames();
+    } // All users can list games
     // TO-DO::
-    // Clarify requirements. Does addcredit() make sense for sellstandard accounts, 
+    // Clarify requirements. Does addcredit() make sense for sellstandard accounts,
     //                       which cannot make purchases to add credit?...
     else if (transactionName == "addcredit")
     {
@@ -790,39 +1022,44 @@ void inputLogic(string transactionName, User& currentUser, vector<Transaction>& 
         dailyTransactions.push_back(buyGame(currentUser));
     }
 
-    else { messageString = transactionName + " is not a valid transaction.\n"; }
+    else
+    {
+        messageString = transactionName + " is not a valid transaction.\n";
+    }
 
     messageString += "Input another transaction: ";
     cout << messageString;
     cin >> transactionName;
-    inputLogic(transactionName, currentUser, dailyTransactions);   // Recur until Logout()
+    inputLogic(transactionName, currentUser, dailyTransactions); // Recur until Logout()
 };
 
-int main(){
-    //TO-DO::
-    //Implement the useless "login" transaction that's listed in the requirements
+int main()
+{
+    // TO-DO::
+    // Implement the useless "login" transaction that's listed in the requirements
 
-    string userInput;   // Holds the text a user will input while logging into the system.
-    vector<Transaction> dailyTransactions;  // Stores the transactions performed by a user while logged in
+    string userInput;                      // Holds the text a user will input while logging into the system.
+    vector<Transaction> dailyTransactions; // Stores the transactions performed by a user while logged in
 
     // Prompt for username to log in.
-    cout << "Welcome to Vapour!\nPlease enter your Username to log in : ";
+    cout << "Welcome to Vapour!\nPlease enter your Username to log in: ";
     cin >> userInput;
 
     // Wait for valid input before proceding
-    while (!isValidUser(userInput)) {
+    while (!isValidUser(userInput))
+    {
         cout << userInput + " is not a valid username.\nPlease enter a valid username: ";
         cin >> userInput;
     }
 
     // TO-DO:: Read AvailableGames File
 
+
     // Create a User object with the provided, valid input, and corresponding user data.
     User currentUser = User(userInput, getUserType(userInput), getUserBalance(userInput));
 
     // The user is now logged in. Prompt to enter a transaction.
     cout << "Welcome " + currentUser.name + "! Please enter a transaction: ";
-
     cin >> userInput;
 
     // The user can now enter transaction codes and complete transactions

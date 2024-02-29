@@ -1,5 +1,0 @@
-admin           AA 000050.00
-fullstandard    FS 000000000
-buystandard     BS 000000000
-sellstandard    SS 000000000
-JohnDoe         BS 000000000
