@@ -168,7 +168,6 @@ string getSellerForGame(string gameName)
     }
 
     gamesFile.close();
-    cout << "Returning empty string" << endl;
     return ""; // Return an empty string if the game is not found
 }
 
@@ -522,38 +521,17 @@ bool shouldWarnUserBalance(const string &username, const string &amount)
 }
 
 /// <summary>
-/// Checks if seller has enough credits to refund buyer.
+/// Checks if user has enough credits.
 /// </summary>
-/// <param name="seller">The username of the seller.</param>
+/// <param name="seller">The username of the user.</param>
 /// <param name="amount">The amount to be added.</param>
-/// <returns> Boolean value indicating if the balance of the seller is greater than the amount.</returns>
-bool isSellerBalanceSufficient(const string &seller, const string &amount)
+/// <returns> Boolean value indicating if the balance of the user is greater than the amount.</returns>
+bool isUserBalanceSufficient(const string &user, const string &amount)
 {
-    float sellerBalance = getUserBalance(seller);
+    float sellerBalance = getUserBalance(user);
     return (sellerBalance >= stod(amount));
 }
 
-/// <summary>
-/// Processes refund transaction. Removes game from GameCollection.txt and update user balances.
-/// </summary>
-/// <param name="buyer">The username of the buyer.</param>
-/// <param name="seller">The username of the seller.</param>
-/// <param name="game">The name of the game to be refunded.</param>
-/// <param name="amount">The amount to be added.</param>
-void processRefund(const string &buyer, const string &seller, const string &game, const string &amount)
-{
-    removeGame(buyer, game);
-
-    double buyerBalance = getUserBalance(buyer) + stod(amount);
-    if (buyerBalance > 999999.99)
-    {
-        buyerBalance = 999999.99;
-    }
-    double sellerBalance = getUserBalance(seller) - stod(amount);
-
-    updateUserBalance(buyer, buyerBalance);
-    updateUserBalance(seller, sellerBalance);
-}
 
 #pragma region "Transaction Functions"
 
@@ -759,46 +737,33 @@ Transaction buyGame(User &currentUser) // Transaction code: 3
     bool validGame = true;
     bool validSeller = false;
 
-    do
-    {
-        if (validGame == true)
-        {
-            cout << "Please enter the name of the game you would like to buy: ";
-        }
-        cin.clear();
-        std::cin.ignore(100, '\n');
+    cout << "Please enter the name of the game you would like to buy: ";
+    std::cin.clear();
+    std::cin.ignore(100, '\n');
+    do {
+        
         std::getline(std::cin, gameName);
-
+       
         // Check if gameName is in GameCollection.txt
         validGame = isValidGame(gameName);
-        if (!validGame)
-        {
+        if (!validGame) {
             cout << gameName + " is not available. Please enter another game to purchase: ";
-        }
-        else
-        {
-            validGame = true;
         }
 
         // Check if the current user has the game in their collection
-        bool alreadyInCollection = isInCollection(gameName, currentUser);
-        if (alreadyInCollection)
-        {
+        if (isInCollection(gameName, currentUser)) {
             validGame = false;
-            cout << "Error: " + gameName + " is already in your collection. Please choose another game to purchase:";
+            cout << "Error: " + gameName + " is already in your collection. Please choose another game to purchase: ";
         }
 
         // Check if the current user has sufficient funds to buy the game
-        float gamePrice = stof(getGamePrice(gameName));
-        if (gamePrice > getUserBalance(currentUser.name))
-        {
+        else if (!isUserBalanceSufficient(currentUser.name, getGamePrice(gameName))) {
             validGame = false;
             cout << "Error: Do not have sufficient credit to buy " << gameName << ". Please choose another game to purchase: ";
         }
 
         // Check if current user is the seller of the game
-        if (getSellerForGame(gameName) == currentUser.name)
-        {
+        else if (getSellerForGame(gameName) == currentUser.name) {
             validGame = false;
             cout << "Error: Cannot buy your own game.  Please choose another game to purchase: ";
         }
@@ -813,15 +778,19 @@ Transaction buyGame(User &currentUser) // Transaction code: 3
         string storedSeller = getSellerForGame(gameName);
 
         // Check if the correct seller is input
-        if (storedSeller == seller)
-        {
+        if (storedSeller == seller) {
             validSeller = true;
         }
-        else
-        {
+        else {
             cout << "Invalid seller. ";
         }
     }
+
+    double buyerBalance = currentUser.credit - stod(getGamePrice(gameName));
+    double sellerBalance = getUserBalance(seller) + stod(getGamePrice(gameName));
+    // Update user balances for buyer and seller
+    updateUserBalance(currentUser.name, buyerBalance);
+    updateUserBalance(seller, sellerBalance);
 
     // Add purchase to GameCollection.txt
     logGameCollection(gameName, currentUser.name);
@@ -921,32 +890,43 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
 Transaction refundGame(User &currentUser) // Transaction code: 5
 {
     bool proceedFlag, validBuyer;
+    // Validate buyer account
     string buyer = getValidUsernameInput("Please enter the buyer's username (the recipient of the refund): ");
-
     User buyerUser = User(buyer, getUserType(buyer), getUserBalance(buyer));
 
+    // Validate seller account
     string seller = getValidUsernameInput("Please enter the seller's username: ");
-    string game = getValidGameName(buyer, seller);
 
+    // Validate game and game price
+    string game = getValidGameName(buyer, seller);
     string amount = getValidRefundAmount(game);
 
-    if (shouldWarnUserBalance(buyer, amount))
-    {
+    // Check if user needs to be warned about reaching the maximum balance possible (999 999)
+    if (shouldWarnUserBalance(buyer, amount)) {
         proceedFlag = shouldProceed();
-        if (!proceedFlag)
-        {
+        if (!proceedFlag) {
             cout << "Terminating refund transaction..." << endl;
             // NEED TO RETURN TRANSACTION?
             return Transaction("refund", currentUser);
         }
     }
 
-    if (isSellerBalanceSufficient(seller, amount))
-    {
-        processRefund(buyer, seller, game, amount);
+    // Check if seller has sufficient credits to refund buyer
+    if (isUserBalanceSufficient(seller, amount)) {
+        removeGame(buyer, game);
+
+        double buyerBalance = getUserBalance(buyer) + stod(amount);
+        // Ensure balance does not exceed maximum
+        if (buyerBalance > 999999.99) {
+            buyerBalance = 999999.99;
+        }
+        double sellerBalance = getUserBalance(seller) - stod(amount);
+
+        // Update buyer and seller balance
+        updateUserBalance(buyer, buyerBalance);
+        updateUserBalance(seller, sellerBalance);
     }
-    else
-    {
+    else {
         cout << "Error: Seller does not have the necessary amount of available credits to fully refund the purchase." << endl;
         cout << "Terminating refund transaction." << endl;
     }
