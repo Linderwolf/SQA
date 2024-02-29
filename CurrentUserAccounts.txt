@@ -1,6 +1,6 @@
 admin           AA 000000.00
 fullstandard    FS 000100.00
-buystandard     BS 999999.00
+buystandard     BS 001000.00
 sellstandard    SS 000000.00
 JohnDoe         BS 000000.00
 END
