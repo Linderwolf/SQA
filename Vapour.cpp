@@ -436,6 +436,11 @@ string getValidGameName(const string &buyer, const string &seller)
         cin.ignore(1000, '\n');
         getline(cin, game);
 
+        if (game == "exit")
+        {
+            break;
+        }
+
         validGame = isValidGame(game);
 
         if (!validGame)
@@ -452,6 +457,7 @@ string getValidGameName(const string &buyer, const string &seller)
             // Buyer did not buy the game from the specified seller
             string storedSeller = getSellerForGame(game);
             // KEEP ASKING FOR GAME NAME OR GO BACK TO ASKING FOR BUYER NAME???
+            // Repeatedly asking for a game is fine. I've added a quick breakout
             if ((storedSeller != seller))
             {
                 validGame = false;
@@ -934,7 +940,10 @@ Transaction refundGame(User &currentUser) // Transaction code: 5
     bool proceedFlag, validBuyer;
     // Validate buyer account
     string buyer = getValidUsernameInput("Please enter the buyer's username (the recipient of the refund): ");
-    User buyerUser = User(buyer, getUserType(buyer), getUserBalance(buyer));
+    User buyerUser;
+    User sellerUser;
+    Game soldGame;
+    //User buyerUser = User(buyer, getUserType(buyer), getUserBalance(buyer));  // This is never used...
 
     // Validate seller account
     string seller = getValidUsernameInput("Please enter the seller's username: ");
@@ -966,13 +975,18 @@ Transaction refundGame(User &currentUser) // Transaction code: 5
         // Update buyer and seller balance
         updateUserBalance(buyer, buyerBalance);
         updateUserBalance(seller, sellerBalance);
+
+        // Update Seller/Buyer objects to represent their new balance
+        User sellerUser = User(seller, getUserType(seller), getUserBalance(seller));
+        buyerUser = User(buyer, getUserType(buyer), getUserBalance(buyer));
+        soldGame = Game(sellerUser, game, stof(amount));
     }
     else {
         cout << "Error: Seller does not have the necessary amount of available credits to fully refund the purchase." << endl;
         cout << "Terminating refund transaction." << endl;
     }
 
-    Transaction refundGameTransaction("refund", currentUser);
+    Transaction refundGameTransaction("refund", currentUser, soldGame, buyerUser);
     return refundGameTransaction;
 };
 // TO-DO:: Implement initial credit as a parameter?

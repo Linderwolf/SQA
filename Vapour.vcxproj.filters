@@ -40,6 +40,9 @@
     <Text Include="CurrentUserAccounts.txt">
       <Filter>Log Files</Filter>
     </Text>
+    <Text Include="GameCollection.txt">
+      <Filter>Log Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="AvailableGames.txt">
