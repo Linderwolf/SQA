@@ -582,6 +582,10 @@ void logout(vector<Transaction> &transactions, User &currentUser)
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
 Transaction createUser(User &currentUser) // Transaction code: 1
 {
+
+    // TO-DO::
+    // Ensure username cannot be "logout" or "exit"
+
     string newUsername;
     bool nameBool = true;
     string newUserType;
@@ -936,12 +940,14 @@ Transaction refundGame(User &currentUser) // Transaction code: 5
     Transaction refundGameTransaction("refund", currentUser);
     return refundGameTransaction;
 };
+// TO-DO:: Implement initial credit as a parameter?
+
 /// <summary>
 ///
 /// </summary>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
-Transaction addCredit(User &currentUser, float initialCredit) // Transaction code: 6
+Transaction addCredit(User &currentUser) // Transaction code: 6
 {
     bool validAcc = true;
     string username, amount, userType, log;
@@ -1099,12 +1105,21 @@ int main()
     // Prompt for username to log in.
     cout << "Welcome to Vapour!\nPlease enter your Username to log in: ";
     cin >> userInput;
+    if (userInput == "exit")
+    {
+        return 0;
+    }
+
 
     // Wait for valid input before proceding
     while (!isValidUser(userInput))
     {
         cout << userInput + " is not a valid username.\nPlease enter a valid username: ";
         cin >> userInput;
+        if (userInput == "exit")
+        {
+            return 0;
+        }
     }
 
     // TO-DO:: Read AvailableGames File
