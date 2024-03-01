@@ -555,13 +555,16 @@ void logout(vector<Transaction> &transactions, User &currentUser)
     dailyTransactionFile.open("DailyTransactions.txt", ios::app);
     for (int i = 0; i < transactions.size(); i++)
     {
-        dailyTransactionFile << transactions[i].toString(transactions[i]) << "\n";
-
-        if (transactions[i].name == "sell")
+        if (transactions[i].name != "terminated")
         {
-            // TO-DO::
-            //
-            // Write the game object to AvailableGames under the proper formatting.
+            dailyTransactionFile << transactions[i].toString(transactions[i]) << "\n";
+
+            if (transactions[i].name == "sell")
+            {
+                // TO-DO::
+                //
+                // Write the game object to AvailableGames under the proper formatting.
+            }
         }
     }
     dailyTransactionFile << "END\n";
@@ -906,8 +909,7 @@ Transaction refundGame(User &currentUser) // Transaction code: 5
         proceedFlag = shouldProceed();
         if (!proceedFlag) {
             cout << "Terminating refund transaction..." << endl;
-            // NEED TO RETURN TRANSACTION?
-            return Transaction("refund", currentUser);
+            return Transaction("terminated", currentUser);
         }
     }
 
@@ -939,7 +941,7 @@ Transaction refundGame(User &currentUser) // Transaction code: 5
 /// </summary>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
-Transaction addCredit(User &currentUser) // Transaction code: 6
+Transaction addCredit(User &currentUser, float initialCredit) // Transaction code: 6
 {
     bool validAcc = true;
     string username, amount, userType, log;
@@ -953,17 +955,27 @@ Transaction addCredit(User &currentUser) // Transaction code: 6
         } while (!validAcc);
         
         cout << "How much credit would you like to add to " + username + "'s account?";
+        
+        // TO-DO::
+        //  Ensure that no more than $1000 is added to a user's accounbt in one session
+        //
+        //  Separate function for validation
+
         cin >> amount;
+
         userType = currentUser.type;
     }
     else
     {
         username = currentUser.name;
         cout << "How much credit would you like to add to your account?" << endl;
+        
+        // Validation here too
+
         cin >> amount;
         userType = getUserType(username);
     }
-    // TODO: Check if the userBalance will exceed 999 999 and if so, print out warning
+    // TO-DO:: Check if the userBalance will exceed 999 999 and if so, print out warning
     double userBalance = getUserBalance(username) + stod(amount);
     updateUserBalance(username, userBalance);
     Transaction addCreditTransaction("addcredit", currentUser);

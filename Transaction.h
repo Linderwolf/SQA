@@ -77,14 +77,14 @@ class Transaction
 		/// <param name="name">The name of the transaction</param>
 		/// <returns>The corresponding numeric identifier for that transaction</returns>
 		int getTransactionCode(string transactionName) {
-			if (transactionName == "endofsession")   { return 0; }
+			if (transactionName == "endofsession" || transactionName == "logout")   { return 0; }
 			if (transactionName == "create")		 { return 1; }
 			if (transactionName == "delete")		 { return 2; }
 			if (transactionName == "buy")			 { return 3; }
 			if (transactionName == "sell")			 { return 4; }
 			if (transactionName == "refund")		 { return 5; }
 			if (transactionName == "addcredit")	     { return 6; }
-			else { return 99; }	// ERROR - else path should never be reached
+			else { return 99; }	// ERROR, or cancelled transaction
 		}
 
 		/// <summary>
