@@ -2,5 +2,8 @@ Stardew Valley             buystandard
 Stardew Valley             admin
 Stardew Valley             fullstandard
 Tetris Effect              buystandard  
+Terraria                   buystandard     
 Tetris Effect              fullstandard    
+Terraria                   JaneDoe
+Tetris Effect              JohnDoe
 END

@@ -1,12 +1,6 @@
-Welcome! 
-Please enter your username:
-Username accepted! How may we help you today? :
+Welcome to Vapour!
+Please enter your username to log in: 
+Welcome JohnDoe! Please enter a transaction: 
 Please enter the name of the game you would like to buy:
-Reading the Available Games File...
-Please enter the name of the seller of Game1:
-Reading the Available Games File...
-"Game1" from seller "Nintendo" found.
-Reading Game Collection file...
-Game1 not currently in collection.
-Reading Current Users Account...
-Error: Insufficient credit funds to buy Game1. Please add credit to your account before trying again.
+Please enter the seller of Valheim: 
+Error: Do not have sufficient credit to buy Valheim. Please choose another game to purchase: 
