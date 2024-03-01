@@ -1,8 +1,6 @@
-Welcome! 
-Please enter your username:
-Username accepted! How may we help you today? :
-Please enter the buyer's username (the recipient of the refund):
-Reading Current User Accounts File...
+Welcome to Vapour!
+Please enter your username to log in: 
+Welcome admin! Please enter a transaction: 
+Please enter the buyer's username (the recipient of the refund): 
 Please enter the seller's username:
-Reading Current User Accounts File...
-Error: seller3 not found. Please enter a valid seller.
+Error: seller3 not found. Please enter a valid user.
