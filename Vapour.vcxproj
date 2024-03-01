@@ -139,7 +139,6 @@
   <ItemGroup>
     <Text Include="CurrentUserAccounts.txt" />
     <Text Include="DailyTransactions.txt" />
-    <Text Include="GameCollection.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AvailableGames.txt" />

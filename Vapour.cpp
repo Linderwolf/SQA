@@ -550,6 +550,8 @@ void logout(vector<Transaction> &transactions, User &currentUser)
 
     // TO-DO::
     // Make sure the END line from previous write is deleted
+    
+
     // Write to the DailyTransactions file
     ofstream dailyTransactionFile;
     dailyTransactionFile.open("DailyTransactions.txt", ios::app);
@@ -567,10 +569,10 @@ void logout(vector<Transaction> &transactions, User &currentUser)
             }
         }
     }
-    dailyTransactionFile << "END\n";
+    dailyTransactionFile << "END";
     dailyTransactionFile.close();
 
-    cout << "Thank you for using Vapour. \nGoodbye.";
+    cout << "Thank you for using Vapour.\nGoodbye.";
 
     exit(0);
 };
@@ -593,7 +595,7 @@ Transaction createUser(User &currentUser) // Transaction code: 1
     string whitespace;
     int whitespaceLength;
 
-    cout << "Creating new user.. Please input their username: \n";
+    cout << "Creating new user. Please input their username:\n";
     // Username input check
     while (nameBool)
     {
@@ -686,7 +688,7 @@ Transaction createUser(User &currentUser) // Transaction code: 1
 /// </summary>
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
-Transaction deleteUser(User &currentUser) // Transaction code: 2
+Transaction deleteUser(User& currentUser) // Transaction code: 2
 {
     bool isValidInput = false;
     string userInput;
@@ -708,9 +710,11 @@ Transaction deleteUser(User &currentUser) // Transaction code: 2
         }
         if (!isValidInput)
         {
-            cout << "Please enter the name of a valid user to delete:";
+            cout << "\nPlease enter the name of a valid user to delete: ";
         }
     }
+
+    cout << "\nTest: User to delete should be: " << userInput << "\n";
 
     string line;
     ifstream usersFile;
@@ -723,11 +727,42 @@ Transaction deleteUser(User &currentUser) // Transaction code: 2
             temp << line << endl;
         }
     }
-    remove("CurrentUserAccounts.txt");
-    rename("temp.txt", "CurrentUserAccounts.txt");
 
     usersFile.close();
     temp.close();
+
+    remove("CurrentUserAccounts.txt");
+    rename("temp.txt", "CurrentUserAccounts.txt");
+
+    ifstream gamesFile;
+    gamesFile.open("GameCollection.txt");
+    ofstream temp2("temp.txt");
+    while (getline(gamesFile, line))
+    {
+        if (line != "END")
+        {
+            
+            if (line.substr(26, userInput.length()) != userInput)
+            {
+                temp2 << line << endl;
+                //cout << "Writing the following to temp file: " << line << endl;
+            }
+            else
+            {
+                //cout << userInput << " should be deleted\n";
+            }
+        }
+    }
+
+    // Close both files
+    gamesFile.close();
+    temp2.close();
+
+    // Remove GameCollection and replace it with the tempfile with specific user-deletions.
+    remove("GameCollection.txt");
+    rename("temp.txt", "GameCollection.txt");
+
+    cout << "Success! Games for sale on this account have been cancelled." << endl;
 
     Transaction deleteUserTransaction("delete", currentUser);
     return deleteUserTransaction;
