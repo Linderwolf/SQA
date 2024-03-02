@@ -1313,7 +1313,7 @@ int main()
     vector<Transaction> dailyTransactions; // Stores the transactions performed by a user while logged in
 
     // Prompt for username to log in.
-    cout << "Welcome to Vapour!\nPlease enter your Username to log in: ";
+    cout << "\nWelcome to Vapour!\nPlease enter your Username to log in: ";
     cin >> userInput;
     if (userInput == "exit")
     {
@@ -1339,7 +1339,7 @@ int main()
     User currentUser = User(userInput, getUserType(userInput), getUserBalance(userInput));
 
     // The user is now logged in. Prompt to enter a transaction.
-    cout << "Welcome " + currentUser.name + "! Please enter a transaction: ";
+    cout << "\nWelcome " + currentUser.name + "! Please enter a transaction: ";
     cin >> userInput;
 
     // The user can now enter transaction codes and complete transactions
