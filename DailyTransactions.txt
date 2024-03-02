@@ -1,4 +1,6 @@
 00 AA 0.000000
 END04 Doom admin admin 6.660000
 00 AA 0.000000
+END04 Doom admin admin 6.660000
+00 AA 0.000000
 END

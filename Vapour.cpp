@@ -894,7 +894,7 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     string priceString_decimals;
     bool nameBool;
     bool priceBool = true;
-    bool isFloat, priceInLimit;
+    bool isFloat = false, priceInLimit;
     float price;
     // If they don't enter a decimal, we append 00 before storing
     cout << "Creating new listing. Enter the game's title: ";
@@ -1041,7 +1041,7 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     }
 
 
-    Game gameToSell(currentUser, gameName, gamePrice);
+    Game gameToSell(currentUser, gameName, /*gamePrice*/ price);
 
     /*
     *   The below must be moved to logout()
