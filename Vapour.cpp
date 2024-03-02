@@ -926,7 +926,6 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     availableGamesFile.close();
     */
 
-    // Need to pass a game to our transaction V
     Transaction sellGameTransaction("sell", currentUser, gameToSell);
     return sellGameTransaction;
 };

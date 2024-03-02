@@ -1,5 +1,5 @@
-Stardew Valley            sellstandard    025.00
-Tetris Effect             sellstandard    020.00
-Valheim                   fullstandard    029.99
-Terraria                  fullstandard    019.99
+Stardew Valley             sellstandard    025.00
+Tetris Effect              sellstandard    020.00
+Valheim                    fullstandard    029.99
+Terraria                   fullstandard    019.99
 END
