@@ -830,7 +830,7 @@ Transaction buyGame(User &currentUser) // Transaction code: 3
         }
 
         // Check if the current user has the game in their collection
-        if (isInCollection(gameName, currentUser)) {
+        else if (isInCollection(gameName, currentUser)) {
             validGame = false;
             cout << "Error: " + gameName + " is already in your collection. Please choose another game to purchase: ";
         }
@@ -861,6 +861,7 @@ Transaction buyGame(User &currentUser) // Transaction code: 3
             validSeller = true;
         }
         else {
+            cout << "seller input: " << seller << " storedSeller: " << storedSeller << endl;
             cout << "Invalid seller. ";
         }
     }
@@ -1038,7 +1039,7 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
         // check if input is greater than 999.99
         // check if input has more than 2 decimal points
     }
-    
+
 
     Game gameToSell(currentUser, gameName, gamePrice);
 
