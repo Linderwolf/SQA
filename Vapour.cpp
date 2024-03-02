@@ -182,6 +182,37 @@ bool isValidGame(string gameName)
 }
 
 /// <summary>
+/// Checks if the game is currently in AvailableGames.txt.
+/// </summary>
+/// <param name="gameName">The name of the game that the current user is trying to put for sale.</param>
+/// <returns>boolean value indicating whether the game name is taken.</returns>
+bool inStore(string gameName)
+{
+    ifstream availableGamesFile("AvailableGames.txt");
+    string availableGames;
+
+    while (getline(availableGamesFile, availableGames))
+    {
+        string storedGame = availableGames.substr(0, 26);
+        storedGame.erase(storedGame.find_last_not_of(" ") + 1);
+
+        if (storedGame == "END")
+        {
+            availableGamesFile.close();
+            return false;
+        }
+
+        if (gameName == storedGame)
+        {
+            return true;
+        }
+    }
+
+    availableGamesFile.close();
+    return false;
+}
+
+/// <summary>
 /// Checks if the game is currently in the current user's game collection.
 /// </summary>
 /// <param name="gameName">The name of the game that the current user is trying to buy</param>
@@ -862,6 +893,8 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     string priceString_decimals;
     bool nameBool;
     bool priceBool = true;
+    bool isFloat, priceInLimit;
+    float price;
     // If they don't enter a decimal, we append 00 before storing
     cout << "Creating new listing. Enter the game's title: ";
     // TO-DO:: Input validation
@@ -876,47 +909,143 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     //
     //
     //
-    cin >> gameName;
+
+    // Check if unique, under 25 characters, not login or logout
+
+    // Read through AvailableGames.txt and ensure unique
+    bool validGameName;
+    std::cin.clear();
+    std::cin.ignore(100, '\n');
+    do
+    {
+        cin.clear();
+        getline(cin, gameName);
+        bool unique = !inStore(gameName);
+        bool length = (gameName.length() <= 25);
+        bool notCommand = (gameName != "login" && gameName != "logout");
+        if (!unique)
+        {
+            cout << "Error! Game name has already taken, please try again: ";
+            validGameName = false;
+        }
+        // Check the length of the name
+        else if (!length)
+        {
+            cout << "Error! Game name is longer than 25 characters, please enter a shorter name: ";
+            validGameName = false;
+        }
+        // Ensure it is not login or logout
+        else if (!notCommand)
+        {
+            cout << "Error: can not use those commands at this time. Please enter the game name: ";
+            validGameName = false;
+        }
+
+        if ((unique == true) && (length == true) && (notCommand == true))
+        {
+            validGameName = true;
+        }
+    } while (!validGameName);
+
     cout << "Enter the game's price: ";
+    std::cin.clear();
+
+    // Can get rid of this while loop
     while (priceBool)
     {
         // TO-DO:: Input validation
         // while loop -> iterate until valid
         // Price Max: $999.99, Min: 0.
         // formatting
-        cin >> priceString;
+        while (!isFloat)
+        {
+            getline(std::cin, priceString);
+            // cin >> priceString;
+            // cout << "priceString: |" << priceString << "|" << endl;
+
+            istringstream iss(priceString);
+            try
+            {
+                // Check if input string can be converted to a float
+                if (iss >> price)
+                {
+                    char remainingChar;
+                    // Check if beginning of the string has numbers but has other characters after
+                    if (iss >> remainingChar)
+                    {
+                        cerr << "Error! Input must be a number. (e.g. 10, 10.00, 1.0): ";
+                    }
+                    // Check if price amount is within the limits
+                    else if (price < 0 || price > 999.99)
+                    {
+                        std::cerr << "Error! Price must be between 0 and 999.99: ";
+                    }
+                    else
+                    {
+                        isFloat = true;
+                    }
+                }
+                else
+                {
+                    cout << "Error! Input must be a number. (e.g. 10, 10.00, 1.0): ";
+                }
+            }
+            catch (const std::invalid_argument &e)
+            {
+                cerr << e.what() << std::endl;
+            }
+        }
+
+        cout << "Entered price: " << price << endl;
+        break;
+        // Can convert to float
+        // if (stof(priceString)) {
+        //     cout << "Returns float of: " << stof(priceString) << endl;
+        // }
+        // // Can't convert to float
+        // else {
+        //     cout << "Can't convert to float" << endl;
+        // }
+
         // check if input has letters
-        string::size_type pos = priceString.find('.');
-        if (regex_match(priceString, regex(R"((?:^|\s)([+-]?[[:digit:]]+(?:\.[[:digit:]]+)?)(?=$|\s))")))
-        {
-            if (pos != string::npos)
-            {
-                priceString_whole = priceString.substr(0, pos);
-                priceString_decimals = priceString.substr(priceString_whole.length(), 10);
-            }
-            else
-            {
-                priceString_whole = priceString;
-            }
-            gamePrice = 0.0 + stof(priceString_whole) + stof(priceString_decimals);
-            priceBool = false;
-        }
-        else
-        {
-            cout << "Error! Input must be a number. (e.g. 10, 10.00, 1.0) \n";
-        }
+        // string::size_type pos = priceString.find('.');
+        // if (regex_match(priceString, regex(R"((?:^|\s)([+-]?[[:digit:]]+(?:\.[[:digit:]]+)?)(?=$|\s))")))
+        // {
+        //     cout << "Reached point 1" << endl;
+        //     if (pos != string::npos)
+        //     {
+        //         priceString_whole = priceString.substr(0, pos);
+        //         priceString_decimals = priceString.substr(priceString_whole.length(), 10);
+        //         cout << "Reached point 2" << endl;
+        //     }
+        //     else
+        //     {
+        //         priceString_whole = priceString;
+        //         float priceNoDec = 0.0 + stof(priceString_whole);
+        //         cout << priceNoDec << endl;
+        //         cout << "Reached point 3" << endl;
+        //     }
+
+        //     gamePrice = stof(priceString_whole) + stof(priceString_decimals);
+        //     priceBool = false;
+        //     cout << "Reached point 4" << endl;
+        // }
+        // else
+        // {
+        //     cout << "Error! Input must be a number. (e.g. 10, 10.00, 1.0) \n";
+        //     cout << "Reached point 5" << endl;
+        // }
         // check if input is greater than 999.99
         // check if input has more than 2 decimal points
     }
-    // TO-DO:: Input Validation
-    //  cin >> gamePrice;
+    
 
     Game gameToSell(currentUser, gameName, gamePrice);
 
     /*
     *   The below must be moved to logout()
-    * 
-    * 
+    *
+    *
     ofstream availableGamesFile;
     availableGamesFile.open("AvailableGames.txt", ios::app);
 
