@@ -365,6 +365,13 @@ void updateUserBalance(string username, double newBalance)
     ofstream tempFile("temp.txt");
     string line;
     string userType;
+
+    // Ensure balance does not exceed maximum
+    if (newBalance > 999999.99)
+    {
+        newBalance = 999999.99;
+    }
+
     while (getline(inputFile, line))
     {
         string storedUsername = line.substr(0, 15);       
@@ -398,8 +405,8 @@ void updateUserBalance(string username, double newBalance)
 bool shouldProceed()
 {
     string proceed;
-    bool proceedFlag;
-    cout << "Do you still want a refund (y/N)? ";
+    bool proceedFlag = false;
+    cout << "Do you still want to proceed (y/N)? ";
     while (true)
     {
         cin >> proceed;
@@ -487,10 +494,7 @@ string getValidGameName(const string &buyer, const string &seller)
         else {
             // Buyer did not buy the game from the specified seller
             string storedSeller = getSellerForGame(game);
-            // KEEP ASKING FOR GAME NAME OR GO BACK TO ASKING FOR BUYER NAME???
-            // Repeatedly asking for a game is fine. I've added a quick breakout
-            if ((storedSeller != seller))
-            {
+            if ((storedSeller != seller)) {
                 validGame = false;
                 cout << "Error: " << buyer << " did not buy " << game << " from seller, " << seller + "." << endl;
             }
@@ -501,6 +505,57 @@ string getValidGameName(const string &buyer, const string &seller)
 }
 
 /// <summary>
+/// Validates money input. Checks if string is a float and then converts it into one.
+/// Also ensures amount is within 0 and maxAmount.
+/// </summary>
+/// <param name="maxAmount">The maximum value the amount can be.</param>
+/// <param name="errorMessage">The error message to be displayed if it is not within the maximum set.</param>
+/// <returns> Float value of the validated amount.</returns>
+float getValidAmountInput(float maxAmount, string errorMessage)
+{
+    bool isFloat = false;
+    float price;
+    string priceString;
+    cin.clear();
+    while (!isFloat)
+    {
+        cin >> priceString;
+        istringstream iss(priceString);
+        try
+        {
+            // Check if input string can be converted to a float
+            if (iss >> price)
+            {
+                char remainingChar;
+                // Check if beginning of the string has numbers but has other characters after
+                if (iss >> remainingChar)
+                {
+                    cout << "Error! Input must be a number. (e.g. 10, 10.00, 1.0): ";
+                }
+                // Check if price amount is within the limits
+                else if (price < 0 || price > maxAmount)
+                {
+                    cout << errorMessage;
+                }
+                else
+                {
+                    isFloat = true;
+                }
+            }
+            else
+            {
+                cout << "Error! Input must be a number. (e.g. 10, 10.00, 1.0): ";
+            }
+        }
+        catch (const invalid_argument &e)
+        {
+            cerr << e.what() << endl;
+        }
+    }
+    return price;
+}
+
+/// <summary>
 /// Handles refund amount input from user. Checks if price entered by user and price
 /// stored in AvailableGames.txt are consistent.
 /// </summary>
@@ -508,29 +563,29 @@ string getValidGameName(const string &buyer, const string &seller)
 /// <returns> String containing the valid refund amount.</returns>
 string getValidRefundAmount(const string &game)
 {
-    string amount;
+    //string amount;
+    float credit, amount;
     bool validAmount = false;
 
-    do
-    {
-        cout << "Please enter the amount of credit to transfer to the buyer account: ";
-        cin >> amount;
+    cout << "Please enter the amount of credit to transfer to the buyer account: ";
+
+    do {
+        amount = getValidAmountInput(999999, "Error! Amount must be between 0 and 999 999.99: ");
 
         string price = getGamePrice(game);
 
-        if (stod(price) != stod(amount))
-        {
+        if (stof(price) != (amount)) {
+            cout << "price stored is: " << price << " amount input is: " << amount << endl;
             cout << "Error: Credit value inconsistent with the value the game was bought for. Please enter the credit value of the game." << endl;
             validAmount = false;
         }
-        else
-        {
+        else {
             validAmount = true;
         }
 
     } while (!validAmount);
 
-    return amount;
+    return to_string(amount);
 }
 
 /// <summary>
@@ -550,7 +605,7 @@ bool shouldWarnUserBalance(const string &username, const string &amount)
     }
     else if (userBalance + stof(amount) > 999999.99)
     {
-        cout << "Warning: If refund is added, " << username << " will exceed the maximum amount of credits possible (999,999). Cannot add more to their balance after max is reached." << endl;
+        cout << "Warning: If credit is added, " << username << " will exceed the maximum amount of credits possible (999,999). Cannot add more to their balance after max is reached." << endl;
         return true;
     }
 
@@ -568,6 +623,8 @@ bool isUserBalanceSufficient(const string &user, const string &amount)
     float sellerBalance = getUserBalance(user);
     return (sellerBalance >= stod(amount));
 }
+
+
 
 
 #pragma region "Transaction Functions"
@@ -861,7 +918,6 @@ Transaction buyGame(User &currentUser) // Transaction code: 3
             validSeller = true;
         }
         else {
-            cout << "seller input: " << seller << " storedSeller: " << storedSeller << endl;
             cout << "Invalid seller. ";
         }
     }
@@ -894,7 +950,7 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     string priceString_decimals;
     bool nameBool;
     bool priceBool = true;
-    bool isFloat = false, priceInLimit;
+    bool isFloat = false, priceInLimit = false, validGameName = false;
     float price;
     // If they don't enter a decimal, we append 00 before storing
     cout << "Creating new listing. Enter the game's title: ";
@@ -914,9 +970,9 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     // Check if unique, under 25 characters, not login or logout
 
     // Read through AvailableGames.txt and ensure unique
-    bool validGameName;
-    std::cin.clear();
-    std::cin.ignore(100, '\n');
+    
+    cin.clear();
+    cin.ignore(100, '\n');
     do
     {
         cin.clear();
@@ -924,6 +980,7 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
         bool unique = !inStore(gameName);
         bool length = (gameName.length() <= 25);
         bool notCommand = (gameName != "login" && gameName != "logout");
+        // Check if there is a game with that name in AvailableGames.txt already
         if (!unique)
         {
             cout << "Error! Game name has already taken, please try again: ";
@@ -950,55 +1007,16 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
 
     cout << "Enter the game's price: ";
     std::cin.clear();
+    price = getValidAmountInput(999.999, "Error! Price must be between 0 and 999.99: ");
 
     // Can get rid of this while loop
-    while (priceBool)
-    {
+    // while (priceBool)
+    // {
         // TO-DO:: Input validation
         // while loop -> iterate until valid
         // Price Max: $999.99, Min: 0.
         // formatting
-        while (!isFloat)
-        {
-            getline(std::cin, priceString);
-            // cin >> priceString;
-            // cout << "priceString: |" << priceString << "|" << endl;
 
-            istringstream iss(priceString);
-            try
-            {
-                // Check if input string can be converted to a float
-                if (iss >> price)
-                {
-                    char remainingChar;
-                    // Check if beginning of the string has numbers but has other characters after
-                    if (iss >> remainingChar)
-                    {
-                        cerr << "Error! Input must be a number. (e.g. 10, 10.00, 1.0): ";
-                    }
-                    // Check if price amount is within the limits
-                    else if (price < 0 || price > 999.99)
-                    {
-                        std::cerr << "Error! Price must be between 0 and 999.99: ";
-                    }
-                    else
-                    {
-                        isFloat = true;
-                    }
-                }
-                else
-                {
-                    cout << "Error! Input must be a number. (e.g. 10, 10.00, 1.0): ";
-                }
-            }
-            catch (const std::invalid_argument &e)
-            {
-                cerr << e.what() << std::endl;
-            }
-        }
-
-        cout << "Entered price: " << price << endl;
-        break;
         // Can convert to float
         // if (stof(priceString)) {
         //     cout << "Returns float of: " << stof(priceString) << endl;
@@ -1038,8 +1056,10 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
         // }
         // check if input is greater than 999.99
         // check if input has more than 2 decimal points
-    }
+    // }
 
+    cout << "Game successfully created!" << endl;
+    // TO-DO:: Write to necessary files and test case 12
 
     Game gameToSell(currentUser, gameName, /*gamePrice*/ price);
 
@@ -1072,7 +1092,6 @@ Transaction refundGame(User &currentUser) // Transaction code: 5
     User buyerUser;
     User sellerUser;
     Game soldGame;
-    //User buyerUser = User(buyer, getUserType(buyer), getUserBalance(buyer));  // This is never used...
 
     // Validate seller account
     string seller = getValidUsernameInput("Please enter the seller's username: ");
@@ -1094,11 +1113,8 @@ Transaction refundGame(User &currentUser) // Transaction code: 5
     if (isUserBalanceSufficient(seller, amount)) {
         removeGame(buyer, game);
 
+        // Calculate new balances
         double buyerBalance = getUserBalance(buyer) + stod(amount);
-        // Ensure balance does not exceed maximum
-        if (buyerBalance > 999999.99) {
-            buyerBalance = 999999.99;
-        }
         double sellerBalance = getUserBalance(seller) - stod(amount);
 
         // Update buyer and seller balance
@@ -1127,41 +1143,57 @@ Transaction refundGame(User &currentUser) // Transaction code: 5
 /// <returns>A Transaction object, to record each Transaction a user performed while logged in</returns>
 Transaction addCredit(User &currentUser) // Transaction code: 6
 {
-    bool validAcc = true;
-    string username, amount, userType, log;
-    //ostringstream oss;
+    bool validAcc = false, validAmount = false, proceedFlag = false;
+    float amount;
+    string username, userType, log;
     if (currentUser.type == "AA")
     {
         do {
             cout << "Which user would you like to add credit to? ";
             cin >> username;
             validAcc = isValidUser(username);
+            if (!validAcc) {
+                cout << "Error! There does not exist a user named " << username << "." << endl;
+            }
         } while (!validAcc);
         
-        cout << "How much credit would you like to add to " + username + "'s account?";
+        cout << "How much credit would you like to add to " + username + "'s account? ";
         
         // TO-DO::
-        //  Ensure that no more than $1000 is added to a user's accounbt in one session
+        //  Ensure that no more than $1000 is added to a user's account in one session
         //
         //  Separate function for validation
 
-        cin >> amount;
-
+        //cin >> amount;
+        
         userType = currentUser.type;
     }
     else
     {
         username = currentUser.name;
-        cout << "How much credit would you like to add to your account?" << endl;
-        
+        cout << "How much credit would you like to add to your account? ";
         // Validation here too
 
-        cin >> amount;
+        //cin >> amount;
         userType = getUserType(username);
     }
-    // TO-DO:: Check if the userBalance will exceed 999 999 and if so, print out warning
-    double userBalance = getUserBalance(username) + stod(amount);
+    // Validate amount input by user
+    amount = getValidAmountInput(1000, "Please enter a positive amount less than or equal to $1000.00: ");
+
+    // Check if the userBalance will exceed 999 999.99 and if so, print out warning - NEED TO DO THIS?
+    double userBalance = getUserBalance(username) + amount;
+    if (shouldWarnUserBalance(username, to_string(userBalance)))
+    {
+        proceedFlag = shouldProceed();
+        if (!proceedFlag)
+        {
+            cout << "Terminating transaction..." << endl;
+            return Transaction("terminated", currentUser);
+        }
+    }
+    
     updateUserBalance(username, userBalance);
+    cout << "Success! The amount $" << amount << " has been added to " << username << "'s account." << endl;
     Transaction addCreditTransaction("addcredit", currentUser);
     return addCreditTransaction;
 };

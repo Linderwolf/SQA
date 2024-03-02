@@ -5,5 +5,5 @@ Please enter the buyer's username (the recipient of the refund):
 Please enter the seller's username:
 Please enter the name of the game you would like to return:
 Please enter the amount of credit to transfer to the buyer account:
-Warning: If refund is added, JaneDoe will exceed the maximum amount of credits possible (999,999). Cannot add more to their balance after max is reached.
-Do you still want a refund (y/N)?
+Warning: If credit is added, JaneDoe will exceed the maximum amount of credits possible (999,999). Cannot add more to their balance after max is reached.
+Do you still want to proceed (y/N)?
