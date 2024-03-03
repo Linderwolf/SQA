@@ -670,43 +670,90 @@ bool isUserBalanceSufficient(const string &user, const string &amount)
 void logout(vector<Transaction> &transactions, User &currentUser)
 {
     // Flags
-    bool sellFlag = false;
+    bool sellFlag = false;  // Whether a sell transaction has been completed.
 
-    Transaction logoutTransaction("endofsession", currentUser); // Create a new logout Transaction
+    Transaction logoutTransaction("endofsession", currentUser, Game()); // Create a new logout Transaction
     transactions.push_back(logoutTransaction);                  // Add the logout Transaction to the vector
 
     std::cout << "Writing to Daily Transaction File...\n";
 
-    // TO-DO::
-    // Make sure the END line from previous write is deleted
+    string line;    // A temporary string to hold a line of text.
+
+    ofstream writeFile("tempDailyTransactions.txt");
+    if (!writeFile.is_open())
+    {
+        std::cout << "Error: Unable to open temp file for writing." << endl;
+        return;
+    }
+    ifstream dailyTransactionsFileIn("DailyTransactions.txt");
+    if (!dailyTransactionsFileIn.is_open())
+    {
+        std::cout << "Error: Unable to open DailyTransactions.txt file for reading." << endl;
+        return;
+    }
+    // Delete the "END" in the dailyTransactionsFile
+    while (getline(dailyTransactionsFileIn, line))
+    {
+        if (line == "END")
+        {
+            writeFile << "";
+        }
+        else
+        {
+            writeFile << line << endl;
+        }
+    }
+    writeFile.close();
+    dailyTransactionsFileIn.close();
+
+    // Replace the original file with the modified content
+    remove("DailyTransactions.txt");
+    rename("tempDailyTransactions.txt", "DailyTransactions.txt");
 
     // Write to the appropriate files
-    ofstream availableGamesFile;    // AvailableGames.txt
-    ofstream dailyTransactionFile;  // DailyTransactions.txt
-
-    dailyTransactionFile.open("DailyTransactions.txt", ios::app);
-    for (int i = 0; i < transactions.size(); i++)
+    ofstream availableGamesFileOut("AvailableGames.txt");        // AvailableGames.txt
+    ofstream dailyTransactionsFileOut("DailyTransactions.txt");  // DailyTransactions.txt
+    if (!dailyTransactionsFileOut.is_open())
     {
-        if (transactions[i].name != "terminated")
+        std::cout << "Error: Unable to open DailyTransactions.txt file for writing." << endl;
+    }
+    else
+    {
+        for (int i = 0; i < transactions.size(); i++)
         {
-            if (!dailyTransactionFile.is_open())
-            {
-                std::cout << "Error: Unable to open DailyTransactions.txt file for reading or writing." << endl;
-                return;
-            }
-            else
+            if (transactions[i].name != "terminated")
             {
                 // Write to Daily Transaction File
-                dailyTransactionFile << transactions[i].toDailyTransactionString(transactions[i]) << "\n";
+                dailyTransactionsFileOut << transactions[i].toDailyTransactionString(transactions[i]) << "\n";
 
                 if (transactions[i].name == "sell")
                 {
                     if (sellFlag == false)  // If this is the first sell transaction of this iteration
                     {
                         sellFlag = true;    // Flag it & Open the Available Games File
-                        availableGamesFile.open("AvailableGames.txt", ios::app);
+                        ofstream writeFile("tempAvailableGames.txt");
+                        ifstream availableGamesFileIn("AvailableGames.txt");
+                        if (!writeFile.is_open() || !availableGamesFileIn.is_open())
+                        {
+                            std::cout << "Error: Unable to open temp file for writing, or AvailableGames.txt for reading." << endl;
+                            return;
+                        }
+                        // Remove the "END"
+                        while (getline(availableGamesFileIn, line))
+                        {
+                            if (line == "END") { writeFile << ""; }
+                            else { writeFile << line << endl; }
+                        }
+                        writeFile.close();
+                        availableGamesFileIn.close();
+
+                        // Replace the original file with the modified content
+                        remove("AvailableGames.txt");
+                        rename("tempAvailableGames.txt", "AvailableGames.txt");
+
+                        //availableGamesFileOut.open("AvailableGames.txt", ios::app);
                     }
-                    if (!availableGamesFile.is_open())
+                    if (!availableGamesFileOut.is_open())
                     {
                         std::cout << "Error: Unable to open AvailableGames.txt file for reading or writing." << endl;
                         return;
@@ -714,7 +761,7 @@ void logout(vector<Transaction> &transactions, User &currentUser)
                     else
                     {
                         // Write to Available Games File
-                        availableGamesFile << transactions[i].toAvailableGamesString(transactions[i]) << "\n";
+                        availableGamesFileOut << transactions[i].toAvailableGamesString(transactions[i]) << "\n";
                     }
                 }
             }
@@ -725,13 +772,13 @@ void logout(vector<Transaction> &transactions, User &currentUser)
     
     if (sellFlag == true)
     {
-        availableGamesFile << "END";
-        availableGamesFile.close();
+        availableGamesFileOut << "END";
+        availableGamesFileOut.close();
     }
-    dailyTransactionFile << "END";
-    dailyTransactionFile.close();
+    dailyTransactionsFileOut << "END";
+    dailyTransactionsFileOut.close();
 
-    cout << "Thank you for using Vapour.\nGoodbye.";
+    std::cout << "Thank you for using Vapour.\nGoodbye.";
 
     exit(0);    // Exit program with return code 0.
 };
@@ -837,8 +884,16 @@ Transaction createUser(User &currentUser) // Transaction code: 1
     rename("temp.txt", "CurrentUserAccounts.txt");
     textFile.close();
     accountsFile.close();
-    cout << "User full12345 successfully created! Permissions: buy, sell \n";
-    Transaction createUserTransaction("create", currentUser);
+
+    string permissions;
+    if (newUserType == "AA" || newUserType == "FS" || newUserType == "SS") { permissions = "Sell"; }
+    if (newUserType == "AA" || newUserType == "FS" || newUserType == "BS") { permissions = "Buy"; }
+
+    cout << "User " + newUsername + " successfully created! Permissions: " + permissions + "\n";
+
+    // Create an instance of the newly created user to pass to the Transaction, for reporting.
+    User newUser(newUsername, newUserType, 0);
+    Transaction createUserTransaction("create", currentUser, newUser);
     return createUserTransaction;
 };
 /// <summary>
@@ -889,6 +944,9 @@ Transaction deleteUser(User& currentUser) // Transaction code: 2
     usersFile.close();
     temp.close();
 
+    // Create an instance of the deleted user to pass to the transaction for reporting
+    User deletedUser(userInput, getUserType(userInput), getUserBalance(userInput));
+
     remove("CurrentUserAccounts.txt");
     rename("temp.txt", "CurrentUserAccounts.txt");
 
@@ -922,7 +980,7 @@ Transaction deleteUser(User& currentUser) // Transaction code: 2
 
     cout << "Success! Games for sale on this account have been cancelled." << endl;
 
-    Transaction deleteUserTransaction("delete", currentUser);
+    Transaction deleteUserTransaction("delete", currentUser, deletedUser);
     return deleteUserTransaction;
 };
 
@@ -996,8 +1054,14 @@ Transaction buyGame(User &currentUser) // Transaction code: 3
     logGameCollection(gameName, currentUser.name);
     cout << "Purchase successful! Transferring the credit value of " + gameName + " from you to the seller, " + seller + ". You can now find " + gameName + " in your collection!" << endl;
 
-    // Need to pass a game to our transaction V
-    Transaction buyGameTransaction("buy", currentUser);
+    // Would be much better off if the variables were stored for reuse, rather than searched repeatedly.
+
+    //TO-DO:: Pass the Seller object to the Game...
+
+    User sellerUser(getSellerForGame(gameName), getUserType(getSellerForGame(gameName)), getUserBalance(getSellerForGame(gameName)));
+    Game purchasedGame(sellerUser, gameName, stof(getGamePrice(gameName)));
+    // Need to pass a game to our transaction in order to report on it.
+    Transaction buyGameTransaction("buy", currentUser, purchasedGame);
     return buyGameTransaction;
 };
 /// <summary>
@@ -1120,7 +1184,7 @@ Transaction refundGame(User &currentUser) // Transaction code: 5
         proceedFlag = shouldProceed();
         if (!proceedFlag) {
             cout << "Terminating refund transaction..." << endl;
-            return Transaction("terminated", currentUser);
+            return Transaction("terminated", currentUser, Game());
         }
     }
 
@@ -1197,7 +1261,7 @@ Transaction addCredit(User &currentUser) // Transaction code: 6
     // Check if the totalCreditsAddedInSession limit is reached for the target user
     if (totalCreditsAddedMap[username] + amount > 1000) {
         std::cout << "Error: Cannot add more than $1000 in credits to " << username << "'s account in one session." << std::endl;
-        return Transaction("terminated", currentUser);
+        return Transaction("terminated", currentUser, Game());
     }
 
     // Update totalCreditsAddedInSession for the target user
@@ -1211,13 +1275,15 @@ Transaction addCredit(User &currentUser) // Transaction code: 6
         if (!proceedFlag)
         {
             cout << "Terminating transaction..." << endl;
-            return Transaction("terminated", currentUser);
+            return Transaction("terminated", currentUser, Game());
         }
     }
     
+    User updatedUser(username, userType, userBalance);
+    
     updateUserBalance(username, userBalance);
     cout << "Success! The amount $" << amount << " has been added to " << username << "'s account." << endl;
-    Transaction addCreditTransaction("addcredit", currentUser);
+    Transaction addCreditTransaction("addcredit", currentUser, updatedUser);
     return addCreditTransaction;
 };
 

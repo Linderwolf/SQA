@@ -1,8 +1,7 @@
-Stardew Valley            buystandard
-Stardew Valley            admin
-Stardew Valley            fullstandard
-Tetris Effect             buystandard  
-Tetris Effect             fullstandard
-Valheim                   buystandard
-Terraria                  buystandard
-END
+Stardew Valley             buystandard
+Stardew Valley             admin
+Stardew Valley             fullstandard
+Tetris Effect              fullstandard
+Valheim                    buystandard
+Terraria                   buystandard
+Stardew Valley             buystandard     

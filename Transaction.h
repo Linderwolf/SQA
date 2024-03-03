@@ -21,6 +21,81 @@ class Transaction
 
 	#pragma region "constructors"
 
+		/*
+		/// <summary>
+		/// Parameterized Constructor of a Transaction Object, given a transaction name, and the current user.
+		/// </summary>
+		/// <param name="transactionName"> : The name of a type of transaction.</param>
+		/// <param name="actingUser"> : The User performing the transaction</param>
+		Transaction(string transactionName, User actingUser) {
+			code = getTransactionCode(transactionName);
+			name = transactionName;
+			user = actingUser;
+		}
+
+		/// <summary>
+		/// Parameterized Constructor of a Transaction Object, given a transaction code, and the current user.
+		/// </summary>
+		/// <param name="transactionCode"> : A numeric identifier code for a type of transaction.</param>
+		/// <param name="actingUser"> : The User performing the transaction</param>
+		Transaction(int transactionCode, User actingUser) {
+			code = transactionCode;
+			name = getTransactionName(transactionCode);
+			user = actingUser;
+		}
+
+		
+		/// <summary>
+		/// Parameterized Constructor of a Transaction Object, given a transaction code, game, and no other user (Buy)
+		/// </summary>
+		/// <param name="transactionCode"> : A numeric identifier code for a type of transaction.</param>
+		/// <param name="actingUser"> : The User performing the transaction</param>
+		/// <param name="optionalGame"> : The relevant Game, if applicable</param>
+		Transaction(int transactionCode, User actingUser, Game optionalGame = Game()) {
+			code = transactionCode;
+			name = getTransactionName(transactionCode);
+			user = actingUser;
+			relevantGame = optionalGame;
+		}
+
+		/// <summary>
+		/// Parameterized Constructor of a Transaction Object, given a transaction name, game, and no other user (Buy)
+		/// </summary>
+		/// <param name="transactionName"> : The name of a type of transaction.</param>
+		/// <param name="actingUser"> : The User performing the transaction</param>
+		/// <param name="optionalGame"> : The relevant Game, if applicable</param>
+		Transaction(string transactionName, User actingUser, Game optionalGame = Game()) {
+			code = getTransactionCode(transactionName);
+			name = transactionName;
+			user = actingUser;
+			relevantGame = optionalGame;
+		}
+		*/
+		/// <summary>
+		/// Parameterized Constructor of a Transaction Object, given a transaction code, two users and no games.
+		/// </summary>
+		/// <param name="transactionCode"> : A numeric identifier code for a type of transaction.</param>
+		/// <param name="actingUser"> : The User performing the transaction</param>
+		/// <param name="optionalUser"> : A relevant non-acting User, if applicable</param>
+		Transaction(int transactionCode, User actingUser, User optionalUser = User()) {
+			code = transactionCode;
+			name = getTransactionName(transactionCode);
+			user = actingUser;
+			otherUser = optionalUser;
+		}
+
+		/// <summary>
+		/// Parameterized Constructor of a Transaction Object, given a transaction name, two users and no games.
+		/// </summary>
+		/// <param name="transactionName"> : The name of a type of transaction.</param>
+		/// <param name="actingUser"> : The User performing the transaction</param>
+		/// <param name="optionalUser"> : A relevant non-acting User, if applicable</param>
+		Transaction(string transactionName, User actingUser, User optionalUser = User()) {
+			code = getTransactionCode(transactionName);
+			name = transactionName;
+			user = actingUser;
+			otherUser = optionalUser;
+		}
 		/// <summary>
 		/// Parameterized Constructor of a Transaction Object, given a Transaction Code
 		/// </summary>
@@ -96,6 +171,44 @@ class Transaction
 		}
 
 		/// <summary>
+		/// Pads a string with leading zeros
+		/// </summary>
+		/// <param name="desiredNumberOfCharacters">The number of characters the string is to be formatted to</param>
+		/// <param name="stringToPad">The string to be formatted</param>
+		/// <returns>A string formatted to the desired amount of characters, with leading zeros</returns>
+		string formatLeadingZeros(int desiredNumberOfCharacters, string stringToPad)
+		{
+			int stringSize = stringToPad.size();	// min doesn't like size_t for some reason, even though it's essentially a x64 int...
+			string zeros = "";
+			if (stringSize < desiredNumberOfCharacters)
+			{
+				zeros = string(desiredNumberOfCharacters - std::min(desiredNumberOfCharacters, stringSize), '0');
+			}
+			else { return stringToPad; }	// String is already at least equal in length to desired number of characters
+			return zeros + stringToPad;
+		}
+
+		/// <summary>
+		/// Pads a string with trailing spaces
+		/// </summary>
+		/// <param name="desiredNumberOfCharacters">The number of characters the string is to be formatted to</param>
+		/// <param name="stringToPad">The string to be formatted</param>
+		/// <param name="extraSpace">Whether to add an additional space, for </param>
+		/// <returns>A string formatted to the desired amount of characters, with trailing spaces</returns>
+		string formatTrailingSpaces(int desiredNumberOfCharacters, string stringToPad, bool extraSpace = false)
+		{
+			int stringSize = stringToPad.size();// The size of the string to pad.
+			string formattedString = "";		// The formatted string  to return
+			if ( stringSize < desiredNumberOfCharacters)	// the game name is fewer than the desired characters
+			{
+				// Append the Game Name. Fill the string with spaces.
+				formattedString += stringToPad + string(extraSpace + desiredNumberOfCharacters - min(desiredNumberOfCharacters, stringSize), ' ');
+			}
+			return formattedString;
+		}
+
+
+		/// <summary>
 		/// Returns the name of a transaction, given a transaction code
 		/// </summary>
 		/// <param name="code">A numeric identifier for a transaction</param>
@@ -132,85 +245,9 @@ class Transaction
 		/// </summary>
 		/// <returns>A string formatted to match the DailyTransaction report schema</returns>
 		string toDailyTransactionString(Transaction transaction) {
-			//TO-DO:: Double-check that the transaction codes have leading 0s
-			
-			string formattedString;				//	The final string to return
-			string transactionCodeString;		//	The transaction code, formatted into a string
-			string transactionCreditString;		//	The transacting User's Credit, formatted into a string
-			string transactionUnitPriceString;	//	The relevant Game's Price, formatted into a string
-
-			// Process the Transaction Code
-			if (transaction.code < 10) { transactionCodeString = "0" + to_string(transaction.code); }
-
-			// Process the Current User's Credit
-			transactionCreditString = to_string(transaction.user.credit);
-
-			// Process the Game's Price
-			if (transaction.relevantGame.name != "                   ")
-			{
-				transactionUnitPriceString = to_string(transaction.relevantGame.price);
-			}
-			else { transactionUnitPriceString = "Error. Game Object was defaulted..."; }
-
-			// Every line starts with the transaction Code
-			formattedString = transactionCodeString + " ";
-
-			// create, delete, add credit, end of session transactions
-			if (transaction.code == 1 || transaction.code == 2 || transaction.code == 6 || transaction.code == 0)	
-			{
-				/*
-				 Form: XX_UUUUUUUUUUUUUUU_TT_CCCCCCCCC
-				
-				 TO-DO:: Requirements Clarification
-				 
-				 From the requirements:
-				 "'UUUUUUUUUUUUUUU' is the username (buyer if two users in the transaction)"
-				 yet delete is a transaction of 2 users without a buyer.
-				*/
-
-				formattedString += transaction.user.type + " " + transactionCreditString;
-			}
-			else if (transaction.code == 03)	// Buy Transaction
-			{
-				// TO-DO:: Fix this!
-				// 
-				//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSSSS_UUUUUUUUUUUUUU_PPPPPP
-				// I game name, S seller's username, U buyer's username, P game's price
-				//
-				//		This assumes the current user to be the buyer.
-				formattedString += transaction.relevantGame.name + " " + transaction.relevantGame.seller.name +
-					" " + transaction.user.name + " " + to_string(transaction.relevantGame.price);
-			}
-			else if (transaction.code == 04)	// Sell Transaction
-			{
-				//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSS_PPPPPP
-				// Game Name, Seller's Name, Price
-				formattedString += transaction.relevantGame.name + " " +
-					transaction.relevantGame.seller.name + " " + to_string(transaction.relevantGame.price);
-			}
-			else if (transaction.code == 5)	// refund transaction
-			{
-				/* UUUUUUUUUUUUUUU is the buyer’s username
-				 SSSSSSSSSSSSSSS is the seller’s username
-
-				 TO-DO:: Fix this!
-
-				 This is a privileged transacion
-				 Therefore an admin is the current user, crediting a buyer from the seller's account
-					our Transaction Object must thus have an optional "Buyer name" parameter, or another alternative
-
-				 and the below code is in error
-
-				Form: XX_UUUUUUUUUUUUUUU_SSSSSSSSSSSSSSS_CCCCCCCCC
-				*/
-
-				formattedString += transaction.user.name + " " +
-					transaction.relevantGame.seller.name + " " + to_string(transaction.relevantGame.price);
-			}
 			/*
-			*	Requires additional formatting
-			*	Requirements below:
-			* 
+			*	Formatting Requirements:
+			*
 			alphabetic fields are left justified, filled with spaces
 			(e.g.Jane_Doe____________ for account holder Jane Doe)
 				unused numeric fields are filled with zeros
@@ -221,6 +258,133 @@ class Transaction
 				(e.g., ________________________)
 				the sequence of transactions ends with an end of session(00) transaction code
 			*/
+			string formattedString;				//	The final string to return
+			string transactionCodeString;		//	The transaction code, formatted into a string
+			
+			// Process the Transaction Code to 2 digits
+			if (transaction.code < 10) { transactionCodeString = "0" + to_string(transaction.code); }
+
+			// Every line starts with the transaction Code
+			formattedString = transactionCodeString + " ";
+
+			// Formatting is then dependent on Transaction Type as follows::
+			// create, delete, add credit, end of session transactions
+			if (transaction.code == 1 || transaction.code == 2 || transaction.code == 6 || transaction.code == 0)	
+			{
+				/*
+				 Form: XX_UUUUUUUUUUUUUUU_TT_CCCCCCCCC
+
+				 TO-DO:: Requirements Clarification
+				 From the requirements:
+				 "'UUUUUUUUUUUUUUU' is the username (buyer if two users in the transaction)"
+				 yet delete is a transaction of 2 users without a buyer.
+				*/
+
+				// Flags
+				bool loggedInUserFlag = true;	// Whether the currently logged in user is the one to be recorded in the Daily Transactions File
+
+				const int UserNameSize = 15;
+				const int UserCreditSize = 9;
+
+				// The below strings are to minimize code redundancy. 
+				//   -> Check if a flag is true
+				//   -> Change the user they reference based on the flag.
+				string userNameString;			// Temporary string to hold a username		
+				string userTypeString;			// Temporary string to hold the usertype
+				string transactionCreditString; // Temporary string to hold the user's credit.
+
+				if (transaction.code == 1)	// Create
+				{
+					// Use the created User's information
+					loggedInUserFlag = false;
+				}
+				if (transaction.code == 2)
+				{
+					// Use the deleted User's information
+					loggedInUserFlag = false;
+				}
+				if (transaction.code == 6)
+				{
+					if (transaction.user.type == "AA")	// Admin
+					{
+						// They're adding credit to another user
+						loggedInUserFlag = false;
+					}
+					else
+					{
+						// Use the current user's information
+						loggedInUserFlag = true;
+					}
+				}
+				// If none of the above, it's a logout/endofsession transaction. 
+				// Current user remains the user to report on.
+				if (loggedInUserFlag)
+				{
+					userNameString = transaction.user.name;
+					userTypeString = transaction.user.type + " ";
+					transactionCreditString = formatCurrency(transaction.user.credit);
+				}
+				else
+				{
+					userNameString = transaction.otherUser.name;
+					userTypeString = transaction.otherUser.type + " ";
+					transactionCreditString = formatCurrency(transaction.otherUser.credit);
+				}
+
+				formattedString += formatTrailingSpaces(UserNameSize, userNameString, true) +
+					userTypeString + formatLeadingZeros(UserCreditSize, transactionCreditString);
+			}
+			else if (transaction.code == 03)	// Buy Transaction
+			{
+				const int GameNameSize = 19;
+				const int SellerNameSize = 15;
+				const int BuyerNameSize = 14;
+				const int PriceSize = 6;
+
+				int stringSize;
+				string gameName;
+				string sellerName;
+				//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSSSS_UUUUUUUUUUUUUU_PPPPPP
+				// I game name 19, S seller's username 15, U buyer's username 14, P game's price
+				//
+				//		This assumes the current user to be the buyer.
+				formattedString + formatTrailingSpaces(GameNameSize, transaction.relevantGame.name, true) + 
+								  formatTrailingSpaces(SellerNameSize, transaction.relevantGame.seller.name, true) + 
+								  formatTrailingSpaces(BuyerNameSize, transaction.user.name, true) +
+								  formatLeadingZeros(PriceSize, formatCurrency(transaction.relevantGame.price));
+			}
+			else if (transaction.code == 04)	// Sell Transaction
+			{
+				const int GameNameSize = 19;
+				const int SellerNameSize = 13;
+				const int PriceSize = 6;
+				//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSS_PPPPPP
+				// Game Name, Seller's Name, Price
+				formattedString + formatTrailingSpaces(GameNameSize, transaction.relevantGame.name, true) +
+								  formatTrailingSpaces(SellerNameSize, transaction.relevantGame.seller.name, true) +
+								  formatLeadingZeros(PriceSize, formatCurrency(transaction.relevantGame.price));
+			}
+			else if (transaction.code == 5)	// refund transaction
+			{
+				const int BuyerNameSize = 15;
+				const int SellerNameSize = 15;
+				const int CreditSize = 9;
+
+				/*
+				  Form: XX_UUUUUUUUUUUUUUU_SSSSSSSSSSSSSSS_CCCCCCCCC
+				  UUUUUUUUUUUUUUU is the buyer’s username
+				  SSSSSSSSSSSSSSS is the seller’s username
+
+				 This is a privileged transacion
+				 Therefore an admin is the current user, crediting a buyer from the seller's account
+					our Transaction Object must thus have an optional otherUser parameter for the buyer. 
+					The seller can be referenced by the Game object.
+				*/
+
+				formattedString + formatTrailingSpaces(BuyerNameSize, transaction.otherUser.name, true) + 
+								  formatTrailingSpaces(SellerNameSize, transaction.relevantGame.seller.name, true) + 
+								  formatLeadingZeros(CreditSize, formatCurrency(transaction.relevantGame.price));
+			}
 			else { formattedString += transaction.name + " Must not have transaction code logic implemented in the Transaction class."; }
 			return formattedString;
 		}
@@ -286,20 +450,8 @@ class Transaction
 			// Price Formatting
 			
 			priceString = formatCurrency(transaction.relevantGame.price);
-			stringSize = priceString.size();	// min doesn't like size_t for some reason, even though it's essentially a x64 int...
-			string zeros = "";
-			if (stringSize < 6)
-			{
-				zeros = string(PriceSize - std::min(PriceSize, stringSize), '0');
-			}
-			else
-			{
-				if (stringSize > 6)
-				{
-					priceString = "$ERROR";
-				}
-			}
-			formattedString += zeros + priceString;
+		
+			formattedString += formatLeadingZeros(PriceSize, priceString);
 
 			return formattedString;
 		}
