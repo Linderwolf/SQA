@@ -713,7 +713,6 @@ Transaction createUser(User &currentUser) // Transaction code: 1
     while (typeBool)
     {
         cin >> newUserType;
-        cout << newUserType << "\n";
 
         for (int j = 0; j < 2; j++)
         {
@@ -1008,55 +1007,6 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     cout << "Enter the game's price: ";
     std::cin.clear();
     price = getValidAmountInput(999.999, "Error! Price must be between 0 and 999.99: ");
-
-    // Can get rid of this while loop
-    // while (priceBool)
-    // {
-        // TO-DO:: Input validation
-        // while loop -> iterate until valid
-        // Price Max: $999.99, Min: 0.
-        // formatting
-
-        // Can convert to float
-        // if (stof(priceString)) {
-        //     cout << "Returns float of: " << stof(priceString) << endl;
-        // }
-        // // Can't convert to float
-        // else {
-        //     cout << "Can't convert to float" << endl;
-        // }
-
-        // check if input has letters
-        // string::size_type pos = priceString.find('.');
-        // if (regex_match(priceString, regex(R"((?:^|\s)([+-]?[[:digit:]]+(?:\.[[:digit:]]+)?)(?=$|\s))")))
-        // {
-        //     cout << "Reached point 1" << endl;
-        //     if (pos != string::npos)
-        //     {
-        //         priceString_whole = priceString.substr(0, pos);
-        //         priceString_decimals = priceString.substr(priceString_whole.length(), 10);
-        //         cout << "Reached point 2" << endl;
-        //     }
-        //     else
-        //     {
-        //         priceString_whole = priceString;
-        //         float priceNoDec = 0.0 + stof(priceString_whole);
-        //         cout << priceNoDec << endl;
-        //         cout << "Reached point 3" << endl;
-        //     }
-
-        //     gamePrice = stof(priceString_whole) + stof(priceString_decimals);
-        //     priceBool = false;
-        //     cout << "Reached point 4" << endl;
-        // }
-        // else
-        // {
-        //     cout << "Error! Input must be a number. (e.g. 10, 10.00, 1.0) \n";
-        //     cout << "Reached point 5" << endl;
-        // }
-        // check if input is greater than 999.99
-        // check if input has more than 2 decimal points
-    // }
 
     cout << "Game successfully created!" << endl;
     // TO-DO:: Write to necessary files and test case 12
