@@ -1386,7 +1386,7 @@ int main()
 
     // Prompt for username to log in.
     cout << "Welcome to Vapour!\nPlease enter your Username to log in: ";
-    cin >> userInput;
+    getline(cin, userInput);
     if (userInput == "exit")
     {
         return 0;
