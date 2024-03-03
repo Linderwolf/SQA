@@ -3,4 +3,4 @@ Please enter your Username to login:
 Welcome admin! Plese enter a transaction:
 Creating new user.. Please input their username
 Username accepted! What type of user are they? (AA,FS,SS,BS):
-User buy12345 successfully created! Permissions: buy
+User buy12345 successfully created! Permissions: buy, list
