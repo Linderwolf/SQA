@@ -56,6 +56,45 @@ class Transaction
 	#pragma region "methods"
 
 		/// <summary>
+		/// Formats a float value to a 2 decimal place string
+		/// </summary>
+		/// <param name="floatValue">The floating point number we want as currency</param>
+		/// <returns>currencyString: A string formatted to two decimal places.</returns>
+		string formatCurrency(float floatValue)
+		{
+			string currencyString;
+			float decimalValue = fmod(floatValue, 1.00);
+			// If the value mod 1 is not remainder 0.
+			if (decimalValue != 0)
+			{
+				// It already has a decimal. Set precision to two decimal places.
+				currencyString = to_string(decimalValue);
+				currencyString.erase(0, currencyString.find_first_of("."));	// Leaves only the decimal value.
+
+				if (currencyString.length() > 3)
+				{
+					currencyString.erase(3, currencyString.length());	// set to 2 decimal places
+				}
+				else
+				{
+					if (currencyString.length() == 1) // Just 1 decimal place.
+					currencyString += "0";
+				}
+				// Attach the 2-decimal places back to the int
+				int currencyInt = static_cast<int>(floatValue);
+				currencyString = to_string(currencyInt) + "." + currencyString;
+				return currencyString;
+			}
+			else // Otherwise it has no decimal value, or trailing zeros.
+			{ 
+				currencyString = to_string(floatValue);
+				currencyString.erase(currencyString.find_first_of("."), currencyString.length());
+				currencyString = to_string(floatValue) + ".00";
+				return currencyString;
+			}
+		}
+
+		/// <summary>
 		/// Returns the name of a transaction, given a transaction code
 		/// </summary>
 		/// <param name="code">A numeric identifier for a transaction</param>
@@ -91,7 +130,7 @@ class Transaction
 		/// Returns a line to add to the DailyTransactions report, depending on the Transaction performed
 		/// </summary>
 		/// <returns>A string formatted to match the DailyTransaction report schema</returns>
-		string toString(Transaction transaction) {
+		string toDailyTransactionString(Transaction transaction) {
 			//TO-DO:: Double-check that the transaction codes have leading 0s
 			
 			string formattedString;				//	The final string to return
@@ -130,14 +169,7 @@ class Transaction
 
 				formattedString += transaction.user.type + " " + transactionCreditString;
 			}
-			else if (transaction.code == 03)	// Sell Transaction
-			{
-				//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSS_PPPPPP
-				// Game Name, Seller's Name, Price
-				formattedString += transaction.relevantGame.name + " " +
-					transaction.relevantGame.seller.name + " " + to_string(transaction.relevantGame.price);
-			}
-			else if (transaction.code == 04)	// Buy Transaction
+			else if (transaction.code == 03)	// Buy Transaction
 			{
 				// TO-DO:: Fix this!
 				// 
@@ -145,8 +177,15 @@ class Transaction
 				// I game name, S seller's username, U buyer's username, P game's price
 				//
 				//		This assumes the current user to be the buyer.
-				formattedString += transaction.relevantGame.name + " " + transaction.relevantGame.seller.name + 
+				formattedString += transaction.relevantGame.name + " " + transaction.relevantGame.seller.name +
 					" " + transaction.user.name + " " + to_string(transaction.relevantGame.price);
+			}
+			else if (transaction.code == 04)	// Sell Transaction
+			{
+				//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSS_PPPPPP
+				// Game Name, Seller's Name, Price
+				formattedString += transaction.relevantGame.name + " " +
+					transaction.relevantGame.seller.name + " " + to_string(transaction.relevantGame.price);
 			}
 			else if (transaction.code == 5)	// refund transaction
 			{
@@ -182,6 +221,83 @@ class Transaction
 				the sequence of transactions ends with an end of session(00) transaction code
 			*/
 			else { formattedString += transaction.name + " Must not have transaction code logic implemented in the Transaction class."; }
+			return formattedString;
+		}
+
+		/// <summary>
+		/// Returns a line to add to the Available Games file.
+		/// This assumes the transaction makes use of a game. Validation must thus be done beforehand.
+		/// </summary>
+		/// <returns>A string formatted to match the Available Games file schema</returns>
+		string toAvailableGamesString(Transaction transaction) {
+			/*  IIIIIIIIIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSSSS_PPPPPP
+				26 GameName                15 SellerName   6 Price
+			*/
+			// Format Constants
+			const int GameNameSize = 26;	// The number of characters a game's name may have
+			const int SellerNameSize = 15;  // The number of characters a seller's name may have
+			const int PriceSize = 6;        // The number of characters a game's Price may have
+			
+			int stringSize;				// A temporary int to hold the length of strings from the transaction object.
+
+			string formattedString;		// The final string to return
+			string gameNameString;		// The GameName to be formatted to 26 characters
+			string priceString;			// The Price to be formatted to 6 characters
+
+			// Game Name Formatting
+			stringSize = transaction.relevantGame.name.size();
+			if (stringSize < GameNameSize)	// the game name is fewer than the desired characters
+			{
+				// Append the Game Name. Fill the string with spaces (+1 for space between name and price)
+				formattedString += transaction.relevantGame.name + string(1 + GameNameSize - min(GameNameSize, stringSize), ' ');
+			}
+			else
+			{
+				if (stringSize > GameNameSize)	// The game name is too large
+				{
+					formattedString += "GameNameSize>ConstantError ";
+				}
+				else // The game name is the right size
+				{
+					formattedString += transaction.relevantGame.name + " ";
+				}
+			}
+
+			// Seller Name Formatting
+			stringSize = transaction.user.name.size();
+			if (stringSize < SellerNameSize)	// The seller's name is fewer than the desired characters
+			{	
+				// Process: Append the Seller Name. Fill the string with spaces (+1 for space between name and price)
+				formattedString += transaction.user.name + string(1 + SellerNameSize - min(SellerNameSize, stringSize), ' ');
+			}
+			else
+			{
+				if (stringSize > SellerNameSize)  // The user name is too large
+				{
+					formattedString += "NameSize>CError ";
+				}
+				else  // The user name is the right number of chars
+				{
+					formattedString += transaction.user.name + " ";
+				}
+			}
+
+			// Price Formatting
+			if (transaction.relevantGame.price > 999.99)	// The game price is too large
+			{
+				formattedString += "$ERROR";
+			}
+			else // Format to currency and fill with leading 0s
+			{
+				priceString = formatCurrency(transaction.relevantGame.price);
+				std::cout << "\nAfter format Currency: " + priceString;
+				stringSize = priceString.size();	// min doesn't like size_t for some reason, even though it's essentially a x64 int...
+				std::cout << "\nPrice String Size: " + stringSize;
+				priceString = string(PriceSize - min(PriceSize, stringSize), '0') + priceString;
+				formattedString += priceString;
+				std::cout << "\nFinal String: " + formattedString;
+			}
+
 			return formattedString;
 		}
 

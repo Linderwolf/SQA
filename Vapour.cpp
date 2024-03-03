@@ -669,31 +669,58 @@ bool isUserBalanceSufficient(const string &user, const string &amount)
 /// <param name="currentUser">A reference to the User object representing logged in User</param>
 void logout(vector<Transaction> &transactions, User &currentUser)
 {
+    // Flags
+    bool sellFlag = false;
+
     Transaction logoutTransaction("endofsession", currentUser); // Create a new logout Transaction
     transactions.push_back(logoutTransaction);                  // Add the logout Transaction to the vector
 
-    cout << "Writing to Daily Transaction File...\n";
+    std::cout << "Writing to Daily Transaction File...\n";
 
     // TO-DO::
     // Make sure the END line from previous write is deleted
-    
 
-    // Write to the DailyTransactions file
+    // Write to the appropriate files
+    ofstream availableGamesFile;
     ofstream dailyTransactionFile;
     dailyTransactionFile.open("DailyTransactions.txt", ios::app);
     for (int i = 0; i < transactions.size(); i++)
     {
         if (transactions[i].name != "terminated")
         {
-            dailyTransactionFile << transactions[i].toString(transactions[i]) << "\n";
-
-            if (transactions[i].name == "sell")
+            if (!dailyTransactionFile.is_open())
             {
-                // TO-DO::
-                //
-                // Write the game object to AvailableGames under the proper formatting.
+                std::cout << "Error: Unable to open DailyTransactions.txt file for reading or writing." << endl;
+                return;
+            }
+            else
+            {
+                dailyTransactionFile << transactions[i].toDailyTransactionString(transactions[i]) << "\n";
+
+                if (transactions[i].name == "sell")
+                {
+                    if (sellFlag == false)  // If this is the first sell transaction of this iteration
+                    {
+                        sellFlag = true;    // Flag it & Open the Available Games File
+                        availableGamesFile.open("AvailableGames.txt", ios::app);
+                    }
+                    if (!availableGamesFile.is_open())
+                    {
+                        std::cout << "Error: Unable to open AvailableGames.txt file for reading or writing." << endl;
+                        return;
+                    }
+                    else
+                    {
+                        availableGamesFile << transactions[i].toAvailableGamesString(transactions[i]) << "\n";
+                    }
+                }
             }
         }
+    }
+    if (sellFlag == true)
+    {
+        availableGamesFile << "END";
+        availableGamesFile.close();
     }
     dailyTransactionFile << "END";
     dailyTransactionFile.close();
@@ -1038,12 +1065,12 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
 
     cout << "Enter the game's price: ";
     std::cin.clear();
-    price = getValidAmountInput(999.999, "Error! Price must be between 0 and 999.99: ");
+    price = getValidAmountInput(999.99, "Error! Price must be between 0 and 999.99: ");
 
     cout << "Game successfully created!" << endl;
     // TO-DO:: Write to necessary files and test case 12
 
-    Game gameToSell(currentUser, gameName, /*gamePrice*/ price);
+    Game gameToSell(currentUser, gameName, price);
 
     /*
     *   The below must be moved to logout()
