@@ -681,8 +681,9 @@ void logout(vector<Transaction> &transactions, User &currentUser)
     // Make sure the END line from previous write is deleted
 
     // Write to the appropriate files
-    ofstream availableGamesFile;
-    ofstream dailyTransactionFile;
+    ofstream availableGamesFile;    // AvailableGames.txt
+    ofstream dailyTransactionFile;  // DailyTransactions.txt
+
     dailyTransactionFile.open("DailyTransactions.txt", ios::app);
     for (int i = 0; i < transactions.size(); i++)
     {
@@ -695,6 +696,7 @@ void logout(vector<Transaction> &transactions, User &currentUser)
             }
             else
             {
+                // Write to Daily Transaction File
                 dailyTransactionFile << transactions[i].toDailyTransactionString(transactions[i]) << "\n";
 
                 if (transactions[i].name == "sell")
@@ -711,12 +713,16 @@ void logout(vector<Transaction> &transactions, User &currentUser)
                     }
                     else
                     {
+                        // Write to Available Games File
                         availableGamesFile << transactions[i].toAvailableGamesString(transactions[i]) << "\n";
                     }
                 }
             }
         }
     }
+
+    // Close the files
+    
     if (sellFlag == true)
     {
         availableGamesFile << "END";
@@ -727,7 +733,7 @@ void logout(vector<Transaction> &transactions, User &currentUser)
 
     cout << "Thank you for using Vapour.\nGoodbye.";
 
-    exit(0);
+    exit(0);    // Exit program with return code 0.
 };
 
 /// <summary>
@@ -1065,7 +1071,7 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
 
     cout << "Enter the game's price: ";
     std::cin.clear();
-    price = getValidAmountInput(999.99, "Error! Price must be between 0 and 999.99: ");
+    price = getValidAmountInput(999.99f, "Error! Price must be between 0 and 999.99: ");
 
     cout << "Game successfully created!" << endl;
     // TO-DO:: Write to necessary files and test case 12

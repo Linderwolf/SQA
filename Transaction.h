@@ -82,14 +82,15 @@ class Transaction
 				}
 				// Attach the 2-decimal places back to the int
 				int currencyInt = static_cast<int>(floatValue);
-				currencyString = to_string(currencyInt) + "." + currencyString;
+				currencyString = to_string(currencyInt) + currencyString;
 				return currencyString;
 			}
 			else // Otherwise it has no decimal value, or trailing zeros.
 			{ 
 				currencyString = to_string(floatValue);
-				currencyString.erase(currencyString.find_first_of("."), currencyString.length());
-				currencyString = to_string(floatValue) + ".00";
+				// Delete trailing zeros
+				while (currencyString.back() == '0') { currencyString.pop_back(); }
+				currencyString += "00";
 				return currencyString;
 			}
 		}
@@ -283,20 +284,22 @@ class Transaction
 			}
 
 			// Price Formatting
-			if (transaction.relevantGame.price > 999.99)	// The game price is too large
+			
+			priceString = formatCurrency(transaction.relevantGame.price);
+			stringSize = priceString.size();	// min doesn't like size_t for some reason, even though it's essentially a x64 int...
+			string zeros = "";
+			if (stringSize < 6)
 			{
-				formattedString += "$ERROR";
+				zeros = string(PriceSize - std::min(PriceSize, stringSize), '0');
 			}
-			else // Format to currency and fill with leading 0s
+			else
 			{
-				priceString = formatCurrency(transaction.relevantGame.price);
-				std::cout << "\nAfter format Currency: " + priceString;
-				stringSize = priceString.size();	// min doesn't like size_t for some reason, even though it's essentially a x64 int...
-				std::cout << "\nPrice String Size: " + stringSize;
-				priceString = string(PriceSize - min(PriceSize, stringSize), '0') + priceString;
-				formattedString += priceString;
-				std::cout << "\nFinal String: " + formattedString;
+				if (stringSize > 6)
+				{
+					priceString = "$ERROR";
+				}
 			}
+			formattedString += zeros + priceString;
 
 			return formattedString;
 		}
