@@ -872,8 +872,8 @@ Transaction createUser(User &currentUser) // Transaction code: 1
     }
 
     // add new account to text;
-    textFile << newUsername + whitespace + newUserType + " 000000000";
-    textFile << "\nEND";
+    textFile << newUsername + whitespace + newUserType + " 000000000\n";
+    textFile << "END";
     remove("CurrentUserAccounts.txt");
     rename("temp.txt", "CurrentUserAccounts.txt");
     textFile.close();

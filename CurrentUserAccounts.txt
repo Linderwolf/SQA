@@ -1,6 +1,5 @@
-admin           AA 000000.00
-fullstandard    FS 000080.01
-buystandard     BS 001019.99
-sellstandard    SS 000006.66
-JohnDoe         BS 000000.00
+admin           AA 001899.89
+fullstandard    FS 000101.00
+buystandard     BS 000080.01
+sellstandard    SS 000119.99
 END

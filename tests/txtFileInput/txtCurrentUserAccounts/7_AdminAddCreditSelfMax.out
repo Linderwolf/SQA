@@ -1,0 +1,8 @@
+admin           AA 000999.99
+fullstandard    FS 000100.00
+buystandard     BS 000099.00
+sellstandard    SS 000101.00
+BSUser          BS 000000.00
+SSUser          SS 000000.00
+FSUser          FS 000000.00
+END

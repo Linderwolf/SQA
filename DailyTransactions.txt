@@ -1,34 +1,20 @@
-00 A  0.000000
-06 S  0.000000
-00 S  0.000000
-00 BS 1000.000000
-05 admin                 0.000000
-00 AA 0.000000
-00 FS 80.000000
-00 FS 80.000000
-00 AA 0.000000
+02 AdminUser       AA 000000.00
+00 admin           AA 000100.00
+03 
+00 buystandard     BS 000100.00
+06 admin           AA 000999.98
+00 admin           AA 000100.00
+06 BSUser          BS 000000.00
+00 BSUser          BS 000000.00
 04 
-06 sellstandard    SS 000000.00
-04 
-00 sellstandard    SS 000000.00
-04 
-04 
-00 fullstandard    FS 000080.00
-04 
-00 sellstandard    SS 000006.60
-04 
-00 admin           AA 000000.00
-04 
-00 fullstandard    FS 000080.00
-04 
-00 admin           AA 000000.00
-04 
-00 admin           AA 000000.00
-04 
-04 
-00 sellstandard    SS 000006.60
-04 
-00 sellstandard    SS 000006.60
-04 
-00 sellstandard    SS 000006.60
+00 sellstandard    SS 000100.00
+01 AdminUser       AA 000000.00
+00 admin           AA 000999.90
+02 AdminUser       AA 000000.00
+00 admin           AA 000999.90
+00 buystandard     BS 000100.00
+03 
+00 buystandard     BS 000100.00
+06 admin           AA 001899.89
+00 admin           AA 000999.90
 END
