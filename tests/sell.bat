@@ -7,11 +7,11 @@ set /a failures=0
 for /r %%F in (.\input\sell\*) do (
     echo %%~nF >> report.txt
     type %%F | ..\Vapour.exe > temp.txt
-    fc temp.txt output/sell/%%~nF.txt >> report.txt
+    fc temp.txt output/sell/%%~nF.out >> report.txt
     if errorlevel 1 (
         echo ==== %%~nF ==== failed >> report.txt
         echo ==== %%~nF ==== failed >> failureReport.txt
-	    fc temp.txt output/sell/%%~nF.txt >> failureReport.txt
+	    fc temp.txt output/sell/%%~nF.out >> failureReport.txt
         set /a failures+=1
     )
 )
