@@ -801,7 +801,7 @@ Transaction createUser(User &currentUser) // Transaction code: 1
     string whitespace;
     int whitespaceLength;
 
-    cout << "Creating new user. Please input their username:\n";
+    cout << "\nCreating new user. Please input their username:\n";
     // Username input check
     while (nameBool)
     {
