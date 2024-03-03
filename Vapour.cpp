@@ -17,6 +17,7 @@
 #include <iomanip>
 #include <sstream>
 #include <regex>
+#include <map>
 
 using namespace std;
 
@@ -25,6 +26,37 @@ using namespace std;
 #include "Game.h"
 #include "Transaction.h"
 
+map<string, float> totalCreditsAddedMap;
+
+vector<string> loadUsernamesFromFile()
+{
+    vector<string> usernames;
+    ifstream accountsFile("CurrentUserAccounts.txt");
+
+    if (accountsFile.is_open())
+    {
+        string line;
+        while (getline(accountsFile, line)) {
+            string storedUsername = line.substr(0, 15);
+            // Trim spaces from storedUsername
+            storedUsername.erase(storedUsername.find_last_not_of(" ") + 1);
+            if (storedUsername == "END")
+            {
+                accountsFile.close();
+                return usernames;
+            }
+            usernames.push_back(storedUsername);
+            
+        }
+        accountsFile.close();
+    }
+    else
+    {
+        cerr << "Error: Unable to open file CurrentUserAccounts.txt " << endl;
+    }
+
+    return usernames;
+}
 /// <summary>
 /// Compares an input string against the list of all Users.
 /// </summary>
@@ -1129,6 +1161,14 @@ Transaction addCredit(User &currentUser) // Transaction code: 6
     }
     // Validate amount input by user
     amount = getValidAmountInput(1000, "Please enter a positive amount less than or equal to $1000.00: ");
+    // Check if the totalCreditsAddedInSession limit is reached for the target user
+    if (totalCreditsAddedMap[username] + amount > 1000) {
+        std::cout << "Error: Cannot add more than $1000 in credits to " << username << "'s account in one session." << std::endl;
+        return Transaction("terminated", currentUser);
+    }
+
+    // Update totalCreditsAddedInSession for the target user
+    totalCreditsAddedMap[username] += amount;
 
     // Check if the userBalance will exceed 999 999.99 and if so, print out warning - NEED TO DO THIS?
     double userBalance = getUserBalance(username) + amount;
@@ -1284,7 +1324,12 @@ int main()
 
     // TO-DO:: Read AvailableGames File
 
+    vector<string> usernames = loadUsernamesFromFile();
+    for (const auto &username : usernames) {
+        totalCreditsAddedMap[username] = 0.0;
+    }
 
+    
     // Create a User object with the provided, valid input, and corresponding user data.
     User currentUser = User(userInput, getUserType(userInput), getUserBalance(userInput));
 
