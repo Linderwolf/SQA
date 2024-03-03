@@ -800,6 +800,7 @@ Transaction createUser(User &currentUser) // Transaction code: 1
     bool typeBool = true;
     string whitespace;
     int whitespaceLength;
+    string userPerms;
 
     cout << "\nCreating new user. Please input their username:\n";
     // Username input check
@@ -834,18 +835,22 @@ Transaction createUser(User &currentUser) // Transaction code: 1
         if (newUserType == "AA")
         {
             typeBool = false;
+            userPerms = "addcredit, buy, create, delete, list, listusers, login, logout, refund, sell";
         }
         else if (newUserType == "FS")
         {
             typeBool = false;
+            userPerms = "buy, sell, list";
         }
         else if (newUserType == "SS")
         {
             typeBool = false;
+            userPerms = "sell, list";
         }
         else if (newUserType == "BS")
         {
             typeBool = false;
+            userPerms = "buy, list";
         }
         else if (newUserType.length() > 2)
         {
@@ -885,11 +890,11 @@ Transaction createUser(User &currentUser) // Transaction code: 1
     textFile.close();
     accountsFile.close();
 
-    string permissions;
-    if (newUserType == "AA" || newUserType == "FS" || newUserType == "SS") { permissions = "Sell"; }
-    if (newUserType == "AA" || newUserType == "FS" || newUserType == "BS") { permissions = "Buy"; }
+    // string permissions;
+    // if (newUserType == "AA" || newUserType == "FS" || newUserType == "SS") { permissions = "Sell"; }
+    // if (newUserType == "AA" || newUserType == "FS" || newUserType == "BS") { permissions = "Buy"; }
 
-    cout << "User " + newUsername + " successfully created! Permissions: " + permissions + "\n";
+    cout << "User " + newUsername + " successfully created! Permissions: " + userPerms + "\n";
 
     // Create an instance of the newly created user to pass to the Transaction, for reporting.
     User newUser(newUsername, newUserType, 0);
