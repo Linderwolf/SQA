@@ -21,7 +21,8 @@ class Transaction
 
 	#pragma region "constructors"
 
-		/*
+		/*	Redundant Constructors
+		* 
 		/// <summary>
 		/// Parameterized Constructor of a Transaction Object, given a transaction name, and the current user.
 		/// </summary>
@@ -71,6 +72,7 @@ class Transaction
 			relevantGame = optionalGame;
 		}
 		*/
+
 		/// <summary>
 		/// Parameterized Constructor of a Transaction Object, given a transaction code, two users and no games.
 		/// </summary>

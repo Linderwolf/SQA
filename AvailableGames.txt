@@ -1,2 +1,13 @@
-KILLME                     admin           666.65
+Stardew Valley             sellstandard    025.00
+Tetris Effect              sellstandard    020.00
+Valheim                    fullstandard    029.99
+Terraria                   fullstandard    019.99
+DOOM II                    sellstandard    006.66
+Lunacid                    sellstandard    019.99
+Minecraft                  sellstandard    004.99
+Tabletop Simulator         admin           019.99
+Cult of the Lamb           fullstandard    049.50
+Bastion                    admin           000.01
+A Hat in Time              admin           029.99
+Risk of Rain II            sellstandard    019.99
 END

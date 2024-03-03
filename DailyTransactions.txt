@@ -1,3 +1,30 @@
+00 A  0.000000
+06 S  0.000000
+00 S  0.000000
+00 BS 1000.000000
+05 admin                 0.000000
+00 AA 0.000000
+00 FS 80.000000
+00 FS 80.000000
+00 AA 0.000000
 04 
-00 admin           AA 001001.00
+06 sellstandard    SS 000000.00
+04 
+00 sellstandard    SS 000000.00
+04 
+04 
+00 fullstandard    FS 000080.00
+04 
+00 sellstandard    SS 000006.60
+04 
+00 admin           AA 000000.00
+04 
+00 fullstandard    FS 000080.00
+04 
+00 admin           AA 000000.00
+04 
+00 admin           AA 000000.00
+04 
+04 
+00 sellstandard    SS 000006.60
 END

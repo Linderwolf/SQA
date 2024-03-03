@@ -694,29 +694,22 @@ void logout(vector<Transaction> &transactions, User &currentUser)
     // Delete the "END" in the dailyTransactionsFile
     while (getline(dailyTransactionsFileIn, line))
     {
-        if (line == "END")
-        {
-            writeFile << "";
-        }
-        else
-        {
-            writeFile << line << endl;
-        }
+        if (line == "END") { writeFile << ""; }
+        else { writeFile << line << endl; }
     }
     writeFile.close();
     dailyTransactionsFileIn.close();
 
     // Replace the original file with the modified content
     remove("DailyTransactions.txt");
-    rename("tempDailyTransactions.txt", "DailyTransactions.txt");
+    if (rename("tempDailyTransactions.txt", "DailyTransactions.txt") != 0)
+        { cout << "tempDailyTransactions.txt file could not be renamed to DailyTransactions.txt"; }
 
     // Write to the appropriate files
-    ofstream availableGamesFileOut("AvailableGames.txt");        // AvailableGames.txt
-    ofstream dailyTransactionsFileOut("DailyTransactions.txt");  // DailyTransactions.txt
+    ofstream availableGamesFileOut("AvailableGames.txt", ios::app);        // AvailableGames.txt
+    ofstream dailyTransactionsFileOut("DailyTransactions.txt", ios::app);  // DailyTransactions.txt
     if (!dailyTransactionsFileOut.is_open())
-    {
-        std::cout << "Error: Unable to open DailyTransactions.txt file for writing." << endl;
-    }
+        { std::cout << "Error: Unable to open DailyTransactions.txt file for writing." << endl; }
     else
     {
         for (int i = 0; i < transactions.size(); i++)
@@ -733,11 +726,10 @@ void logout(vector<Transaction> &transactions, User &currentUser)
                         sellFlag = true;    // Flag it & Open the Available Games File
                         ofstream writeFile("tempAvailableGames.txt");
                         ifstream availableGamesFileIn("AvailableGames.txt");
-                        if (!writeFile.is_open() || !availableGamesFileIn.is_open())
-                        {
-                            std::cout << "Error: Unable to open temp file for writing, or AvailableGames.txt for reading." << endl;
-                            return;
-                        }
+                        if (!writeFile.is_open())
+                            { std::cout << "Error: Unable to open temp file for writing" << endl; return; }
+                        if (!availableGamesFileIn.is_open())
+                            { std::cout << "Error: Unable to open AvailableGames.txt for reading." << endl; return; }
                         // Remove the "END"
                         while (getline(availableGamesFileIn, line))
                         {
@@ -746,23 +738,20 @@ void logout(vector<Transaction> &transactions, User &currentUser)
                         }
                         writeFile.close();
                         availableGamesFileIn.close();
+                        availableGamesFileOut.close();
 
                         // Replace the original file with the modified content
-                        remove("AvailableGames.txt");
-                        rename("tempAvailableGames.txt", "AvailableGames.txt");
-
-                        //availableGamesFileOut.open("AvailableGames.txt", ios::app);
+                        if (remove("AvailableGames.txt") != 0)
+                            { cout << "AvailableGames.txt file could not be deleted" << endl; return; }
+                        if (rename("tempAvailableGames.txt", "AvailableGames.txt") != 0)
+                            { cout << "tempAvailableGames.txt file could not be renamed to AvailableGames.txt" << endl; return; }
+                        availableGamesFileOut.open("AvailableGames.txt", ios::app);
                     }
                     if (!availableGamesFileOut.is_open())
-                    {
-                        std::cout << "Error: Unable to open AvailableGames.txt file for reading or writing." << endl;
-                        return;
-                    }
-                    else
-                    {
-                        // Write to Available Games File
-                        availableGamesFileOut << transactions[i].toAvailableGamesString(transactions[i]) << "\n";
-                    }
+                        { std::cout << "Error: Unable to open AvailableGames.txt file for reading or writing." << endl; return; }
+                    
+                    // Write to Available Games File
+                    availableGamesFileOut << transactions[i].toAvailableGamesString(transactions[i]) << "\n";
                 }
             }
         }
@@ -1138,22 +1127,11 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     price = getValidAmountInput(999.99f, "Error! Price must be between 0 and 999.99: ");
 
     cout << "Game successfully created!" << endl;
-    // TO-DO:: Write to necessary files and test case 12
 
     Game gameToSell(currentUser, gameName, price);
 
-    /*
-    *   The below must be moved to logout()
-    *
-    *
-    ofstream availableGamesFile;
-    availableGamesFile.open("AvailableGames.txt", ios::app);
-
-    // TO-DO:: The below will not delete the "END" from the last file write
-    availableGamesFile << "\n" + gameToSell.toString(); // Should do a replace(sellGame.toString(sellGame), "END");
-    availableGamesFile << "\nEND";
-    availableGamesFile.close();
-    */
+    // Testing. Why is this not output to DailyTransactions?
+    cout << "Listed Game should be : " + gameToSell.name + " " + to_string(gameToSell.price) + " " + gameToSell.seller.name;
 
     Transaction sellGameTransaction("sell", currentUser, gameToSell);
     return sellGameTransaction;
@@ -1402,7 +1380,7 @@ int main()
     vector<Transaction> dailyTransactions; // Stores the transactions performed by a user while logged in
 
     // Prompt for username to log in.
-    cout << "\nWelcome to Vapour!\nPlease enter your Username to log in: ";
+    cout << "Welcome to Vapour!\nPlease enter your Username to log in: ";
     cin >> userInput;
     if (userInput == "exit")
     {
