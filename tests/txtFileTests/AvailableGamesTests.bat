@@ -8,29 +8,22 @@ set /a availableGamesWriteFailures=0		&:: The number of test failures found when
 set /a dailyTransactionsWriteFailures=0		&:: rem The number of test failures found when writing to DailyTransactions.txt
 
 rem for every file::
-for /r %%F in (.\txtFileInput\txtAvailableGames\*) do (
-    echo %%~nF >> report.txt							  &:: send the file name to report.txt
-    type %%F | ..\..\Vapour.exe >> reports/testing.txt				  &:: pipe the contents to the exe, write output to testing.txt
-    fc AvailableGames.txt txtFileOutput/txtAvailableGames/%%~nF.out >> report.txt &:: compare the testing file to the corresponding input file
-    
-if errorlevel 1 (
-        echo Test Failure: %%~nF >> report.txt
-	echo txtFileOutput/txtAvailableGames/&&~nF.out >> report.txt
-	echo ____________________________________
-        set /a availableGamesWriteFailures+=1
-)
-)
-rem    fc DailyTransactions.txt ./txtFileOutput\txtDailyTransactions\AvailableGamesTransactions/%%~nF.out >> report.txt
-rem    if errorlevel 1{
-rem	echo Test Failure: txtDailyTransactions\AvailableGamesTransactions/%%~nF.out >> report.txt
-rem	echo Test Output: >> report.txt
-rem	echo ../DailyTransactions.txt >> report.txt
-rem	echo ____________________________________
-rem	echo Expected Output: >> ./report.txt
-rem	echo ./txtFileOutput/txtAvailableGames/&&~nF.out >> report.txt
-rem	set /a dailyTransactionsWriteFailures+=1
-rem    )
+rem send the file name to report.txt
+rem pipe the contents to the exe, write output to testing.txt
+rem compare the testing file to the corresponding input file
+for /r %%F in (./txtFileInput/txtAvailableGames/*) do (
+    type %%F | ..\..\Vapour.exe
+    echo %%~nF >> /report/report.txt
 
-echo Write to AvailableGames.txt failures: %availableGamesWriteFailures% >> failureReport.txt
+    fc AvailableGames.txt txtFileOutput/txtAvailableGames/%%~nF.out >> /reports/report.txt
+    
+        if errorlevel 1 (
+                echo Test Failure: %%~nF >> /reports/report.txt
+                echo txtFileOutput/txtAvailableGames/&&~nF.out >> /reports/report.txt
+                echo ____________________________________
+                set /a availableGamesWriteFailures+=1
+        )
+)
+
+echo Write to AvailableGames.txt failures: %availableGamesWriteFailures% >> ./reports/failureReport.txt
 rem echo Write to AvailableGames.txt failures: %dailyTransactionsWriteFailures% >> failureReport.txt
-goto main
