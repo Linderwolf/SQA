@@ -1,5 +1,5 @@
-admin           AA 001899.89
+admin           AA 001879.80
 fullstandard    FS 000101.00
-buystandard     BS 000080.01
-sellstandard    SS 000119.99
+buystandard     BS 000078.29
+sellstandard    SS 000141.31
 END

@@ -26,7 +26,7 @@ rem	echo ../AvailableGames.txt >> report.txt
 rem	echo ../DailyTransactions.txt >> report.txt
 	echo ____________________________________
 	echo Expected Output: >> ./report.txt
-	echo ./txtFileOutput/txtAvailableGames/&&~nF.out >> ./report.txt
+	echo ./txtFileOutput/txtAvailableGames/&&~nF.out >> report.txt
 	set /a dailyTransactionsWriteFailures+=1
     )
 )
