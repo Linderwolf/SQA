@@ -2,9 +2,10 @@
 echo "starting tests"
 pause
 
-set /a failures=0
+set /a failures=0 	& :: The number of failures found in the delete tests
 
-for /r %%F in (.\input\buy\*) do (
+rem loop recursively through the input folder
+for /r %%F in (.\input\buy\*) do (			& :: for each buy file
     echo %%~nF >> report.txt
     type %%F | ..\Vapour.exe > temp.txt
     fc temp.txt output/buy/%%~nF.out >> report.txt
