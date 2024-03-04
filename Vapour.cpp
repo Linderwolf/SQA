@@ -442,6 +442,10 @@ bool shouldProceed()
     while (true)
     {
         cin >> proceed;
+        if (proceed == "exit")
+        {
+            return 0;
+        }
 
         transform(proceed.begin(), proceed.end(), proceed.begin(), ::tolower);
         if ((proceed == "y") || (proceed == "yes"))
@@ -476,6 +480,10 @@ string getValidUsernameInput(const string &prompt)
     {
         cout << prompt;
         cin >> username;
+        if (username == "exit")
+        {
+            return 0;
+        }
         validUsername = isValidUser(username);
 
         if (!validUsername)
@@ -508,7 +516,7 @@ string getValidGameName(const string &buyer, const string &seller)
 
         if (game == "exit")
         {
-            break;
+            return 0;
         }
 
         validGame = isValidGame(game);
@@ -552,6 +560,10 @@ float getValidAmountInput(float maxAmount, string errorMessage)
     while (!isFloat)
     {
         cin >> priceString;
+        if (priceString == "exit")
+        {
+            return 0;
+        }
         istringstream iss(priceString);
         try
         {
@@ -796,6 +808,10 @@ Transaction createUser(User &currentUser) // Transaction code: 1
     while (nameBool)
     {
         cin >> newUsername;
+        if (newUsername == "exit")
+        {
+            exit(0);
+        }
         if (isValidUser(newUsername))
         {
             cout << "Error! User already exists, please try again:\n";
@@ -815,6 +831,10 @@ Transaction createUser(User &currentUser) // Transaction code: 1
     while (typeBool)
     {
         cin >> newUserType;
+        if (newUserType == "exit")
+        {
+            exit(0);
+        }
 
         for (int j = 0; j < 2; j++)
         {
@@ -903,6 +923,10 @@ Transaction deleteUser(User& currentUser) // Transaction code: 2
     while (!isValidInput)
     {
         cin >> userInput;
+        if (userInput == "exit")
+        {
+            exit(0);
+        }
         if (currentUser.name == userInput)
         {
             cout << "Error! You can't delete the current user.";
@@ -995,6 +1019,10 @@ Transaction buyGame(User &currentUser) // Transaction code: 3
     do {
         
         std::getline(std::cin, gameName);
+        if (gameName == "exit")
+        {
+            exit(0);
+        }
        
         // Check if gameName is in GameCollection.txt
         validGame = isValidGame(gameName);
@@ -1026,6 +1054,10 @@ Transaction buyGame(User &currentUser) // Transaction code: 3
     {
         cout << "Please enter the seller of " + gameName + ": ";
         cin >> seller;
+        if (seller == "exit")
+        {
+            exit(0);
+        }
 
         string storedSeller = getSellerForGame(gameName);
 
@@ -1099,6 +1131,10 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     {
         cin.clear();
         getline(cin, gameName);
+        if (gameName == "exit")
+        {
+            exit(0);
+        }
         bool unique = !inStore(gameName);
         bool length = (gameName.length() <= 25);
         bool notCommand = (gameName != "login" && gameName != "logout");
@@ -1213,6 +1249,10 @@ Transaction addCredit(User &currentUser) // Transaction code: 6
         do {
             cout << "Which user would you like to add credit to? ";
             cin >> username;
+            if (username == "exit")
+            {
+                exit(0);
+            }
             validAcc = isValidUser(username);
             if (!validAcc) {
                 cout << "Error! There does not exist a user named " << username << "." << endl;
