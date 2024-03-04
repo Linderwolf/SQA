@@ -336,58 +336,61 @@ class Transaction
 				formattedString += formatTrailingSpaces(UserNameSize, userNameString, true) +
 					userTypeString + formatLeadingZeros(UserCreditSize, transactionCreditString);
 			}
-			else if (transaction.code == 03)	// Buy Transaction
+			else
 			{
-				const int GameNameSize = 19;
-				const int SellerNameSize = 15;
-				const int BuyerNameSize = 14;
-				const int PriceSize = 6;
+				if (transaction.code == 3)	// Buy Transaction
+				{
+					const int GameNameSize = 19;
+					const int SellerNameSize = 15;
+					const int BuyerNameSize = 14;
+					const int PriceSize = 6;
 
-				int stringSize;
-				string gameName;
-				string sellerName;
-				//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSSSS_UUUUUUUUUUUUUU_PPPPPP
-				// I game name 19, S seller's username 15, U buyer's username 14, P game's price
-				//
-				//		This assumes the current user to be the buyer.
-				formattedString + formatTrailingSpaces(GameNameSize, transaction.relevantGame.name, true) + 
-								  formatTrailingSpaces(SellerNameSize, transaction.relevantGame.seller.name, true) + 
-								  formatTrailingSpaces(BuyerNameSize, transaction.user.name, true) +
-								  formatLeadingZeros(PriceSize, formatCurrency(transaction.relevantGame.price));
+					int stringSize;
+					string gameName = formatTrailingSpaces(GameNameSize, transaction.relevantGame.name, true);
+					string sellerName = formatTrailingSpaces(SellerNameSize, transaction.relevantGame.seller.name, true);
+					string buyerName = formatTrailingSpaces(BuyerNameSize, transaction.user.name, true);
+					string price = formatLeadingZeros(PriceSize, formatCurrency(transaction.relevantGame.price));
+
+					//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSSSS_UUUUUUUUUUUUUU_PPPPPP
+					// I game name 19, S seller's username 15, U buyer's username 14, P game's price
+					//
+					//		This assumes the current user to be the buyer.
+
+					formattedString += gameName + sellerName + buyerName + price;
+				}
+				if (transaction.code == 4)	// Sell Transaction
+				{
+					const int GameNameSize = 19;
+					const int SellerNameSize = 13;
+					const int PriceSize = 6;
+					//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSS_PPPPPP
+					// Game Name, Seller's Name, Price
+					formattedString += formatTrailingSpaces(GameNameSize, transaction.relevantGame.name, true) +
+						formatTrailingSpaces(SellerNameSize, transaction.relevantGame.seller.name, true) +
+						formatLeadingZeros(PriceSize, formatCurrency(transaction.relevantGame.price));
+				}
+				if (transaction.code == 5)	// refund transaction
+				{
+					const int BuyerNameSize = 15;
+					const int SellerNameSize = 15;
+					const int CreditSize = 9;
+
+					/*
+					  Form: XX_UUUUUUUUUUUUUUU_SSSSSSSSSSSSSSS_CCCCCCCCC
+					  UUUUUUUUUUUUUUU is the buyer’s username
+					  SSSSSSSSSSSSSSS is the seller’s username
+
+					 This is a privileged transacion
+					 Therefore an admin is the current user, crediting a buyer from the seller's account
+						our Transaction Object must thus have an optional otherUser parameter for the buyer.
+						The seller can be referenced by the Game object.
+					*/
+
+					formattedString += formatTrailingSpaces(BuyerNameSize, transaction.otherUser.name, true) +
+						formatTrailingSpaces(SellerNameSize, transaction.relevantGame.seller.name, true) +
+						formatLeadingZeros(CreditSize, formatCurrency(transaction.relevantGame.price));
+				}
 			}
-			else if (transaction.code == 04)	// Sell Transaction
-			{
-				const int GameNameSize = 19;
-				const int SellerNameSize = 13;
-				const int PriceSize = 6;
-				//Form: XX_IIIIIIIIIIIIIIIIIII_SSSSSSSSSSSSS_PPPPPP
-				// Game Name, Seller's Name, Price
-				formattedString + formatTrailingSpaces(GameNameSize, transaction.relevantGame.name, true) +
-								  formatTrailingSpaces(SellerNameSize, transaction.relevantGame.seller.name, true) +
-								  formatLeadingZeros(PriceSize, formatCurrency(transaction.relevantGame.price));
-			}
-			else if (transaction.code == 5)	// refund transaction
-			{
-				const int BuyerNameSize = 15;
-				const int SellerNameSize = 15;
-				const int CreditSize = 9;
-
-				/*
-				  Form: XX_UUUUUUUUUUUUUUU_SSSSSSSSSSSSSSS_CCCCCCCCC
-				  UUUUUUUUUUUUUUU is the buyer’s username
-				  SSSSSSSSSSSSSSS is the seller’s username
-
-				 This is a privileged transacion
-				 Therefore an admin is the current user, crediting a buyer from the seller's account
-					our Transaction Object must thus have an optional otherUser parameter for the buyer. 
-					The seller can be referenced by the Game object.
-				*/
-
-				formattedString + formatTrailingSpaces(BuyerNameSize, transaction.otherUser.name, true) + 
-								  formatTrailingSpaces(SellerNameSize, transaction.relevantGame.seller.name, true) + 
-								  formatLeadingZeros(CreditSize, formatCurrency(transaction.relevantGame.price));
-			}
-			else { formattedString += transaction.name + " Must not have transaction code logic implemented in the Transaction class."; }
 			return formattedString;
 		}
 

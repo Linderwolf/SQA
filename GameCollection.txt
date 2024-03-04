@@ -1,6 +1,8 @@
-Stardew Valley             buystandard
 Stardew Valley             admin
 Stardew Valley             fullstandard
 Tetris Effect              buystandard
 Tetris Effect              fullstandard
+Tetris Effect              admin           
+Lunacid                    buystandard     
+DOOM II                    buystandard     
 END

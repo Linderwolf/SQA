@@ -1175,6 +1175,7 @@ Transaction sellGame(User &currentUser) // Transaction code: 4
     cout << "Listed Game should be : " + gameToSell.name + " " + to_string(gameToSell.price) + " " + gameToSell.seller.name;
 
     Transaction sellGameTransaction("sell", currentUser, gameToSell);
+
     return sellGameTransaction;
 };
 /// <summary>
