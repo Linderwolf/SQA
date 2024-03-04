@@ -1,4 +1,4 @@
-==== 0_noSessionTwoValidUsernames ==== failed 
+0_noSessionTwoValidUsernames 				                
 Comparing files testing.txt and OUTPUT/LOGIN/0_NOSESSIONTWOVALIDUSERNAMES.OUT
 Resync Failed.  Files are too different.
 ***** testing.txt
@@ -109,7 +109,8 @@ buystandard sellstandard is not a valid username.
 Please enter a valid username:
 *****
 
-==== 10_notHaveGameValid ==== failed 
+==== 0_noSessionTwoValidUsernames ==== failed 
+10_notHaveGameValid 				            
 Comparing files testing.txt and OUTPUT/BUY/10_NOTHAVEGAMEVALID.OUT
 Resync Failed.  Files are too different.
 ***** testing.txt
@@ -221,7 +222,11 @@ Please enter the name of the game you would like to buy:
 Please enter the seller of Tetris Effect: 
 *****
 
-==== 0_noSessionTwoValidUsernames ==== failed 
+==== 10_notHaveGameValid ==== failed 
+10_notHaveGameValid 				            
+0_noSessionTwoValidUsernames 				                
+10_notHaveGameValid 				            
+0_noSessionTwoValidUsernames 				                
 Comparing files testing.txt and OUTPUT/LOGIN/0_NOSESSIONTWOVALIDUSERNAMES.OUT
 Resync Failed.  Files are too different.
 ***** testing.txt
@@ -332,3 +337,5 @@ buystandard sellstandard is not a valid username.
 Please enter a valid username:
 *****
 
+==== 0_noSessionTwoValidUsernames ==== failed 
+10_notHaveGameValid 				            

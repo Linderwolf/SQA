@@ -2,6 +2,7 @@
 echo Starting AvailableGames.txt Tests
 pause
 
+rem copy fresh versions of the .txt files
 call refreshFilesFromBackup.bat
 
 set /a availableGamesWriteFailures=0		&:: The number of test failures found when writing to AvailableGames.txt
