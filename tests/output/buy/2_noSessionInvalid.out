@@ -1,2 +1,4 @@
-Hello1234 is not a valid command. Please enter a valid transaction code: login
-buy is not a valid command. Please enter a valid transaction code: login
+Welcome to Vapour!
+Please enter your Username to log in: Hello1234 is not a valid username.
+Please enter a valid username: buy is not a valid username.
+Please enter a valid username: 
