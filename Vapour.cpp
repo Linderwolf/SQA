@@ -1384,12 +1384,11 @@ void inputLogic(string transactionName, User &currentUser, vector<Transaction> &
     {
         listUsers();
     }
-
-    // All users, except buystandard can refund and sell
-    else if (transactionName == "refund" && currentUser.type != "BS")
+    else if (transactionName == "refund" && currentUser.type == "AA")
     {
         dailyTransactions.push_back(refundGame(currentUser));
     }
+    // All users, except buystandard can sell
     else if (transactionName == "sell" && currentUser.type != "BS")
     {
         dailyTransactions.push_back(sellGame(currentUser));
