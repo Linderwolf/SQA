@@ -527,7 +527,7 @@ string getValidGameName(const string &buyer, const string &seller)
         }
 
         // Buyer doesn’t have the specified game in their game collection
-        if (!isInCollection(game, buyerUser)) {
+        else if (!isInCollection(game, buyerUser)) {
             validGame = false;
             cout << "Error: " << buyer << " does not have " << game << " in their game collection." << endl;
         }
@@ -619,7 +619,6 @@ string getValidRefundAmount(const string &game)
         string price = getGamePrice(game);
 
         if (stof(price) != (amount)) {
-            cout << "price stored is: " << price << " amount input is: " << amount << endl;
             cout << "Error: Credit value inconsistent with the value the game was bought for. Please enter the credit value of the game." << endl;
             validAmount = false;
         }
