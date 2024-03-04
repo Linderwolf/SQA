@@ -3,4 +3,4 @@ Please enter your Username to log in:
 Welcome admin! Please enter a transaction: 
 How much credit would you like to add to your account?
 Success! $1000.00 has been added to your account.
-Error! The maximum credit in this session has been exceeded.
+Error: Cannot add more than $1000 in credits to fullstandard's account in one session.
