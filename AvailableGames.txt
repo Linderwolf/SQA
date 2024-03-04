@@ -10,5 +10,4 @@ Cult of the Lamb           fullstandard    049.50
 Bastion                    admin           000.01
 A Hat in Time              admin           029.99
 Risk of Rain II            sellstandard    019.99
-Psuedoregalia              sellstandard    019.99
 END
