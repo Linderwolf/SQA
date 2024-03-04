@@ -4,20 +4,13 @@ pause
 
 set /a failures=0 	& :: The number of failures found in the delete tests
 
-<<<<<<< HEAD
 rem loop recursively through the input folder
-for /r %%F in (.\input\delete\*) do (			& :: for each delete file
-    echo %%~nF >> report.txt				& :: send the file name to report.txt
-    type %%F | ..\Vapour.exe > temp.txt			& :: pipe the contents to the exe, write output to temp.txt
-    fc temp.txt output/delete/%%~nF.out >> report.txt	& :: compare the temp file to the corresponding input file
-							& :: record comparison in report.txt
+for /r %%F in (.\input\delete\*) do (			            & :: for each delete file
+    echo %%~nF >> report.txt				                & :: send the file name to report.txt
+    type %%F | ..\Vapour.exe > testing.txt		            & :: pipe the contents to the exe, write output to testing.txt
+    fc testing.txt output/delete/%%~nF.out >> report.txt	& :: compare the testing file to the corresponding input file
+							                                & :: record comparison in report.txt
 rem Format the report					
-=======
-for /r %%F in (.\input\delete\*) do (
-    echo %%~nF >> report.txt
-    type %%F | ..\Vapour.exe > testing.txt
-    fc testing.txt output/delete/%%~nF.out >> report.txt
->>>>>>> 3295b81a3db74eada736df6107337244cb33fc2c
     if errorlevel 1 (
 	& :: Record the tests that failed.
         echo ==== %%~nF ==== failed >> report.txt
