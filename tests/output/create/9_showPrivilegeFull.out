@@ -4,3 +4,6 @@ Welcome admin! Plese enter a transaction:
 Creating new user. Please input their username
 Username accepted! What type of user are they? (AA,FS,SS,BS):
 User full12345 successfully created! Permissions: buy, sell, list
+Input another transaction: Writing to Daily Transaction File...
+Thank you for using Vapour.
+Goodbye.
