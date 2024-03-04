@@ -1,0 +1,5 @@
+Stardew Valley             admin
+Stardew Valley             fullstandard
+Tetris Effect              buystandard       
+Tetris Effect              fullstandard    
+END
