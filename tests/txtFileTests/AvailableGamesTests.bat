@@ -1,23 +1,24 @@
 @echo off
-echo "Starting AvailableGames.txt tests"
+echo Starting AvailableGames.txt Tests
 pause
 
-set /a availableGamesWriteFailures=0
-set /a dailyTransactionsWriteFailures=0
+rem Copy the AvailableGames.txt, DailyTransactions.txt, etc. files.
+call refreshFilesFromBackup.bat
+
+set /a availableGamesWriteFailures=0		// The number of failures Writing to Available Games
+set /a dailyTransactionsWriteFailures=0		// The number of failures writing to Daily Transactions
 
 for /r %%F in (.\txtFileInput\txtAvailableGames\*) do (
     echo %%~nF >> report.txt
-    type %%F | ..\..\Vapour.exe > temp.txt
-    fc ../AvailableGames.txt ./txtFileOutput/txtAvailableGames/%%~nF.out >> report.txt
-    if errorlevel 1 (
+    type %%F | ..\..\Vapour.exe > testing.txt
+    fc ../../AvailableGames.txt txtFileOutput/txtAvailableGames/%%~nF.out >> report.txt
+    
+if errorlevel 1 (
         echo Test Failure: %%~nF >> report.txt
-        echo Test Output: >> report.txt 
-rem	echo ../AvailableGames.txt >> report.txt
+	echo txtFileOutput/txtAvailableGames/&&~nF.out >> report.txt
 	echo ____________________________________
-	echo Expected Output: >> report.txt
-	echo ./txtFileOutput/txtAvailableGames/&&~nF.out >> report.txt
         set /a availableGamesWriteFailures+=1
-    )
+)
 
 rem    fc ../DailyTransactions.txt ./txtFileOutput\txtDailyTransactions\AvailableGamesTransactions/%%~nF.out >> report.txt
 rem    if errorlevel 1{
