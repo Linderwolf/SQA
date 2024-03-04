@@ -9,7 +9,7 @@ for /r %%F in (.\input\buy\*) do (
     echo %%~nF >> report.txt				            &:: for each buy file send the file name to report.txt
     type %%F | ..\Vapour.exe > testing.txt		        &:: pipe the contents to the exe, write output to testing.txt
     fc testing.txt output/buy/%%~nF.out >> report.txt	&:: compare the testing file to the corresponding input file
-							                            rem record comparison in report.txt    
+							                            rem record comparison in report.txt
     rem Format the report   
     if errorlevel 1 (
         rem Record the tests that failed.
