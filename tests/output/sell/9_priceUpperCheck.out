@@ -3,4 +3,4 @@ Please enter your Username to login:
 Welcome admin! Plese enter a transaction:
 Creating new listing. Enter the game's title:
 Enter the game's price:
-Error! Input must be less than 1000.00. (e.g. 999.99, 567.89, 13.99, 12.34):
+Error! Price must be between 0 and 999.99: 
