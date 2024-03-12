@@ -1,6 +1,11 @@
 # SQA Phase 4
 # Matthew, Ajaane, Peter, Russell
 
+# Classes
+import UserManager
+import GameManager
+import CollectionManager
+
 #Transaction Functions
 
 from TransactionFunctions import logout
