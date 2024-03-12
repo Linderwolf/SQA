@@ -1,6 +1,5 @@
 class GameManager:
-    def __init__ (self,filename):
-        self.filename = filename
+    filename = "AvailableGames.txt"
     
     def addGame():
         return

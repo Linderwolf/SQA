@@ -1,6 +1,5 @@
 class CollectionManager:
-    def __init__ (self,filename):
-        self.filename = filename
+    filename = "GameCollection.txt"
     
     def addOwner():
         return

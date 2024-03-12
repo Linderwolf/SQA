@@ -1,8 +1,11 @@
 class UserManager:
-    def __init__ (self,filename):
-        self.filename = filename
+    filename = "CurrentUserAccounts.txt"
 
-    def createUser(username, usertype, credit):
+    def createUser(self, username, usertype, credit):
+        print(self.filename)
+        print(username)
+        print(usertype)
+        print(credit)
         return
     
     def deleteUser():
