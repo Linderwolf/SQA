@@ -31,12 +31,12 @@ for transaction in dailyTransactionFile:
     transactionCode = getTransactionCode(transaction)
     match transactionCode:
         case "00": logout(transaction)
-        case "01": create(transaction)
-        case "02": delete(transaction)
-        case "03": sell(transaction)
-        case "04": buy(transaction)
-        case "05": refund(transaction)
-        case "06": addCredit(transaction)
+        case "01": create(transaction) # Russell
+        case "02": delete(transaction) # Matthew
+        case "03": sell(transaction) # Peter
+        case "04": buy(transaction) # Ajaane
+        case "05": refund(transaction) # Ajaane
+        case "06": addCredit(transaction) # Matthew
         
     
  
