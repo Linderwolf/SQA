@@ -2,9 +2,9 @@
 # Matthew, Ajaane, Peter, Russell
 
 # Classes
-import UserManager
-import GameManager
-import CollectionManager
+from UserManager import UserManager
+from GameManager import GameManager
+from CollectionManager import CollectionManager
 
 # Helper Functions
 from HelperFunctions import parseMost
@@ -16,7 +16,7 @@ def logout(transaction):
     return
 def create(transaction):
     transactionCode,newUser,userType,credit = parseMost(transaction)
-    print(newUser)
+    UserManager.createUser(UserManager,newUser,userType,credit)
     return  
 def delete(transaction):
     return  

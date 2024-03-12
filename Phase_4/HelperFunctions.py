@@ -2,9 +2,9 @@
 # Matthew, Ajaane, Peter, Russell
 
 # Classes
-import UserManager
-import GameManager
-import CollectionManager
+from UserManager import UserManager
+from GameManager import GameManager
+from CollectionManager import CollectionManager
 
 def getTransactionCode(transaction):
     return transaction[:2]
