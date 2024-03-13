@@ -6,7 +6,7 @@ from UserManager import UserManager
 from GameManager import GameManager
 from CollectionManager import CollectionManager
 
-#Transaction Functions
+# Transaction Functions
 
 from TransactionFunctions import logout
 from TransactionFunctions import create
@@ -37,9 +37,9 @@ for transaction in dailyTransactionFile:
         case "04": buy(transaction) # Ajaane
         case "05": refund(transaction) # Ajaane
         case "06": addCredit(transaction) # Matthew
-        
-    
- 
+
+dailyTransactionFile.close()
+
 # for create 01, delete 02, add credit 06, and end session / logout 00
 # XX_UUUUUUUUUUUUUUU_TT_CCCCCCCCC
 # X is two digit code

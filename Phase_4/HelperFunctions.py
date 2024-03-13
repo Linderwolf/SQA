@@ -10,19 +10,21 @@ def getTransactionCode(transaction):
     return transaction[:2]
 
 def parseMost(line): # for create, delete, add credit, and logout
-    transactionCode,newUser,userType,credit = line.split()
-    # print("new username is: " + newUser)
-    # print("user type is: " + userType)
-    return transactionCode,newUser,userType,credit
+    newUser, userType, credit = line.split()[1:]
+    return newUser, userType, credit
 
 def parseRefund(line):
-    transactionCode,buyer,seller,credit = line.split()
-    return transactionCode,buyer,seller,credit
+    buyer, seller, credit = line.split()[1:]
+    return buyer, seller, credit
 
 def parseSell(line):
-    transactionCode,gameName,seller,gamePrice = line.split()
-    return transactionCode,gameName,seller,gamePrice
+    gameName,seller,gamePrice = line.split()[1:]
+    return gameName, seller, gamePrice
 
 def parseBuy(line):
-    transactionCode,gameName,seller,buyer,gamePrice = line.split()
-    return transactionCode,gameName,seller,buyer,gamePrice
+    gameName, seller, buyer, gamePrice = line.split()[1:]
+    return gameName, seller, buyer, gamePrice
+
+def getUpdatedBalanceString(line, credit):
+    updatedBalance = float(line[-9:]) + float(credit)
+    return "0" * (9 - len(str(updatedBalance))) + str(updatedBalance)
