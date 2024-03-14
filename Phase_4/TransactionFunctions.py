@@ -23,8 +23,10 @@ availableGameFilePath = "AvailableGames.txt"
 def logout(transaction):
     return
 def create(transaction):
+    userManager = UserManager.UserFileManager()
     newUser, userType, credit = parseMost(transaction)
-    UserManager.createUser(UserManager,newUser,userType,credit)
+    userManager.addUser(userManager,newUser,userType,credit)
+    userManager.writeToFile(userManager,userAccountsFilePath)
     return  
 def delete(transaction):
     user, userType, credit = parseMost(transaction)
