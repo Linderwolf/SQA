@@ -17,6 +17,11 @@ class AvailableGamesFileManager:
                 return game.price
         return None  # Return None if the game name is not found
 
+    def addGame(self, gameName, sellerName, price):
+        newGame = Game(gameName, sellerName, price)
+        self.availableGames.append(newGame)
+        print(f"Game {newGame} added successfully.")
+
     def readAvailableGames(self, filename):
         with open(filename, 'r') as file:
             for line in file:

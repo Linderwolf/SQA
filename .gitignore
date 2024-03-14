@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Log Files
+AvailableGames.txt
+CurrentUserAccounts.txt
+DailyTransactions.txt
+GameCollection.txt

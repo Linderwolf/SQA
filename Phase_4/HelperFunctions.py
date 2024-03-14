@@ -64,9 +64,18 @@ def parseRefund(line):
     return transactionCode, gameName, buyer, seller, credit
 
 def parseSell(line):
-    gameName,seller,gamePrice = line.split()[1:]
-    return gameName, seller, gamePrice
-
+    pattern = re.compile(r'^(\d{2})) (.{19}) (.{13}) (\d+\.\d{2})$')
+    match = pattern.match(line)
+    if match:
+        transactionCode, gameName, seller, gamePrice = match.groups()
+        gameName = gameName.rstrip() #gameName.match.group(2).strip()
+        seller = seller.rstrip()
+        gamePrice = float(gamePrice)
+    else:
+        print(f"Invalid transaction format: |{line}|")
+        return None
+    return transactionCode, gameName, seller, gamePrice
+    
 def parseBuy(line):
     pattern = re.compile(r'^(\d{2}) (.{19}) (.{15}) (.{14}) (\d+\.\d{2})$')
     match = pattern.match(line)
