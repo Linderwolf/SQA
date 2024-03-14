@@ -2,9 +2,9 @@
 # Matthew, Ajaane, Peter, Russell
 
 # Classes
-from UserManager import UserManager
-from GameManager import GameManager
-from CollectionManager import CollectionManager
+import UserManager
+import GameManager
+import CollectionManager
 
 # Transaction Functions
 
