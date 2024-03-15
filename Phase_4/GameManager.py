@@ -30,10 +30,10 @@ class AvailableGamesFileManager:
                     name, owner, price = result
                     self.availableGames.append(Game(name, owner, float(price)))
 
-    def write_to_file(self, filename):
+    def writeToFile(self, filename):
         with open(filename, 'w') as file:
             for game in self.availableGames:
-                line = f"{game.name:<20} {game.owner:<15} {game.price:.2f}\n"
+                line = f"{game.name:<20} {game.owner:<15} {game.price:0.2f}\n"
                 file.write(line)
 
     def parseGameLine(self, line):
@@ -45,9 +45,6 @@ class AvailableGamesFileManager:
             gameName = match.group(1).strip()
             owner = match.group(2).strip()
             price = float(match.group(3))
-            # print(f"Game Name: {gameName}")
-            # print(f"Owner: {owner}")
-            # print(f"Price: {price:.2f}")
         else:
             print(f"Invalid format: {line}")
             return None

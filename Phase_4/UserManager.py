@@ -34,9 +34,9 @@ class UserFileManager:
             file.write("END")
         
 
-    def addUser(self, username, user_type, credit):
-        new_user = User(username, user_type, credit)
-        self.users.append(new_user)
+    def addUser(self, username, userType, credit):
+        newUser = User(username, userType, credit)
+        self.users.append(newUser)
         print(f"User {username} added successfully.")
 
     def removeUser(self, username):
@@ -47,10 +47,10 @@ class UserFileManager:
                 return
         print(f"User {username} not found.")
 
-    def updateUsercredit(self, username, new_credit):
+    def updateUsercredit(self, username, newCredit):
         for user in self.users:
             if user.username == username:
-                user.credit = new_credit
+                user.credit = newCredit
                 print(f"User {username}'s credit updated successfully.")
                 return
         print(f"User {username} not found.")

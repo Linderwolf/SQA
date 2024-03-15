@@ -35,7 +35,7 @@ def sell(transaction):
     gameManager = GameManager.AvailableGamesFileManager()
     transactionCode, gameName, seller, gamePrice = parseSell(transaction)
     gameManager.addGame()
-    gameManager.write_to_file(gameManager,availableGameFilePath)
+    gameManager.writeToFile(gameManager,availableGameFilePath)
     return  
 def buy(transaction):
     # Read user data from the CurrentUserAccounts.txt and store it as a list of User objects in userManager

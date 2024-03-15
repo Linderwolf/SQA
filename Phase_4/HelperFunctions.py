@@ -13,11 +13,11 @@ def appendToGameCollection(gameName, seller):
     with open('GameCollection.txt', 'r') as file:
         lines = file.readlines()
     # Modify the content by adding a new line
-    new_line = f"{gameName:<26} {seller:<15}\n"
+    newLine = f"{gameName:<26} {seller:<15}\n"
     # Find the index of the line with 'END'
-    end_index = lines.index('END')
+    endIndex = lines.index('END')
     # Insert the new line before the line with 'END'
-    lines.insert(end_index, new_line)
+    lines.insert(endIndex, newLine)
     file.close()
 
     # Write the modified content back to the file
@@ -31,13 +31,13 @@ def removeGameFromCollection(lineToRemove):
 
     # Find the index of the line to remove
     try:
-        index_to_remove = lines.index(lineToRemove)
+        indexToRemove = lines.index(lineToRemove)
     except ValueError:
         print(f"Error: Line '{lineToRemove.strip()}' not found in the file.")
         return
 
     # Remove the line
-    lines.pop(index_to_remove)
+    lines.pop(indexToRemove)
 
     # Write the modified content back to the file
     with open('GameCollection.txt', 'w') as file:
@@ -91,7 +91,6 @@ def parseBuy(line):
         print(f"Invalid transaction format: |{line}|")
         return None
 
-    #print(f'transCode: {transactionCode} game: {gameName} seller: {seller} buyer: {buyer} gamePrice: {gamePrice}')
     return transactionCode, gameName, seller, buyer, gamePrice
 
 def getUpdatedBalanceString(line, credit):
