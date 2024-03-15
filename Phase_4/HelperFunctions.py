@@ -1,10 +1,6 @@
 # SQA Phase 4
 # Matthew, Ajaane, Peter, Russell
 import re
-# Classes
-import UserManager
-import GameManager
-import CollectionManager
 
 def getTransactionCode(transaction):
     return transaction[:2]
@@ -25,10 +21,11 @@ def appendToGameCollection(gameName, seller):
         file.writelines(lines)
     file.close()
     
-def removeGameFromCollection(lineToRemove):
+def removeGameFromCollection(gameName, buyer):
     with open('GameCollection.txt', 'r') as file:
         lines = file.readlines()
 
+    lineToRemove = f"{gameName:<26} {buyer:<15}\n"
     # Find the index of the line to remove
     try:
         indexToRemove = lines.index(lineToRemove)
@@ -42,6 +39,7 @@ def removeGameFromCollection(lineToRemove):
     # Write the modified content back to the file
     with open('GameCollection.txt', 'w') as file:
         file.writelines(lines)
+
 
 # Parsing Methods
 
@@ -92,7 +90,3 @@ def parseBuy(line):
         return None
 
     return transactionCode, gameName, seller, buyer, gamePrice
-
-def getUpdatedBalanceString(line, credit):
-    updatedBalance = float(line[-9:]) + float(credit)
-    return "0" * (9 - len(str(updatedBalance))) + str(updatedBalance)
