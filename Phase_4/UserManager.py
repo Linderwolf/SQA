@@ -47,10 +47,10 @@ class UserFileManager:
                 return
         print(f"User {username} not found.")
 
-    def updateUsercredit(self, username, newCredit):
+    def updateUsercredit(self, username, creditChange):
         for user in self.users:
             if user.username == username:
-                user.credit = newCredit
+                user.credit += creditChange
                 print(f"User {username}'s credit updated successfully.")
                 return
         print(f"User {username} not found.")
