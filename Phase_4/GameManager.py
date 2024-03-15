@@ -47,7 +47,7 @@ class AvailableGamesFileManager:
     def writeToFile(self, filename):
         with open(filename, 'w') as file:
             for game in self.availableGames:
-                line = f"{game.name:<20} {game.seller:<15} {game.price:0.2f}\n"
+                line = f"{game.name:<26} {game.seller:<15} {game.price:06.2f}\n"
                 file.write(line)
 
     # Parses a line from the AvailableGames.txt, extracting information such as the game name, owner, and price
