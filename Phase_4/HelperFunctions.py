@@ -5,11 +5,11 @@ import re
 def getTransactionCode(transaction):
     return transaction[:2]
 
-def appendToGameCollection(gameName, seller):
+def appendToGameCollection(gameName, owner):
     with open('GameCollection.txt', 'r') as file:
         lines = file.readlines()
     # Modify the content by adding a new line
-    newLine = f"{gameName:<26} {seller:<15}\n"
+    newLine = f"{gameName:<26} {owner:<15}\n"
     # Find the index of the line with 'END'
     endIndex = lines.index('END')
     # Insert the new line before the line with 'END'
@@ -21,11 +21,11 @@ def appendToGameCollection(gameName, seller):
         file.writelines(lines)
     file.close()
     
-def removeGameFromCollection(gameName, buyer):
+def removeGameFromCollection(gameName, owner):
     with open('GameCollection.txt', 'r') as file:
         lines = file.readlines()
 
-    lineToRemove = f"{gameName:<26} {buyer:<15}\n"
+    lineToRemove = f"{gameName:<26} {owner:<15}\n"
     # Find the index of the line to remove
     try:
         indexToRemove = lines.index(lineToRemove)
