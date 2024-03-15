@@ -2,41 +2,31 @@
 # Matthew, Ajaane, Peter, Russell
 
 # Classes
-import UserManager
-import GameManager
-import CollectionManager
+from UserManager import UserFileManager
+from GameManager import AvailableGamesFileManager
+from TransactionFunctions import TransactionManager
 
-# Transaction Functions
+# Specify the file paths for CurrentUserAccounts.txt, AvailableGames.txt, and DailyTransactions.txt
+userAccountsFilePath = "CurrentUserAccounts.txt"
+availableGameFilePath = "AvailableGames.txt"
+dailyTransactionFilePath = "DailyTransactions.txt"
 
-from TransactionFunctions import logout
-from TransactionFunctions import create
-from TransactionFunctions import delete
-from TransactionFunctions import sell
-from TransactionFunctions import buy
-from TransactionFunctions import refund
-from TransactionFunctions import addCredit
+# Create instances of FileManager and TransactionManager objects
+userFileManager = UserFileManager()
+gameFileManager = AvailableGamesFileManager()
+transactionManager = TransactionManager(userFileManager, gameFileManager)
 
-# Helper Functions
+# Read user data from the file
+userFileManager.readFromFile(userAccountsFilePath)
+# Read available games data from the file
+gameFileManager.readAvailableGames(availableGameFilePath)
 
-from HelperFunctions import getTransactionCode
-
-# Main
-
-dailyTransactionFile = open("DailyTransactions.txt", "r")
-
-for transaction in dailyTransactionFile:
-    if transaction == "END":
-        break
-    
-    transactionCode = getTransactionCode(transaction)
-    match transactionCode:
-        case "00": logout(transaction)
-        case "01": create(transaction) # Russell
-        case "02": delete(transaction) # Matthew
-        case "03": sell(transaction) # Peter
-        case "04": buy(transaction) # Ajaane
-        case "05": refund(transaction) # Ajaane
-        case "06": addCredit(transaction) # Matthew
+# Process daily transactions
+with open(dailyTransactionFilePath, "r") as dailyTransactionFile:
+    for transaction in dailyTransactionFile:
+        if transaction.strip() == "END":
+            break
+        transactionManager.processTransaction(transaction)
 
 dailyTransactionFile.close()
 
@@ -72,4 +62,3 @@ dailyTransactionFile.close()
 # U is buyer username
 # P is game price
 # - is a space
-
