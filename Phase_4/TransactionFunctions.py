@@ -41,18 +41,15 @@ class TransactionManager:
         self.userManager.writeToFile(userAccountsFilePath)
 
     def delete(self, transaction):
-        transactionCode, user, userType, credit = parseMost(transaction)
-    
-        self.userManager.readFromFile(userAccountsFilePath)
+        user, userType, credit = parseMost(transaction)
         self.userManager.removeUser(user)
-        self.userManager.writeToFile()
-        
+        self.userManager.writeToFile(userAccountsFilePath)
 
-        self.gameManager.readAvailableGames(availableGameFilePath)
         usersGames = self.gameManager.getUsersGames(user)
         for game in usersGames:
+            print(f"Removing {game} from {user}")
             self.gameManager.removeGame(game)
-
+        self.gameManager.writeToFile(availableGameFilePath)
 
     def sell(self, transaction):
         transactionCode, gameName, seller, gamePrice = parseSell(transaction)
@@ -79,10 +76,8 @@ class TransactionManager:
         removeGameFromCollection(lineToRemove)   
 
     def addCredit(self, transaction):
-        transactionCode, user, userType, credit = parseMost(transaction)
-        self.userManager.readFromFile(userAccountsFilePath)
-        
-        self.userManager.updateUserBalance(user, credit)
+        user, userType, credit = parseMost(transaction)
+        self.userManager.updateUsercredit(user, float(credit))
         self.userManager.writeToFile(userAccountsFilePath)
         
         
