@@ -5,12 +5,64 @@
 # 
 # Authors: Matthew, Ajaane, Peter, Russell
 class User:
+    """
+    This class is designed to represent the users in the system.
+
+    ...
+
+    Attributes
+    ----------
+    username : str
+        the username of the user
+    userType : str
+        the type of account the user owns
+    credit : str
+        the user's credit balance
+    """
+    
     def __init__(self, username, userType, credit):
         self.username = username
         self.userType = userType
         self.credit = credit
 
 class UserFileManager:
+    """
+    The UserFileManager class is responsible for managing user-related operations 
+    and for file management for the CurrentUserAccounts.txt file.
+    
+    ...
+
+    Attributes
+    ----------
+    users : List[User]
+        a list of User objects
+
+    Methods
+    -------
+    getUserByUsername(username)
+        Getter function that returns a User object with the given username
+        
+    readFromFile(filename)
+        Reads user data from CurrentUserAccounts.txt and populates the users
+        list with User objects created from the data
+    
+    writeToFile(filename)
+        Writes user data from the users list to the specified file. 
+        Each user's data is formatted and written as a separate line in the file
+        
+        
+    addUser(username, userType, credit)
+        Creates new User object with specified User data and adds it to the user list
+        
+    removeUse(username)
+        Removes the User with the specified username from the user list
+        
+    updateUsercredit
+        Updates the credit of the User with the specified username in the user list by
+        adding the creditChange amount
+
+    """
+    
     def __init__(self):
         self.users = []
         

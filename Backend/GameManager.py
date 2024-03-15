@@ -8,6 +8,22 @@
 import re
 
 class Game:
+    """
+    This class is designed to represent the games in the system.
+
+    ...
+
+    Attributes
+    ----------
+    name : str
+        the username of the game
+    price : float
+        the price of the game
+    seller : str
+        the username of the seller of the game
+
+    """
+    
     # A constructor creating a new Game object with the specified values
     def __init__(self, name, seller, price):
         self.name = name
@@ -16,6 +32,47 @@ class Game:
 
 
 class AvailableGamesFileManager:
+    """
+    The AvailableGamesFileManager class is responsible for managing game-related operations 
+    and for file management for the AvailableGames.txt file
+    
+    ...
+
+    Attributes
+    ----------
+    availableGames : List[Game]
+        a list of Game objects
+
+    Methods
+    -------
+    getPriceByName(gameName)
+        An accessor method that returns the price with the specified game name
+        
+    getUsersGames(username)
+        Returns a list of all the games being sold by the given user
+        
+    readAvailableGames(filename)
+        Reads user data from CurrentUserAccounts.txt and populates the availableGames 
+        list with Game objects created from the data
+
+    
+    writeToFile(filename)
+        Writes game data from the availableGames list to the specified file. 
+        Each game’s data is formatted and written as a separate line in the file
+
+        
+   addGame(gameName, sellerName, price)
+        Creates new Game object with specified Game data and adds it to the availableGames list
+        
+    removeGame(gameName)
+        Removes the Game with the specified gameName from the availableGames list
+        
+    parseGameLine(line)
+        Parses a line from the AvailableGames.txt, extracting information such as the game name, 
+        owner, and price
+
+    """
+    
     # A default constructor to create a new AvailableGamesFileManager object with the default attribute, an empty list of Game objects
     def __init__(self):
         self.availableGames = []
