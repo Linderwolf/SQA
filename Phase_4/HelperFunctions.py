@@ -4,7 +4,6 @@ import re
 # Classes
 import UserManager
 import GameManager
-import CollectionManager
 
 def getTransactionCode(transaction):
     return transaction[:2]
