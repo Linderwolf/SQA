@@ -44,10 +44,12 @@ class TransactionManager:
         user, userType, credit = parseMost(transaction)
         self.userManager.removeUser(user)
         self.userManager.writeToFile(userAccountsFilePath)
+
         usersGames = self.gameManager.getUsersGames(user)
         for game in usersGames:
+            print(f"Removing {game} from {user}")
             self.gameManager.removeGame(game)
-
+        self.gameManager.writeToFile(availableGameFilePath)
 
     def sell(self, transaction):
         transactionCode, gameName, seller, gamePrice = parseSell(transaction)
