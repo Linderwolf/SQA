@@ -30,8 +30,19 @@ def create(transaction):
     userManager.writeToFile(userManager,userAccountsFilePath)
     return  
 def delete(transaction):
-    user, userType, credit = parseMost(transaction)
-    return  
+    transactionCode, user, userType, credit = parseMost(transaction)
+    
+    userManager = UserManager.UserFileManager()
+    userManager.readFromFile(userAccountsFilePath)
+    userManager.removeUser(user)
+    userManager.writeToFile()
+    
+    gameManager = GameManager.AvailableGamesFileManager()
+    gameManager.readAvailableGames(availableGameFilePath)
+    usersGames = gameManager.getUsersGames(user)
+    for game in usersGames:
+        gameManager.removeGame(game)
+
 def sell(transaction):
     gameManager = GameManager.AvailableGamesFileManager()
     transactionCode, gameName, seller, gamePrice = parseSell(transaction)
@@ -70,6 +81,9 @@ def refund(transaction):
     removeGameFromCollection(lineToRemove)   
     return   
 def addCredit(transaction):
-    user, userType, credit = parseMost(transaction)
-    userManager = UserManager(user, "", userType, credit, "")
-    userManager.updateUserBalance()
+    transactionCode, user, userType, credit = parseMost(transaction)
+    userManager = UserManager.UserFileManager()
+    userManager.readFromFile(userAccountsFilePath)
+    
+    userManager.updateUserBalance(user, credit)
+    userManager.writeToFile(userAccountsFilePath)

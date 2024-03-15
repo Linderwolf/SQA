@@ -16,12 +16,18 @@ class AvailableGamesFileManager:
             if game.name == gameName:
                 return game.price
         return None  # Return None if the game name is not found
+    
+    def getUsersGames(self, username):
+        return [game.name for game in self.availableGames if game.seller == username]
 
     def addGame(self, gameName, sellerName, price):
         newGame = Game(gameName, sellerName, price)
         self.availableGames.append(newGame)
         print(f"Game {newGame} added successfully.")
-
+        
+    def removeGame(self, gameName):
+        self.availableGames = [game for game in self.availableGames if game.name != gameName]
+        
     def readAvailableGames(self, filename):
         with open(filename, 'r') as file:
             for line in file:
