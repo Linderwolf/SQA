@@ -11,6 +11,19 @@ userAccountsFilePath = "CurrentUserAccounts.txt"
 availableGameFilePath = "AvailableGames.txt"
 
 class TransactionManager:
+    """
+    This class is designed to represent the transactions in the system.
+
+    ...
+
+    Attributes
+    ----------
+    userManager : userManager
+        manages the list of users
+    gameManager : gameManager
+        manages the list of games
+
+    """
     # A constructor creating a new TransactionManager object with the specified values
     def __init__(self, userManager, gameManager):
         self.userManager = userManager

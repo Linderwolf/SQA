@@ -19,7 +19,7 @@ class User:
     credit : str
         the user's credit balance
     """
-    
+    # A constructor creating a new User object with the specified values
     def __init__(self, username, userType, credit):
         self.username = username
         self.userType = userType
