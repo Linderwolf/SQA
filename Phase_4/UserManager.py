@@ -26,11 +26,10 @@ class UserFileManager:
         return self.users
             
     # Write to CurrentUserAccounts.txt
-    # TO-DO:: Fix formatting of credit so it inserts leading zeros
     def writeToFile(self, filename):
         with open(filename, 'w') as file:
             for user in self.users:
-                line = f"{user.username:<15} {user.userType:<2} {user.credit:.2f}\n"
+                line = f"{user.username:<15} {user.userType:<2} {user.credit:09.2f}\n"
                 file.write(line)
             file.write("END")
         

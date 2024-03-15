@@ -46,7 +46,7 @@ def buy(transaction):
     availableGamesManager.readAvailableGames(availableGameFilePath)
     
     transactionCode, gameName, seller, buyer, gamePrice = parseBuy(transaction)
-
+    
     # Create User objects for seller and buyer
     sellerUser = userManager.getUserByUsername(seller)
     buyerUser = userManager.getUserByUsername(buyer)
@@ -54,16 +54,15 @@ def buy(transaction):
     # Get game price
     gamePrice = availableGamesManager.getPriceByName(gameName)
     
-    # Update credits for seller and buyer
-    sellerUser.credit += gamePrice
-    buyerUser.credit -= gamePrice
-    
-    #print(f'buyerUser.credit: {buyerUser.credit}  sellerUser.credit: {sellerUser.credit}')
-    
-    # Write updated user info to CurrentUserAccounts.txt
-    userManager.writeToFile(userAccountsFilePath)
-    # Write to GameCollection.txt 
-    appendToGameCollection(gameName, seller)
+    if buyerUser is not None and sellerUser is not None:
+        # Update credits for seller and buyer
+        sellerUser.credit += gamePrice
+        buyerUser.credit -= gamePrice
+                
+        # Write updated user info to CurrentUserAccounts.txt
+        userManager.writeToFile(userAccountsFilePath)
+        # Write to GameCollection.txt 
+        appendToGameCollection(gameName, seller)
     return  
 def refund(transaction):
     transactionCode, gameName, buyer, seller, refundCredit = parseRefund(transaction)
@@ -79,16 +78,11 @@ def refund(transaction):
     # Check if both buyer and seller exist
     if buyerUser is not None and sellerUser is not None:
         # Calculate the updated balances
-        newBuyerBalance = buyerUser.credit + float(refundCredit)
-        newSellerBalance = sellerUser.credit - float(refundCredit)
-
-        # Update user balances
-        userManager.updateUsercredit(buyer, newBuyerBalance)
-        userManager.updateUsercredit(seller, newSellerBalance)
+        buyerUser.credit += float(refundCredit)
+        sellerUser.credit -= float(refundCredit)
         
         # Write updated user info to CurrentUserAccounts.txt
         userManager.writeToFile(userAccountsFilePath)
-        #print(f"Refund successful. Buyer: {buyer}, Seller: {seller}, Refund Credit: {refundCredit}")
         
         # Remove game from buyer's game collection
         lineToRemove = f"{gameName:<26} {buyer:<15}\n"
