@@ -5,23 +5,29 @@
 # Authors: Matthew, Ajaane, Peter, Russell
 # Classes
 from UserManager import UserFileManager
-from GameManager import AvailableGamesFileManager
+from AvailableGamesManager import AvailableGamesFileManager
+from GameCollectionManager import GameCollectionManager
 from TransactionFunctions import TransactionManager
 
 # Specify the file paths for CurrentUserAccounts.txt, AvailableGames.txt, and DailyTransactions.txt
 userAccountsFilePath = "CurrentUserAccounts.txt"
 availableGameFilePath = "AvailableGames.txt"
+gameCollectionFilePath = "GameCollection.txt"
 dailyTransactionFilePath = "DailyTransactions.txt"
 
 # Create instances of FileManager and TransactionManager objects
 userFileManager = UserFileManager()
 gameFileManager = AvailableGamesFileManager()
-transactionManager = TransactionManager(userFileManager, gameFileManager)
+gameCollectionManager = GameCollectionManager()
+transactionManager = TransactionManager(userFileManager, gameFileManager, gameCollectionManager)
 
 # Read user data from the file
 userFileManager.readFromFile(userAccountsFilePath)
 # Read available games data from the file
 gameFileManager.readAvailableGames(availableGameFilePath)
+# Read game collection data from the file
+gameCollectionManager.readCollection(gameCollectionFilePath)
+
 
 # Process daily transactions
 with open(dailyTransactionFilePath, "r") as dailyTransactionFile:

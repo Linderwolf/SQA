@@ -1,4 +1,4 @@
-# GameManager.py
+# AvailableGamesManager.py
 #
 # Contains the Game and AvailableGamesFileManager classes.
 #
@@ -52,7 +52,7 @@ class AvailableGamesFileManager:
         Returns a list of all the games being sold by the given user
         
     readAvailableGames(filename)
-        Reads user data from CurrentUserAccounts.txt and populates the availableGames 
+        Reads game data from AvailableGames.txt and populates the availableGames 
         list with Game objects created from the data
 
     
@@ -106,13 +106,17 @@ class AvailableGamesFileManager:
                 if result is not None:
                     name, owner, price = result
                     self.availableGames.append(Game(name, owner, float(price)))
+                    
+        file.close()
+        
     # Writes game data from the availableGames list to the specified file.
-    # Each game’s data is formatted and written as a separate line in the file
     def writeToFile(self, filename):
         with open(filename, 'w') as file:
             for game in self.availableGames:
                 line = f"{game.name:<26} {game.seller:<15} {game.price:06.2f}\n"
                 file.write(line)
+            file.write("END")
+        file.close()
 
     # Parses a line from the AvailableGames.txt, extracting information such as the game name, owner, and price
     def parseGameLine(self, line):

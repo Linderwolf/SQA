@@ -66,12 +66,14 @@ class UserFileManager:
     def __init__(self):
         self.users = []
         
+    # Getter function that returns a User object with the given username
     def getUserByUsername(self, username):
         for user in self.users:
             if user.username == username:
                 return user
         return None
 
+    # Reads user data from CurrentUserAccounts.txt and populates users from the data
     def readFromFile(self, filename):
         with open(filename, 'r') as file:
              for line in file:
@@ -83,7 +85,7 @@ class UserFileManager:
         file.close()
         return self.users
             
-    # Write to CurrentUserAccounts.txt
+    # Writes users to CurrentUserAccounts.txt after formatting
     def writeToFile(self, filename):
         with open(filename, 'w') as file:
             for user in self.users:
@@ -91,12 +93,13 @@ class UserFileManager:
                 file.write(line)
             file.write("END")
         
-
+    # Creates new User object with specified User data and adds it to the user list
     def addUser(self, username, userType, credit):
         newUser = User(username, userType, credit)
         self.users.append(newUser)
         print(f"User {username} added successfully.")
 
+    # Removes the User with the specified username from the user list
     def removeUser(self, username):
         for user in self.users:
             if user.username == username:
@@ -105,6 +108,7 @@ class UserFileManager:
                 return
         print(f"User {username} not found.")
 
+    # Updates the credit of the User with the specified username by adding the creditChange amount
     def updateUsercredit(self, username, creditChange):
         for user in self.users:
             if user.username == username:

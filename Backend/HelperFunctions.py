@@ -9,42 +9,6 @@ import re
 def getTransactionCode(transaction):
     return transaction[:2]
 
-def appendToGameCollection(gameName, owner):
-    with open('GameCollection.txt', 'r') as file:
-        lines = file.readlines()
-    # Modify the content by adding a new line
-    newLine = f"{gameName:<26} {owner:<15}\n"
-    # Find the index of the line with 'END'
-    endIndex = lines.index('END')
-    # Insert the new line before the line with 'END'
-    lines.insert(endIndex, newLine)
-    file.close()
-
-    # Write the modified content back to the file
-    with open('GameCollection.txt', 'w') as file:
-        file.writelines(lines)
-    file.close()
-    
-def removeGameFromCollection(gameName, owner):
-    with open('GameCollection.txt', 'r') as file:
-        lines = file.readlines()
-
-    lineToRemove = f"{gameName:<26} {owner:<15}\n"
-    # Find the index of the line to remove
-    try:
-        indexToRemove = lines.index(lineToRemove)
-    except ValueError:
-        print(f"Error: Line '{lineToRemove.strip()}' not found in the file.")
-        return
-
-    # Remove the line
-    lines.pop(indexToRemove)
-
-    # Write the modified content back to the file
-    with open('GameCollection.txt', 'w') as file:
-        file.writelines(lines)
-
-
 # Parsing Methods: 
 # Return attributes given an appropriately formatted String
         
@@ -89,7 +53,7 @@ def parseRefund(line):
 # P is game price
 # - is a space
 def parseSell(line):
-    pattern = re.compile(r'^(\d{2})) (.{19}) (.{13}) (\d+\.\d{2})$')
+    pattern = re.compile(r'^(\d{2}) (.{19}) (.{13}) (\d+\.\d{2})$')
     match = pattern.match(line)
     if match:
         transactionCode, gameName, seller, gamePrice = match.groups()

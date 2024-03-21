@@ -9,6 +9,8 @@ import HelperFunctions as hf
 userAccountsFilePath = "CurrentUserAccounts.txt"
 # Specify the file path for AvailableGames.txt
 availableGameFilePath = "AvailableGames.txt"
+# Specify the file path for GameCollection.txt
+gameCollectionFilePath = "GameCollection.txt"
 
 class TransactionManager:
     """
@@ -19,15 +21,24 @@ class TransactionManager:
     Attributes
     ----------
     userManager : userManager
-        manages the list of users
+        manages user-related operations 
     gameManager : gameManager
-        manages the list of games
+        manages game-related operations 
+        
+     Methods
+    -------
+    processTransaction(transaction)
+        An accessor method that returns the price with the specified game name
+        
+    getUsersGames(username)
+        Returns a list of all the games being sold by the given user
 
     """
     # A constructor creating a new TransactionManager object with the specified values
-    def __init__(self, userManager, gameManager):
+    def __init__(self, userManager, gameManager, collectionManager):
         self.userManager = userManager
         self.gameManager = gameManager
+        self.collectionManager = collectionManager
 
     # Gets the transaction code indicating which type of transaction the line represents and calls the appropriate transaction function
     def processTransaction(self, transaction):
@@ -48,7 +59,7 @@ class TransactionManager:
     # Creates a new User object, appends it to the userManager List, and writes it to the UserAccounts file
     def create(self, transaction):
         newUser, userType, credit = hf.parseMost(transaction)
-        self.userManager.addUser(newUser, userType, credit)
+        self.userManager.addUser(newUser, userType, float(credit))
         self.userManager.writeToFile(userAccountsFilePath)
 
     # Deletes all references of a User from the userAccounts and availableGames files
@@ -77,7 +88,9 @@ class TransactionManager:
         self.userManager.updateUsercredit(seller, float(gamePrice))
         self.userManager.writeToFile(userAccountsFilePath)
         # Add game to Game Collection
-        hf.appendToGameCollection(gameName, seller)
+        self.collectionManager.addEntry(gameName, buyer)
+        self.collectionManager.writeToCollection(gameCollectionFilePath)
+        
 
     # Removes an owned game from a User’s collection in the gameCollection file, credits that buyer, and deducts that amount from the seller
     def refund(self, transaction):
@@ -86,8 +99,9 @@ class TransactionManager:
         self.userManager.updateUsercredit(buyer, refundCredit)
         self.userManager.updateUsercredit(seller, float(refundCredit)*-1)
         self.userManager.writeToFile(userAccountsFilePath)       
-        # Remove game from buyer's game collection     
-        hf.removeGameFromCollection(gameName, buyer)   
+        # Remove game from buyer's game collection       
+        self.collectionManager.removeEntry(gameName, buyer)
+        self.collectionManager.writeToCollection(gameCollectionFilePath)
 
     # Adds the given credit to the user’s balance and updates the CurrentUserAccounts file to reflect this change
     def addCredit(self, transaction):

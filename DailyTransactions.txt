@@ -1,3 +1,7 @@
+04 Bastion             admin           buystandard    000.01
+04 Tabletop Simulator  admin           fullstandard   019.99
+05 Tetris Effect             fullstandard    sellstandard    000020.00
+06 JohnDoe         BS 000010.00
 01 JDoe            FS 000000.00
 03 Risk of Rain II     sellstandard    admin          019.99
 04 ULTRAKILL           admin         079.98
