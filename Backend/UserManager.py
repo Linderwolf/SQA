@@ -57,7 +57,7 @@ class UserFileManager:
     removeUser(username)
         Removes the User with the specified username from the user list
         
-    updateUsercredit
+    updateUsercredit(self, username, creditChange)
         Updates the credit of the User with the specified username in the user list by
         adding the creditChange amount
 
