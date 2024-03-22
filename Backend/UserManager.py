@@ -54,7 +54,7 @@ class UserFileManager:
     addUser(username, userType, credit)
         Creates new User object with specified User data and adds it to the user list
         
-    removeUse(username)
+    removeUser(username)
         Removes the User with the specified username from the user list
         
     updateUsercredit
