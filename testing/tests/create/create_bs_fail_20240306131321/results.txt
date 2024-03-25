@@ -1,0 +1,3 @@
+Enter command: Please enter your username: Welcome, buystandard.
+Enter command: Error: Unauthorized. Only admin users can create accounts.
+Enter command: Logout successful.

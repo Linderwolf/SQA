@@ -1,0 +1,5 @@
+login
+sellusermaxed
+addcredit
+10
+logout

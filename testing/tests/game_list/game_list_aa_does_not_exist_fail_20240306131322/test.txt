@@ -1,0 +1,5 @@
+Login
+admin1
+List
+Games
+Logout

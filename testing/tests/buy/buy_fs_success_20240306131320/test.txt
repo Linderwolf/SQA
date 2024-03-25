@@ -1,0 +1,5 @@
+Login
+fullstandard
+Buy
+samplegame
+logout

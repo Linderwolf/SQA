@@ -1,0 +1,5 @@
+Login
+buystandard
+Buy
+Nier
+logout

@@ -1,0 +1,6 @@
+login
+admin1
+sell
+aasamplegame
+10
+logout

@@ -1,0 +1,5 @@
+Login
+ssuser01
+List
+Games
+Logout

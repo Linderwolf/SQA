@@ -1,0 +1,3 @@
+Enter command: Please enter your username: Welcome, admin1.
+Enter command: Name of game for sale: Sale price: Thank you, your game has been listed for sale!
+Enter command: Logout successful.

@@ -1,0 +1,7 @@
+Login
+admin1
+Refund
+buystandard
+sellstandard
+10
+Logout

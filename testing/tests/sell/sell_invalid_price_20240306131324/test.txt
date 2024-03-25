@@ -1,0 +1,6 @@
+Login
+sellstandard
+Sell
+invalidgame
+1200
+logout

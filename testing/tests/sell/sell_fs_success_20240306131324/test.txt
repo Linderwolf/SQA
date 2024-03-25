@@ -1,0 +1,6 @@
+Login
+fullstandard
+sell
+fssamplegame
+10
+logout

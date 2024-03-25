@@ -1,7 +1,0 @@
-Stardew Valley             buystandard    
-Stardew Valley             admin          
-Stardew Valley             fullstandard   
-Tetris Effect              buystandard    
-Tetris Effect              fullstandard   
-Risk of Rain II            admin          
-END

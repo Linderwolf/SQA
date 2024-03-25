@@ -1,0 +1,6 @@
+Login
+admin1
+Refund
+buystandard
+nonseller
+logout

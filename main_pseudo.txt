@@ -1,0 +1,46 @@
+Main pseudocode
+
+Main:
+    New File (read files)
+    New Session (session variables)
+
+    While sessions(active) {
+        Run terminal
+    }
+
+    End Session
+
+    Write Files
+
+    return
+
+
+Session:
+    Launch terminal
+
+    Read input (transacion)
+    Write to transaction log session cache
+
+    if valid
+        execute transaction
+    else
+        call error
+        log
+
+    end session
+
+    return
+
+
+
+
+
+Systems
+- Session
+    - Transaction log (in the form of a cache that is written on logout)
+- Console application
+- File reading/writing
+- Transactions
+    - Create
+    - ...
+- Privileged Transactions

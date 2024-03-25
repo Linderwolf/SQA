@@ -1,0 +1,5 @@
+Enter command: Please enter your username: Welcome, buystandard.
+Enter command: Name of game to buy: Username: buystandard
+Game name: samplegame
+Error: Game already owned.
+Enter command: Logout successful.

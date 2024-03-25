@@ -1,0 +1,3 @@
+Enter command: Please enter your username: Welcome, fsuser01.
+Enter command: Enter credit amount: Error: Credit amount exceeds session limit.
+Enter command: Logout successful.

@@ -1,0 +1,6 @@
+login
+admin1
+addcredit
+fsuser03
+20
+logout

@@ -1,0 +1,4 @@
+Login
+sellstandard
+Refund
+logout

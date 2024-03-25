@@ -1,0 +1,7 @@
+login
+admin1
+create
+newuserbs
+BS
+10
+logout

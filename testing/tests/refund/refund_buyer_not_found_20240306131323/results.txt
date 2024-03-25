@@ -1,0 +1,3 @@
+Enter command: Please enter your username: Welcome, admin1.
+Enter command: Enter the buyer's username: Error: Buyer does not exist
+Enter command: Logout successful.

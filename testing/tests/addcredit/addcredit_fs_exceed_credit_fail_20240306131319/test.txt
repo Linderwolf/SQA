@@ -1,0 +1,5 @@
+login
+fullusermaxed
+addcredit
+1
+logout

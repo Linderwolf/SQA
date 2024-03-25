@@ -1,0 +1,1 @@
+run_tests.sh: line 76: addcredit: command not found

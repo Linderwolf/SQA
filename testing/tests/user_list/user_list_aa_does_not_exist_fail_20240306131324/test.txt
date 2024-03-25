@@ -1,0 +1,5 @@
+login
+admin1
+list
+users
+exit

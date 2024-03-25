@@ -1,0 +1,5 @@
+login
+fsuser02
+addcredit
+90
+logout

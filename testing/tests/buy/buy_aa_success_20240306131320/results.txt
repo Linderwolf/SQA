@@ -1,0 +1,203 @@
+Enter command: Please enter your username: Welcome, admin1.
+Enter command: Name of game to buy: Username: buystandard
+Game name: samplegame
+Username: bsuser05
+Game name: HorizonZeroDawn
+Username: fsuser13
+Game name: Terraria
+Username: fsuser11
+Game name: Warcraft
+Username: fsuser14
+Game name: Pokemon
+Username: bsuser05
+Game name: Xenoblade
+Username: bsuser06
+Game name: RocketLeague
+Username: bsuser09
+Game name: Witcher
+Username: fsuser07
+Game name: DeathStranding
+Username: bsuser08
+Game name: LeagueofLegends
+Username: bsuser12
+Game name: BravelyDefault
+Username: fsuser09
+Game name: END
+Username: ssuser10
+Game name: Fallout4
+Username: ssuser02
+Game name: Persona
+Username: ssuser15
+Game name: Zelda
+Username: fsuser01
+Game name: ApexLegends
+Username: fsuser02
+Game name: Hearthstone
+Username: bsuser05
+Game name: EldenRing
+Username: bsuser10
+Game name: Wario
+Username: ssuser02
+Game name: EldenRing
+Username: bsuser15
+Game name: Fortnite
+Username: fsuser01
+Game name: DragonAge
+Username: fsuser12
+Game name: PUBG
+Username: ssuser09
+Game name: Fallout4
+Username: ssuser03
+Game name: Zelda
+Username: fsuser12
+Game name: Persona
+Username: ssuser10
+Game name: LeagueofLegends
+Username: fsuser02
+Game name: OctopathTraveler
+Username: fsuser15
+Game name: GTAV
+Username: bsuser15
+Game name: ResidentEvil
+Username: ssuser12
+Game name: Pokemon
+Username: ssuser08
+Game name: OctopathTraveler
+Username: bsuser02
+Game name: Fallout4
+Username: ssuser07
+Game name: Pokemon
+Username: ssuser06
+Game name: Diablo
+Username: fsuser13
+Game name: TheWitcher3
+Username: bsuser10
+Game name: Mario
+Username: fsuser15
+Game name: GhostofTsushima
+Username: fsuser08
+Game name: Starcraft
+Username: fsuser04
+Game name: FIFA21
+Username: ssuser10
+Game name: SmashBros
+Username: bsuser01
+Game name: FarCry
+Username: ssuser01
+Game name: GhostofTsushima
+Username: fsuser13
+Game name: ApexLegends
+Username: ssuser01
+Game name: Splatoon
+Username: fsuser14
+Game name: Mario
+Username: fsuser05
+Game name: Overwatch
+Username: ssuser05
+Game name: Skyrim
+Username: fsuser10
+Game name: Sekiro
+Username: fsuser15
+Game name: RedDeadRedemption
+Username: bsuser11
+Game name: RainbowSixSiege
+Username: ssuser06
+Game name: END
+Username: bsuser03
+Game name: CSGO
+Username: fsuser07
+Game name: FarCry
+Username: bsuser08
+Game name: DarkSouls
+Username: ssuser06
+Game name: LeagueofLegends
+Username: fsuser05
+Game name: AssassinsCreed
+Username: bsuser02
+Game name: SilentHill
+Username: bsuser11
+Game name: OctopathTraveler
+Username: fsuser12
+Game name: Dota2
+Username: bsuser06
+Game name: Valorant
+Username: bsuser02
+Game name: FarCry
+Username: fsuser14
+Game name: Fallout4
+Username: ssuser05
+Game name: RainbowSixSiege
+Username: bsuser10
+Game name: DemonSouls
+Username: bsuser03
+Game name: RainbowSixSiege
+Username: fsuser05
+Game name: LeagueofLegends
+Username: bsuser07
+Game name: FinalFantasy
+Username: fsuser02
+Game name: Yoshi
+Username: ssuser10
+Game name: BravelyDefault
+Username: fsuser15
+Game name: Xenoblade
+Username: bsuser13
+Game name: Sekiro
+Username: bsuser08
+Game name: RocketLeague
+Username: ssuser13
+Game name: AnimalCrossing
+Username: ssuser05
+Game name: END
+Username: ssuser15
+Game name: HeroesoftheStorm
+Username: bsuser05
+Game name: Kirby
+Username: bsuser12
+Game name: MassEffect
+Username: ssuser15
+Game name: ApexLegends
+Username: bsuser12
+Game name: EldenRing
+Username: ssuser03
+Game name: SilentHill
+Username: ssuser02
+Game name: WorldofWarcraft
+Username: ssuser02
+Game name: Sekiro
+Username: fsuser07
+Game name: Wario
+Username: fsuser14
+Game name: DeathStranding
+Username: fsuser03
+Game name: Fallout4
+Username: ssuser03
+Game name: SilentHill
+Username: ssuser13
+Game name: HeroesoftheStorm
+Username: fsuser14
+Game name: Kirby
+Username: fsuser09
+Game name: SilentHill
+Username: ssuser13
+Game name: RainbowSixSiege
+Username: bsuser05
+Game name: DeathStranding
+Username: fsuser07
+Game name: WorldofWarcraft
+Username: bsuser14
+Game name: Fallout4
+Username: ssuser08
+Game name: DeadSpace
+Username: bsuser04
+Game name: CSGO
+Username: ssuser13
+Game name: Skyrim
+Username: ssuser12
+Game name: HorizonZeroDawn
+Username: ssuser01
+Game name: Persona
+Username: ssuser02
+Game name: GhostofTsushima
+Game purchased, happy gaming!
+Enter command: Logout successful.

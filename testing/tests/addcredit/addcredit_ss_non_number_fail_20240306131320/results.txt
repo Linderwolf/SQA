@@ -1,0 +1,3 @@
+Enter command: Please enter your username: Welcome, ssuser01.
+Enter command: Enter credit amount: Error: Credit amount must be a number.
+Enter command: Logout successful.
