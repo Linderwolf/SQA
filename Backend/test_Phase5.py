@@ -36,6 +36,11 @@ userFileManager = UserFileManager()
 userFileManager.readFromFile(userAccountsFilePath)
 # 
 # test getUserByUsername(username)
+def test_getUserByUsername():
+    user = userFileManager.getUserByUsername('admin')
+    assert user.username == 'admin'
+    assert user.userType == 'AA'
+    assert user.credit == 80.01
 # test readFromFile(filename)
 # test writeToFile(filename)
 # test addUser(username, userType, credit)
