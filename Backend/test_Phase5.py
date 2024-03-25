@@ -20,6 +20,8 @@ availableGameFilePath = "AvailableGames.txt"
 gameCollectionFilePath = "GameCollection.txt"
 dailyTransactionFilePath = "DailyTransactions.txt"
 
+import os.path
+
 # NOTE Need to make function that refreshes the data in the .txt files
 # this function can be made per manager (e.g. userfile, gamefile, collectionfile)
 # or can be all in the same function
@@ -37,16 +39,54 @@ userFileManager.readFromFile(userAccountsFilePath)
 # 
 # test getUserByUsername(username)
 def test_getUserByUsername():
-    user = userFileManager.getUserByUsername('admin')
+    user = userFileManager.getUserByUsername("admin")
     assert user.username == 'admin'
     assert user.userType == 'AA'
-    assert user.credit == 80.01
+    assert user.credit == 100.00
 # test readFromFile(filename)
-# test writeToFile(filename)
+def test_readFromFile():
+    userFile = os.path.isfile(userAccountsFilePath)
+    assert userFile
 # test addUser(username, userType, credit)
+def test_addUser():
+    userFileManager.addUser('George','BS',13.25)
+    assert userFileManager.getUserByUsername('George')
+# test writeToFile(filename)
+def test_writeToFile():
+    # userFileManager.addUser('George','BS',13.25)
+    userFileManager.writeToFile(userAccountsFilePath)
+    with open(userAccountsFilePath, 'r') as file:
+        for i, line in enumerate(file):
+            if i == 4:
+                parts = line.split()
+                username,userType,credit = parts
+                assert username == "George"
+                assert userType == "BS"
+                assert credit == "000013.25"
 # test removeUser(username)
+def test_removeUser():
+    userFileManager.removeUser('George')
+    userFileManager.writeToFile(userAccountsFilePath)
+    with open(userAccountsFilePath, 'r') as file:
+        for i, line in enumerate(file):
+            if i == 4:
+                assert line == "END"
+    # with open(userAccountsFilePath, 'r') as file:
+    #     assert "George          BS 000013.25" not in 
 # test updateUsercredit
-
+def test_updateUsercredit():
+    # increase credit
+    userFileManager.updateUsercredit("fullstandard",100)
+    userFileManager.writeToFile(userAccountsFilePath)
+    user = userFileManager.getUserByUsername("fullstandard")
+    assert user.username == "fullstandard"
+    assert user.credit == 200.00
+    # decrease credit
+    userFileManager.updateUsercredit("fullstandard",-100)
+    userFileManager.writeToFile(userAccountsFilePath)
+    user = userFileManager.getUserByUsername("fullstandard")
+    assert user.username == "fullstandard"
+    assert user.credit == 100.00
 # Test AvailableGamesFileManager Class
 #
 # Create instances of FileManager object
