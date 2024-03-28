@@ -4,6 +4,7 @@
 # 
 # Authors: Matthew, Ajaane, Peter, Russell
 import HelperFunctions as hf
+import sys
 
 # Specify the file path for CurrentUserAccounts.txt
 userAccountsFilePath = "CurrentUserAccounts.txt"
@@ -59,7 +60,10 @@ class TransactionManager:
     # Creates a new User object, appends it to the userManager List, and writes it to the UserAccounts file
     def create(self, transaction):
         newUser, userType, credit = hf.parseMost(transaction)
-        self.userManager.addUser(newUser, userType, float(credit))
+        potentialError = self.userManager.addUser(newUser, userType, float(credit))
+        if (potentialError is not None):          
+            sys.stderr.write(potentialError + "\n Transaction that caused the error is " + transaction)
+            return
         self.userManager.writeToFile(userAccountsFilePath)
 
     # Deletes all references of a User from the userAccounts and availableGames files
@@ -77,15 +81,21 @@ class TransactionManager:
     # Creates a new Game object and writes it to the availableGames file
     def sell(self, transaction):
         transactionCode, gameName, seller, gamePrice = hf.parseSell(transaction)
-        self.gameManager.addGame()
+        self.gameManager.addGame(gameName, seller, gamePrice)
         self.gameManager.writeToFile(availableGameFilePath)
 
     # Adds a game to a buying User’s collection in the gameCollection file, Credits a seller, and deducts that amount from the buyer
     def buy(self, transaction):
         transactionCode, gameName, seller, buyer, gamePrice = hf.parseBuy(transaction)
         # Update buyer and seller credits
-        self.userManager.updateUsercredit(buyer, float(gamePrice) * -1)
-        self.userManager.updateUsercredit(seller, float(gamePrice))
+        potentialError = self.userManager.updateUsercredit(buyer, float(gamePrice) * -1)
+        if (potentialError is not None):          
+            sys.stderr.write(potentialError + "\n Transaction that caused the error is " + transaction)
+            return
+        potentialError = self.userManager.updateUsercredit(seller, float(gamePrice))
+        if (potentialError is not None):          
+            sys.stderr.write(potentialError + "\n Transaction that caused the error is " + transaction)
+            return
         self.userManager.writeToFile(userAccountsFilePath)
         # Add game to Game Collection
         self.collectionManager.addEntry(gameName, buyer)
@@ -96,8 +106,14 @@ class TransactionManager:
     def refund(self, transaction):
         transactionCode, gameName, buyer, seller, refundCredit = hf.parseRefund(transaction)
         # Update buyer and seller credits
-        self.userManager.updateUsercredit(buyer, refundCredit)
-        self.userManager.updateUsercredit(seller, float(refundCredit)*-1)
+        potentialError = self.userManager.updateUsercredit(buyer, refundCredit)
+        if (potentialError is not None):          
+            sys.stderr.write(potentialError + "\n Transaction that caused the error is " + transaction)
+            return
+        potentialError = self.userManager.updateUsercredit(seller, float(refundCredit)*-1)
+        if (potentialError is not None):          
+            sys.stderr.write(potentialError + "\n Transaction that caused the error is " + transaction)
+            return
         self.userManager.writeToFile(userAccountsFilePath)       
         # Remove game from buyer's game collection       
         self.collectionManager.removeEntry(gameName, buyer)
@@ -106,7 +122,10 @@ class TransactionManager:
     # Adds the given credit to the user’s balance and updates the CurrentUserAccounts file to reflect this change
     def addCredit(self, transaction):
         user, userType, credit = hf.parseMost(transaction)
-        self.userManager.updateUsercredit(user, float(credit))
+        potentialError = self.userManager.updateUsercredit(user, float(credit))
+        if (potentialError is not None):          
+            sys.stderr.write(potentialError + "\n Transaction that caused the error is " + transaction)
+            return
         self.userManager.writeToFile(userAccountsFilePath)
         
         

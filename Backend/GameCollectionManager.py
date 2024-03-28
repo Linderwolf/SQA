@@ -6,6 +6,7 @@
 # 
 # Authors: Matthew, Ajaane, Peter, Russell
 import re
+import os
 
 class CollectionEntry:
     """
@@ -76,9 +77,14 @@ class GameCollectionManager:
         for entry in self.collection:
             if entry.gameName == gameName and entry.owner == owner:
                 self.collection.remove(entry)
+                return
+        print(f"Entry {gameName} {owner} not found.")
             
     # Reads the GameCollection.txt file and populates the collection list
     def readCollection(self, filename):
+        if not os.path.exists(filename):
+            raise IOError("ERROR: Fatal Error - File '{filename}' not found.")
+            return
         with open(filename, 'r') as file:
             for line in file:
                 result = self.parseLine(line)
@@ -90,6 +96,9 @@ class GameCollectionManager:
     
     # Writes the data from the collection list to the specified file              
     def writeToCollection(self, filename):
+        if not os.path.exists(filename):
+            raise IOError("ERROR: Fatal Error - File '{filename}' not found.")
+            return
         with open(filename, 'w') as file:
             for entry in self.collection:
                 line = f"{entry.gameName:<26} {entry.owner:<15}\n"

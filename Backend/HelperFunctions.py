@@ -1,7 +1,7 @@
 # HelperFunctions.py
 #
 # Contains functions that retrieve attributes from strings,
-#   Processes Reads & Writes to the GameCollection
+# Processes Reads & Writes to the DailyTransaction file
 # 
 # Authors: Matthew, Ajaane, Peter, Russell
 import re

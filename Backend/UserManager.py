@@ -4,6 +4,8 @@
 # Processes any Object or File/IO required of CurrentUserAccounts
 # 
 # Authors: Matthew, Ajaane, Peter, Russell
+
+import os
 class User:
     """
     This class is designed to represent the users in the system.
@@ -16,7 +18,7 @@ class User:
         the username of the user
     userType : str
         the type of account the user owns
-    credit : str
+    credit : float
         the user's credit balance
     """
     # A constructor creating a new User object with the specified values
@@ -75,6 +77,9 @@ class UserFileManager:
 
     # Reads user data from CurrentUserAccounts.txt and populates users from the data
     def readFromFile(self, filename):
+        if not os.path.exists(filename):
+            raise IOError("ERROR: Fatal Error - File '{filename}' not found.")
+            return
         with open(filename, 'r') as file:
              for line in file:
                 parts = line.split()
@@ -87,17 +92,30 @@ class UserFileManager:
             
     # Writes users to CurrentUserAccounts.txt after formatting
     def writeToFile(self, filename):
+        if not os.path.isfile(filename):
+            raise IOError("ERROR: Fatal Error - File '{filename}' not found.")
+            return
+        print(f"Path exists: {filename}")
         with open(filename, 'w') as file:
             for user in self.users:
                 line = f"{user.username:<15} {user.userType:<2} {user.credit:09.2f}\n"
-                file.write(line)
+                file.write(line) 
             file.write("END")
         
     # Creates new User object with specified User data and adds it to the user list
     def addUser(self, username, userType, credit):
+        # Constraint: no user should ever have a negative account balance
+        if (credit < 0):           
+            return "ERROR: Violation of Constraint: Credit cannot be less than 0."
+        # Constraint: a newly created user must have a name different from all existing users
+        for user in self.users:
+            if user.username == username:
+                return "ERROR: Violation of Constraint: User with the same username already exists."
         newUser = User(username, userType, credit)
+        
         self.users.append(newUser)
         print(f"User {username} added successfully.")
+        return None
 
     # Removes the User with the specified username from the user list
     def removeUser(self, username):
@@ -112,7 +130,10 @@ class UserFileManager:
     def updateUsercredit(self, username, creditChange):
         for user in self.users:
             if user.username == username:
+                # Constraint: no user should ever have a negative account balance
+                if (user.credit + creditChange < 0):           
+                    return "ERROR: Violation of Constraint: Credit cannot be less than 0."
                 user.credit += creditChange
                 print(f"User {username}'s credit updated successfully.")
-                return
+                return None
         print(f"User {username} not found.")

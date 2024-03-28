@@ -6,6 +6,7 @@
 # 
 # Authors: Matthew, Ajaane, Peter, Russell
 import re
+import os
 
 class Game:
     """
@@ -100,6 +101,9 @@ class AvailableGamesFileManager:
 
     # Reads user data from CurrentUserAccounts.txt and populates the availableGames list with Game objects created from the data
     def readAvailableGames(self, filename):
+        if not os.path.exists(filename):
+            raise IOError("ERROR: Fatal Error - File '{filename}' not found.")
+            return
         with open(filename, 'r') as file:
             for line in file:
                 result = self.parseGameLine(line)
@@ -111,6 +115,9 @@ class AvailableGamesFileManager:
         
     # Writes game data from the availableGames list to the specified file.
     def writeToFile(self, filename):
+        if not os.path.exists(filename):
+            raise IOError("ERROR: Fatal Error - File '{filename}' not found.")
+            return
         with open(filename, 'w') as file:
             for game in self.availableGames:
                 line = f"{game.name:<26} {game.seller:<15} {game.price:06.2f}\n"
