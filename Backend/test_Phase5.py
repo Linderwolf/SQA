@@ -91,22 +91,83 @@ def test_updateUsercredit():
     user = userFileManager.getUserByUsername("fullstandard")
     assert user.username == "fullstandard"
     assert user.credit == 100.00
-# Test AvailableGamesFileManager Class
+#  
+#   Test AvailableGamesFileManager Class
 #
 # Create instances of FileManager object
 gameFileManager = AvailableGamesFileManager()
 # Read available games data from the file
 gameFileManager.readAvailableGames(availableGameFilePath)
-#
-# test getPriceByName(gameName)
-# test getUsersGames(username)
-# test readAvailableGames(filename)
-# test writeToFile(filename)
-# test addGame(gameName, sellerName, price)
-# test removeGame(gameName)
-# test parseGameLine(line)
 
-# Test GameCollectionManager Class
+# test getPriceByName(gameName)
+def test_getPriceByName():
+    game = gameFileManager.getPriceByName("Tabletop Simulator")
+    assert game.price == "019.99"
+
+# test getUsersGames(username)
+# Should return a list of games owned by a specified Username
+# Testing 1st, 2nd, and last games in sample data
+# Ensuring "END" isn't listed as a game
+def test_getUsersGames():
+    user = userFileManager.getUserByUsername("sellstandard")
+    usersGameList = AvailableGamesFileManager.getUsersGames(user)
+    assert usersGameList[0] == "Stardew Valley"
+    assert usersGameList[1] == "Tetris Effect"
+    assert usersGameList[5] == "Risk of Rain II"
+    assert usersGameList[len(usersGameList)-1] != "END"
+
+# test readAvailableGames(filename)
+def test_readAvailableGames():
+    availableGameFile = os.path.isfile(availableGameFilePath)
+    assert availableGameFile
+    
+# test addGame(gameName, sellerName, price)
+def test_addGame():
+    game = gameFileManager.addGame("Portal", "sellstandard", "1.00")
+    assert game.name == "Portal"
+    assert game.price == "1.00"
+    assert game.user.username == 'sellstandard'
+    assert game.user.userType == 'SS'
+
+# test writeToFile(filename)
+def test_writeToAvailableGameFile():
+    gameFileManager.writeToFile(availableGameFilePath)
+    with open(availableGameFilePath, 'r') as file:
+                lines = file.read().splitlines()
+                lastGameParts = lines[len(lines)-1].split()
+                name,seller,price = lastGameParts
+                assert name == "Portal"
+                assert seller == "sellstandard"
+                assert price == "1.00"
+
+# test removeGame(gameName)
+def test_removeGame():
+    gameFileManager.removeGame('Portal')
+    gameFileManager.writeToFile(availableGameFilePath)
+    with open(availableGameFilePath, 'r') as file:
+        lines = file.read().splitlines()
+        LastGameParts = lines[len(lines)-1].split()
+        name, seller, price = LastGameParts
+        assert name != "Portal"
+        ENDline = lines[len(lines)]
+        assert ENDline == "END"
+
+# test parseGameLine(line)
+#   TO-DO:: This functionality is in readAvailableGames - verify redundancy
+# Verifies that the name, owner and price are parsed correctly
+# Verifies that the END line does not return a value
+with open(availableGameFilePath, 'r') as file:
+        lines = file.read().splitlines()
+        StardewLine = lines[0]
+        ENDline = lines[len(lines)]
+        name, owner, price = gameFileManager.parseGameLine(StardewLine)
+        assert name == "Stardew Valley"
+        assert owner == "sellstandard"
+        assert price == "025.00"
+        assert gameFileManager.parseGameLine(ENDline).isNone
+        
+#
+#   Test GameCollectionManager Class
 #
 # Create instances of FileManager object
 gameCollectionManager = GameCollectionManager()
