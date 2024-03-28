@@ -79,7 +79,6 @@ class UserFileManager:
     def readFromFile(self, filename):
         if not os.path.exists(filename):
             raise IOError("ERROR: Fatal Error - File '{filename}' not found.")
-            return
         with open(filename, 'r') as file:
              for line in file:
                 parts = line.split()
@@ -94,8 +93,6 @@ class UserFileManager:
     def writeToFile(self, filename):
         if not os.path.isfile(filename):
             raise IOError("ERROR: Fatal Error - File '{filename}' not found.")
-            return
-        print(f"Path exists: {filename}")
         with open(filename, 'w') as file:
             for user in self.users:
                 line = f"{user.username:<15} {user.userType:<2} {user.credit:09.2f}\n"

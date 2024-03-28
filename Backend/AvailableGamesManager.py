@@ -93,7 +93,7 @@ class AvailableGamesFileManager:
     def addGame(self, gameName, sellerName, price):
         newGame = Game(gameName, sellerName, price)
         self.availableGames.append(newGame)
-        print(f"Game {newGame} added successfully.")
+        print(f"Game {newGame.name} added successfully.")
 
     # Updates the availableGames attribute to not include the given game
     def removeGame(self, gameName):

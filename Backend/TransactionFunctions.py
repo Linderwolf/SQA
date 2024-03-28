@@ -59,7 +59,12 @@ class TransactionManager:
 
     # Creates a new User object, appends it to the userManager List, and writes it to the UserAccounts file
     def create(self, transaction):
-        newUser, userType, credit = hf.parseMost(transaction)
+        parsed = hf.parseMost(transaction)
+        if (parsed is not None):
+            newUser, userType, credit = parsed
+        else:
+            raise Exception(f"ERROR: Fatal Error - Invalid transaction format: {transaction}")
+        
         potentialError = self.userManager.addUser(newUser, userType, float(credit))
         if (potentialError is not None):          
             sys.stderr.write(potentialError + "\n Transaction that caused the error is " + transaction)
@@ -68,7 +73,11 @@ class TransactionManager:
 
     # Deletes all references of a User from the userAccounts and availableGames files
     def delete(self, transaction):
-        user, userType, credit = hf.parseMost(transaction)
+        parsed = hf.parseMost(transaction)
+        if (parsed is not None):
+            user, userType, credit = parsed
+        else:
+            raise Exception(f"ERROR: Fatal Error - Invalid transaction format: {transaction}")
         self.userManager.removeUser(user)
         self.userManager.writeToFile(userAccountsFilePath)
 
@@ -80,13 +89,21 @@ class TransactionManager:
 
     # Creates a new Game object and writes it to the availableGames file
     def sell(self, transaction):
-        transactionCode, gameName, seller, gamePrice = hf.parseSell(transaction)
+        parsed = hf.parseSell(transaction)
+        if (parsed is not None):
+            transactionCode, gameName, seller, gamePrice = parsed
+        else:
+            raise Exception(f"ERROR: Fatal Error - Invalid transaction format: {transaction}")
         self.gameManager.addGame(gameName, seller, gamePrice)
         self.gameManager.writeToFile(availableGameFilePath)
 
     # Adds a game to a buying User’s collection in the gameCollection file, Credits a seller, and deducts that amount from the buyer
     def buy(self, transaction):
-        transactionCode, gameName, seller, buyer, gamePrice = hf.parseBuy(transaction)
+        parsed = hf.parseBuy(transaction)
+        if (parsed is not None):
+            transactionCode, gameName, seller, buyer, gamePrice = parsed
+        else:
+            raise Exception(f"ERROR: Fatal Error - Invalid transaction format: {transaction}")
         # Update buyer and seller credits
         potentialError = self.userManager.updateUsercredit(buyer, float(gamePrice) * -1)
         if (potentialError is not None):          
@@ -104,7 +121,11 @@ class TransactionManager:
 
     # Removes an owned game from a User’s collection in the gameCollection file, credits that buyer, and deducts that amount from the seller
     def refund(self, transaction):
-        transactionCode, gameName, buyer, seller, refundCredit = hf.parseRefund(transaction)
+        parsed = hf.parseRefund(transaction)
+        if (parsed is not None):
+            transactionCode, gameName, buyer, seller, refundCredit = parsed
+        else:
+            raise Exception(f"ERROR: Fatal Error - Invalid transaction format: {transaction}")
         # Update buyer and seller credits
         potentialError = self.userManager.updateUsercredit(buyer, refundCredit)
         if (potentialError is not None):          
@@ -121,7 +142,11 @@ class TransactionManager:
 
     # Adds the given credit to the user’s balance and updates the CurrentUserAccounts file to reflect this change
     def addCredit(self, transaction):
-        user, userType, credit = hf.parseMost(transaction)
+        parsed = hf.parseMost(transaction)
+        if (parsed is not None):
+            user, userType, credit = parsed
+        else:
+            raise Exception(f"ERROR: Fatal Error - Invalid transaction format: {transaction}")
         potentialError = self.userManager.updateUsercredit(user, float(credit))
         if (potentialError is not None):          
             sys.stderr.write(potentialError + "\n Transaction that caused the error is " + transaction)

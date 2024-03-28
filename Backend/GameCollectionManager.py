@@ -78,7 +78,7 @@ class GameCollectionManager:
             if entry.gameName == gameName and entry.owner == owner:
                 self.collection.remove(entry)
                 return
-        print(f"Entry {gameName} {owner} not found.")
+        print(f"Entry: {gameName} {owner} not found.")
             
     # Reads the GameCollection.txt file and populates the collection list
     def readCollection(self, filename):

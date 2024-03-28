@@ -21,7 +21,13 @@ def getTransactionCode(transaction):
 # - is a space
 def parseMost(line): # for create, delete, add credit, and logout
     newUser, userType, credit = line.split()[1:]
+    parts = line.split()[1:]
+    if (len(parts) == 3):
+        newUser, userType, credit = parts
+    else:
+        return None
     return newUser, userType, credit
+    
 
 
 # for refund 05

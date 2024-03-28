@@ -344,7 +344,7 @@ def test_buy(capfd):
     collectionManager.readCollection(gameCollectionFilePath)
     collectionManager.addEntry("testGame", "testOwner")
     assert collectionManager.collection[-1].gameName == "testGame"
-    assert userFileManager.users[-1].username == "newUser"
+    assert collectionManager.collection[-1].owner == "testOwner"
     
     # validCollectionWrite
     try:  
