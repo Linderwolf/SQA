@@ -47,7 +47,6 @@ def parseRefund(line):
         seller = seller.rstrip()                       
         credit = float(credit) 
     else:
-        print(f"Invalid transaction format: |{line}|")
         return None
     return transactionCode, gameName, buyer, seller, credit
 
@@ -67,7 +66,6 @@ def parseSell(line):
         seller = seller.rstrip()
         gamePrice = float(gamePrice)
     else:
-        print(f"Invalid transaction format: |{line}|")
         return None
     return transactionCode, gameName, seller, gamePrice
     
@@ -88,10 +86,8 @@ def parseBuy(line):
         gameName = gameName.rstrip()        
         seller = seller.rstrip()           
         buyer = buyer.rstrip()              
-        gamePrice = float(gamePrice)        
-    
+        gamePrice = float(gamePrice)         
     else:
-        print(f"Invalid transaction format: |{line}|")
         return None
 
     return transactionCode, gameName, seller, buyer, gamePrice

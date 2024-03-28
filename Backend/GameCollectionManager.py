@@ -118,8 +118,7 @@ class GameCollectionManager:
             gameName = match.group(1).strip()
             owner = match.group(2).strip()
         else:
-            print(f"Invalid format: |{line}|")
-            return None
+            raise Exception(f"ERROR: Fatal Error - Invalid line format: {line} in GameCollection.txt")
         
         return gameName, owner
     

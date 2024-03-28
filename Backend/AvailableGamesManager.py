@@ -136,7 +136,6 @@ class AvailableGamesFileManager:
             owner = match.group(2).strip()
             price = float(match.group(3))
         else:
-            print(f"Invalid format: {line}")
-            return None
+            raise Exception(f"ERROR: Fatal Error - Invalid line format: {line} in AvailableGames.txt")
         
         return gameName, owner, price

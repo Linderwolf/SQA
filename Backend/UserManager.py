@@ -82,10 +82,14 @@ class UserFileManager:
         with open(filename, 'r') as file:
              for line in file:
                 parts = line.split()
+                if (len(parts) == 1):
+                    return None
                 if len(parts) == 3:  # Make sure the line has all required fields
                     username, userType, credit = parts
                     newUser = User(username, userType, float(credit))
                     self.users.append(newUser)
+                else:
+                    raise Exception(f"ERROR: Fatal Error - Invalid line format: {line} in {filename}")
         file.close()
         return self.users
             
