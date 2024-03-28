@@ -100,8 +100,27 @@ gameFileManager = AvailableGamesFileManager()
 gameFileManager.readAvailableGames(availableGameFilePath)
 
 # test getPriceByName(gameName)
+#
+#       Chosen for Path Coverage
+#
+#    def getPriceByName(self, gameName):
+#        for game in self.availableGames:
+#            if game.name == gameName:
+#                return game.price
+#        return None  # Return None if the game name is not found
+#
+#   Paths:
+#   1: Game is not found -> assert None is returned
+#   2: Iterates through the availableGames list until the game is found -> assert game is correct for:
+#        0th, 1st, and last elements
 def test_getPriceByName():
-    game = gameFileManager.getPriceByName("Tabletop Simulator")
+    notAGame = gameFileManager.getPriceByName("This is not a listed Game Name")
+    assert notAGame.isNone
+    game = game = gameFileManager.getPriceByName("Stardew Valley")
+    assert game.price == "025.00"
+    game = game = gameFileManager.getPriceByName("Tetris Effect")
+    assert game.price == "020.00"
+    game = gameFileManager.getPriceByName("Risk of Rain II")
     assert game.price == "019.99"
 
 # test getUsersGames(username)
